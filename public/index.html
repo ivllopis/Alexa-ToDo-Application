@@ -65,7 +65,7 @@
           <img class="content-sliders-image" src="pictures/Star_Jelly.png" alt="img_7"></div>
         <div class="content-sliders text-center">
           <img class="content-sliders-image" src="pictures/Star_Nectar.png" alt="img_8"></div>
-        <div class="content-sliders text-center">
+        <!-- <div class="content-sliders text-center">
           <img class="content-sliders-image" src="pictures/Astral_Waste.png" alt="img_9">
         </div>
         <div class="content-sliders text-center">
@@ -100,49 +100,48 @@
         </div>
         <div class="content-sliders text-center">
           <img class="content-sliders-image" src="pictures/Astrologist_Icon.png" alt="img_8">
-        </div>
+        </div> -->
       </div>
     </div>
 
     <div class="container-fluid mt-4 text-center">     
       
       <button type="button" class="btn btn-primary" onclick="showCurrentSlide()" data-toggle="modal" data-target="#exampleModal">
-        Launch demo modal
+        Info
+      </button>
+      <br/>
+
+      <button type="button" class="btn btn-secondary mt-2" onclick="recommendMeSomething()" data-toggle="modal" data-target="#exampleModal">
+        Recommend me
       </button>
 
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="info-title" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <h5 class="modal-title" id="info-title">Item information</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
               <div class="media">
-                <img src="pictures/Astral_Waste.png" class="w-25 mr-3" alt="img_x">
+                <img id="info-picture" src="pictures/Astral_Waste.png" class="w-25 mr-3" alt="img_x">
                 <div class="media-body">
-                  <h5 class="mt-0">Media heading</h5>
-                  <p id="my-custom-text">The plot of the Dark Souls series revolves around a world that is stuck in a cycle of light and dark. Across the three games, you are placed in three distinct lands and time periods. Lodran, Drangleic and Lothric.</p>
+                  <h5 class="mt-0" id="info-name">Media heading</h5>
+                  <p id="info-description">The plot of the Dark Souls series revolves around a world that is stuck in a cycle of light and dark. Across the three games, you are placed in three distinct lands and time periods. Lodran, Drangleic and Lothric.</p>
 
                   <p>It all started with the first flame, a big bang like event that brought balance to a stale, static universe. In the flames, 4 beings found powerful manifestations of these balancing forces. Life, death, light and dark in the form of Lord Souls. With the strength of these Lord Souls, these beings waged a war against the dragons and started the Age of Fire. But since they existed in a cycle, these beings soon realized that the first flame was slowly fading. What started as a series of failed attempts ultimately led to Gwyn, the Lord of Sunlight to sacrifice himself to the first flame as kindling to keep the flame burning.</p>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary">Save changes</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="showCurrentSlide()">Info</button>
-      <span id="span-change">Current slide: 0</span>
-    </div>
-
-    <div class="container-fluid p-2 mt-2 text-center">
-        <button type="button" class="btn btn-secondary">Recommend me</button>
     </div>
 
     <!-- Footer -->
@@ -193,15 +192,46 @@
         });
       });
 
-      // On before slide change
-      //$('.center').on('afterChange', function(event, slick, currentSlide, nextSlide){
-      //  $("#span-change").text("Current slide: " + currentSlide);
-      //});
+      function httpGetAsync(theUrl, callback)
+      {
+          var xmlHttp = new XMLHttpRequest();
+          xmlHttp.onreadystatechange = function() { 
+              if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                  callback(xmlHttp.responseText);
+          }
+          xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+          xmlHttp.send(null);
+      }
 
       function showCurrentSlide(){
-        var currentSlide = $('.center').slick('slickCurrentSlide');
-        //document.getElementById("my-custom-text").innerHTML = "Current slide is: " + currentSlide;
-        document.getElementById("span-change").innerHTML = "Current slide: " + currentSlide;
+        const currentSlide = $('.center').slick('slickCurrentSlide');
+
+        httpGetAsync(`http://127.0.0.1:5000/series/${currentSlide}`, (res) =>{
+          try{
+            const parsedResponse = JSON.parse(res);
+            document.getElementById('info-picture').src=parsedResponse.source;
+            document.getElementById('info-description').innerHTML=parsedResponse.description;
+            document.getElementById('info-title').innerHTML = 'Item information';
+          }catch(e){
+            console.log(e); //throw error or flash it
+          }
+          
+        });
+      }
+
+      function recommendMeSomething(){
+        httpGetAsync(`http://127.0.0.1:5000/series/any`, (res) =>{
+          try{
+            const parsedResponse = JSON.parse(res);
+            console.log(typeof parsedResponse.slide_num);
+            document.getElementById('info-picture').src=parsedResponse.source;
+            document.getElementById('info-description').innerHTML=parsedResponse.description;
+            document.getElementById('info-title').innerHTML = 'Your recommendation';
+            $('.center').slick('slickGoTo', parsedResponse.slide_num, true);
+          }catch(e){
+            console.log(e); //throw error or flash it
+          }
+        });
       }
     </script>
 </body>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="My website">
+    <meta name="author" content="Ivan Llopis">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="css/slick-theme.css"/>
+    <link rel="stylesheet" href="css/style.css">
+    <title>My webapplication</title>
+</head>
+
+<body>
+
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <span class="navbar-brand mb-0 ml-4 h1">Recommend me something!</span>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item active">
+                <button type="button" class="btn btn-light">Series</button>
+              </li>
+              <li class="nav-item">
+                <button type="button" class="btn btn-light">Movies</button>
+              </li>
+              <li class="nav-item">
+                <button type="button" class="btn btn-light">Videogames</button>
+              </li>
+              <!-- If User is logged in or not-->
+              <li class="nav-item">
+                <button type="button" class="btn btn-light">Sign in</button>
+              </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- Content Media -->
+    <div class="container-fluid bg-light mt-4">
+      <div class="center">
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Astral_Waste.png" alt="img_1"></div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Astrologist_Icon.png" alt="img_2"></div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Star_Jelly.png" alt="img_3"></div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Star_Nectar.png" alt="img_4"></div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Astral_Waste.png" alt="img_5"></div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Astrologist_Icon.png" alt="img_6"></div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Star_Jelly.png" alt="img_7"></div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Star_Nectar.png" alt="img_8"></div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Astral_Waste.png" alt="img_9">
+        </div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Star_Jelly.png" alt="img_8">
+        </div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Star_Nectar.png" alt="img_8">
+        </div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Astrologist_Icon.png" alt="img_8">
+        </div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Astral_Waste.png" alt="img_8">
+        </div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Star_Jelly.png" alt="img_8">
+        </div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Star_Nectar.png" alt="img_8">
+        </div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Astrologist_Icon.png" alt="img_8">
+        </div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Astral_Waste.png" alt="img_8">
+        </div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Star_Jelly.png" alt="img_8">
+        </div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Star_Nectar.png" alt="img_8">
+        </div>
+        <div class="content-sliders text-center">
+          <img class="content-sliders-image" src="pictures/Astrologist_Icon.png" alt="img_8">
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid mt-4 text-center">     
+      <button class="btn btn-primary" onclick="showCurrentSlide()">Info</button>
+      <button type="button" class="btn btn-primary" onclick="showCurrentSlide()" data-toggle="modal" data-target="#exampleModal">
+        Launch demo modal
+      </button>
+
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="media">
+                <img src="pictures/Astral_Waste.png" class="w-50 mr-3" alt="img_x">
+                <div class="media-body">
+                  <h5 class="mt-0">Media heading</h5>
+                  <p id="my-custom-text">The plot of the Dark Souls series revolves around a world that is stuck in a cycle of light and dark. Across the three games, you are placed in three distinct lands and time periods. Lodran, Drangleic and Lothric.</p>
+
+                  <p>It all started with the first flame, a big bang like event that brought balance to a stale, static universe. In the flames, 4 beings found powerful manifestations of these balancing forces. Life, death, light and dark in the form of Lord Souls. With the strength of these Lord Souls, these beings waged a war against the dragons and started the Age of Fire. But since they existed in a cycle, these beings soon realized that the first flame was slowly fading. What started as a series of failed attempts ultimately led to Gwyn, the Lord of Sunlight to sacrifice himself to the first flame as kindling to keep the flame burning.</p>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br/>
+      <span id="span-change">Current slide: 0</span>
+    </div>
+
+    <div class="container-fluid p-2 mt-4 text-center">
+        <button type="button" class="btn btn-secondary">Recommend me</button>
+    </div>
+
+    <!-- Footer -->
+
+
+    <!-- Import scripts -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="js/slick.min.js"></script>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('.center').slick({
+          centerMode: true,
+          centerPadding: '180px',
+          slidesToShow: 3,
+          swipeToSlide: true, // custom feat.
+          responsive: [
+            {
+              breakpoint: 1500,
+              settings: {
+                arrows: false,
+                centerMode: true,
+                centerPadding: '80px',
+                slidesToShow: 2.5
+              }
+            },
+            {
+              breakpoint: 900,
+              settings: {
+                arrows: false,
+                centerMode: true,
+                centerPadding: '80px',
+                slidesToShow: 1.5
+              }
+            },
+            {
+              breakpoint: 750,
+              settings: {
+                arrows: true,
+                centerMode: true,
+                centerPadding: '40px',
+                slidesToShow: 1
+              }
+            },
+            {
+              breakpoint: 600,
+              settings: {
+                arrows: true,
+                centerMode: true,
+                centerPadding: '170px',
+                slidesToShow: 0.2
+              }
+            }
+          ]
+        });
+      });
+
+      // On before slide change
+      //$('.center').on('afterChange', function(event, slick, currentSlide, nextSlide){
+      //  $("#span-change").text("Current slide: " + currentSlide);
+      //});
+
+      function showCurrentSlide(){
+        var currentSlide = $('.center').slick('slickCurrentSlide');
+        //document.getElementById("my-custom-text").innerHTML = "Current slide is: " + currentSlide;
+        document.getElementById("span-change").innerHTML = "Current slide: " + currentSlide;
+      }
+    </script>
+</body>
+
+</html>

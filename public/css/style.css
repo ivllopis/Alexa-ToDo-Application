@@ -7,3 +7,21 @@
     margin-right: auto;
     height: 100%;
 }
+
+@media screen and (max-width: 1500px) {
+    .content-sliders{
+        height: 400px;
+    }
+}
+
+@media screen and (max-width: 1080px) {
+    .content-sliders{
+        height: 320px;
+    }
+}
+
+@media screen and (max-width: 760px) {
+    .content-sliders{
+        height: 415px;
+    }
+}

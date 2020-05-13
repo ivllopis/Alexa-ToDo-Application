@@ -105,7 +105,7 @@
     </div>
 
     <div class="container-fluid mt-4 text-center">     
-      <button class="btn btn-primary" onclick="showCurrentSlide()">Info</button>
+      
       <button type="button" class="btn btn-primary" onclick="showCurrentSlide()" data-toggle="modal" data-target="#exampleModal">
         Launch demo modal
       </button>
@@ -121,7 +121,7 @@
             </div>
             <div class="modal-body">
               <div class="media">
-                <img src="pictures/Astral_Waste.png" class="w-50 mr-3" alt="img_x">
+                <img src="pictures/Astral_Waste.png" class="w-25 mr-3" alt="img_x">
                 <div class="media-body">
                   <h5 class="mt-0">Media heading</h5>
                   <p id="my-custom-text">The plot of the Dark Souls series revolves around a world that is stuck in a cycle of light and dark. Across the three games, you are placed in three distinct lands and time periods. Lodran, Drangleic and Lothric.</p>
@@ -137,11 +137,11 @@
           </div>
         </div>
       </div>
-      <br/>
+      <button class="btn btn-primary" onclick="showCurrentSlide()">Info</button>
       <span id="span-change">Current slide: 0</span>
     </div>
 
-    <div class="container-fluid p-2 mt-4 text-center">
+    <div class="container-fluid p-2 mt-2 text-center">
         <button type="button" class="btn btn-secondary">Recommend me</button>
     </div>
 
@@ -168,34 +168,25 @@
                 arrows: false,
                 centerMode: true,
                 centerPadding: '80px',
-                slidesToShow: 2.5
+                slidesToShow: 3
               }
             },
             {
-              breakpoint: 900,
+              breakpoint: 1080,
               settings: {
-                arrows: false,
+                arrows: true,
+                centerMode: true,
+                centerPadding: '10px',
+                slidesToShow: 3
+              }
+            },
+            {
+              breakpoint: 760,
+              settings: {
+                arrows: true,
                 centerMode: true,
                 centerPadding: '80px',
-                slidesToShow: 1.5
-              }
-            },
-            {
-              breakpoint: 750,
-              settings: {
-                arrows: true,
-                centerMode: true,
-                centerPadding: '40px',
                 slidesToShow: 1
-              }
-            },
-            {
-              breakpoint: 600,
-              settings: {
-                arrows: true,
-                centerMode: true,
-                centerPadding: '170px',
-                slidesToShow: 0.2
               }
             }
           ]

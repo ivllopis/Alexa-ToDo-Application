@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="My website">
+    <meta name="author" content="Ivan Llopis">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="css/slick-theme.css"/>
+    <link rel="stylesheet" href="css/style.css">
+    <title>My webapplication</title>
+</head>
+
+<body>
+
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a href="/" class="navbar-brand mb-0 ml-4 h1">Recommend me something!</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item active">
+                <a href="/series" class="btn btn-light" role="button">Series</a>
+              </li>
+              <li class="nav-item">
+                <a href="/movies" class="btn btn-light" role="button">Movies</a>
+              </li>
+              <li class="nav-item">
+                <button type="button" class="btn btn-light">Videogames</button>
+              </li>
+              <!-- If User is logged in or not-->
+              <li class="nav-item">
+                <button type="button" class="btn btn-light">Sign in</button>
+              </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+
+    <!-- Content Media -->
+    <div class="container-fluid bg-light pt-4" id="info-series">
+      <div class="text-center" style="height: 250px;"><img class="content-sliders-loader" src="css/ajax-loader.gif" alt="loader_gif"></div>
+    </div>
+
+
+    <div class="container-fluid bg-light p-4 text-center">  
+      
+      <button type="button" class="btn btn-primary" onclick="showInfoCurrentSerie()" data-toggle="modal" data-target="#exampleModal">
+        Info
+      </button>
+      <br/>
+
+      <button type="button" class="btn btn-secondary mt-2" onclick="recommendMeSomething()" data-toggle="modal" data-target="#exampleModal">
+        Recommend me
+      </button>
+
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="info-title" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="info-title">Item information</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="media">
+                <img id="info-picture" src="pictures/Astral_Waste.png" class="w-25 mr-3" alt="img_x">
+                <div class="media-body">
+                  <h5 class="mt-0" id="info-name"></h5>
+                  <p id="info-description"></p><br/>
+                  <p id="info-additional"></p>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+
+
+    <!-- Import scripts -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="js/slick.min.js"></script>
+    
+    <script type="text/javascript">
+      function startCarousel(){
+        $('.center').slick({
+          centerMode: true,
+          centerPadding: '180px',
+          slidesToShow: 3,
+          swipeToSlide: true, // custom feat.
+          responsive: [
+            {
+              breakpoint: 1500,
+              settings: {
+                arrows: false,
+                centerMode: true,
+                centerPadding: '80px',
+                slidesToShow: 3
+              }
+            },
+            {
+              breakpoint: 1080,
+              settings: {
+                arrows: true,
+                centerMode: true,
+                centerPadding: '10px',
+                slidesToShow: 3
+              }
+            },
+            {
+              breakpoint: 760,
+              settings: {
+                arrows: true,
+                centerMode: true,
+                centerPadding: '80px',
+                slidesToShow: 1
+              }
+            }
+          ]
+        });
+      }
+
+      function httpGetAsync(theUrl, callback)
+      {
+          var xmlHttp = new XMLHttpRequest();
+          xmlHttp.onreadystatechange = function() { 
+              if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                  callback(xmlHttp.responseText);
+          }
+          xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+          xmlHttp.send(null);
+      }
+
+      function showInfoCurrentSerie(){
+        const currentSlide = $('.center').slick('slickCurrentSlide');
+
+        httpGetAsync(`http://127.0.0.1:5000/series/${currentSlide}`, (res) =>{
+          try{
+            const parsedResponse = JSON.parse(res);
+            if(typeof parsedResponse.data.Poster !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Poster;
+            if(typeof parsedResponse.data.Title !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Title;
+            if(typeof parsedResponse.data.Plot !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Plot;
+            
+            var additionalInfo = ''; //additional information about the series
+            if(typeof parsedResponse.data.Year !== 'undefined') additionalInfo += 'Year: ' + parsedResponse.data.Year + '</p><p>';
+            if(typeof parsedResponse.data.Writer !== 'undefined') additionalInfo += '\tWriters: ' + parsedResponse.data.Writer + '</p><p>';
+            if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += '\nActors: ' + parsedResponse.data.Actors + '</p><p>';
+
+            document.getElementById('info-additional').innerHTML=additionalInfo;
+            document.getElementById('info-title').innerHTML = 'Item information';
+          }catch(e){
+            console.log(e); //throw error or flash it
+          }
+          
+        });
+      }
+
+      function recommendMeSomething(){
+        httpGetAsync(`http://127.0.0.1:5000/series/any`, (res) =>{
+          try{
+            const parsedResponse = JSON.parse(res);
+            if(typeof parsedResponse.data.Poster !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Poster;
+            if(typeof parsedResponse.data.Title !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Title;
+            if(typeof parsedResponse.data.Plot !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Plot;
+            
+            var additionalInfo = ''; //additional information about the series
+            if(typeof parsedResponse.data.Year !== 'undefined') additionalInfo += 'Year: ' + parsedResponse.data.Year + '</p><p>';
+            if(typeof parsedResponse.data.Writer !== 'undefined') additionalInfo += '\tWriters: ' + parsedResponse.data.Writer + '</p><p>';
+            if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += '\nActors: ' + parsedResponse.data.Actors + '</p><p>';
+
+            document.getElementById('info-additional').innerHTML=additionalInfo;
+            document.getElementById('info-title').innerHTML = 'Your recommendation';
+            $('.center').slick('slickGoTo', parsedResponse.indexSerie, true);
+          }catch(e){
+            console.log(e); //throw error or flash it
+          }
+        });
+      }
+      
+      // Request series from the database and showcase them in the carousel
+      httpGetAsync('http://127.0.0.1:5000/series/infoSeries', (res) =>{
+        try{
+          const parsedResponse = JSON.parse(res);
+          var addedHTMLSeries = '<div class="center">\n\t';
+          for(let serie of parsedResponse) {
+            if(typeof serie.Poster !== 'undefined'){
+              addedHTMLSeries += `<div class="content-sliders text-center">\n\t<img class="content-sliders-image" src="${serie.Poster}" alt="img">\n</div>`;
+            }
+          }
+          addedHTMLSeries += '\n</div>';
+          document.getElementById('info-series').innerHTML = addedHTMLSeries;
+          startCarousel();
+        }catch(e){
+          console.log(e); //throw error or flash it
+        }
+        
+      });
+    </script>
+</body>
+
+</html>

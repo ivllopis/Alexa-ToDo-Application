@@ -17,7 +17,7 @@
 
     <!-- Navigation bar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <span class="navbar-brand mb-0 ml-4 h1">Recommend me something!</span>
+        <a href="/" class="navbar-brand mb-0 ml-4 h1">Recommend me something!</a>
 
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -26,10 +26,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
               <li class="nav-item active">
-                <button type="button" class="btn btn-light">Series</button>
+                <a href="/series" class="btn btn-light" role="button">Series</a>
               </li>
               <li class="nav-item">
-                <button type="button" class="btn btn-light">Movies</button>
+                <a href="/movies" class="btn btn-light" role="button">Movies</a>
               </li>
               <li class="nav-item">
                 <button type="button" class="btn btn-light">Videogames</button>
@@ -47,7 +47,7 @@
     </nav>
 
     <!-- Content Media -->
-    <div class="container-fluid bg-light mt-4">
+    <div class="container-fluid bg-light pt-4">
       <div class="center">
         <div class="content-sliders text-center">
           <img class="content-sliders-image" src="pictures/Astral_Waste.png" alt="img_1"></div>
@@ -65,46 +65,10 @@
           <img class="content-sliders-image" src="pictures/Star_Jelly.png" alt="img_7"></div>
         <div class="content-sliders text-center">
           <img class="content-sliders-image" src="pictures/Star_Nectar.png" alt="img_8"></div>
-        <!-- <div class="content-sliders text-center">
-          <img class="content-sliders-image" src="pictures/Astral_Waste.png" alt="img_9">
-        </div>
-        <div class="content-sliders text-center">
-          <img class="content-sliders-image" src="pictures/Star_Jelly.png" alt="img_8">
-        </div>
-        <div class="content-sliders text-center">
-          <img class="content-sliders-image" src="pictures/Star_Nectar.png" alt="img_8">
-        </div>
-        <div class="content-sliders text-center">
-          <img class="content-sliders-image" src="pictures/Astrologist_Icon.png" alt="img_8">
-        </div>
-        <div class="content-sliders text-center">
-          <img class="content-sliders-image" src="pictures/Astral_Waste.png" alt="img_8">
-        </div>
-        <div class="content-sliders text-center">
-          <img class="content-sliders-image" src="pictures/Star_Jelly.png" alt="img_8">
-        </div>
-        <div class="content-sliders text-center">
-          <img class="content-sliders-image" src="pictures/Star_Nectar.png" alt="img_8">
-        </div>
-        <div class="content-sliders text-center">
-          <img class="content-sliders-image" src="pictures/Astrologist_Icon.png" alt="img_8">
-        </div>
-        <div class="content-sliders text-center">
-          <img class="content-sliders-image" src="pictures/Astral_Waste.png" alt="img_8">
-        </div>
-        <div class="content-sliders text-center">
-          <img class="content-sliders-image" src="pictures/Star_Jelly.png" alt="img_8">
-        </div>
-        <div class="content-sliders text-center">
-          <img class="content-sliders-image" src="pictures/Star_Nectar.png" alt="img_8">
-        </div>
-        <div class="content-sliders text-center">
-          <img class="content-sliders-image" src="pictures/Astrologist_Icon.png" alt="img_8">
-        </div> -->
       </div>
     </div>
 
-    <div class="container-fluid mt-4 text-center">     
+    <div class="container-fluid bg-light p-4 text-center">     
       
       <button type="button" class="btn btn-primary" onclick="showCurrentSlide()" data-toggle="modal" data-target="#exampleModal">
         Info
@@ -136,7 +100,6 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Save changes</button>
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
           </div>

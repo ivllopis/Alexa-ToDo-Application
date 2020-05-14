@@ -37,12 +37,12 @@ async function getSerie(nameSerie) {
 getSeries();
 
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/series.html'));
+    res.render('series');
 });
 
 router.get('/any', (req, res) => {
     const recommended_random_serie = Math.round(Math.random() * simpleDatabase.length);
-    res.json({indexSerie: recommended_random_serie, data: simpleDatabase[recommended_random_serie]});
+    res.json({index: recommended_random_serie, data: simpleDatabase[recommended_random_serie]});
 });
 
 router.get('/infoSeries', async (req, res) => {
@@ -55,7 +55,7 @@ router.get('/:id', (req, res) => {
         if(isNaN(indexSerie)){
             res.send("This serie is not valid."); //normally we would flash around this error!
         } else if(indexSerie > simpleDatabase.length) res.send("This series does not exist.");
-        else res.json({indexSerie: indexSerie, data: simpleDatabase[indexSerie]});
+        else res.json({index: indexSerie, data: simpleDatabase[indexSerie]});
     }catch(e){
         console.log(e);
     }

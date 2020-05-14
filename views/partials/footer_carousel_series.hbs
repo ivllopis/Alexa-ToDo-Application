@@ -1,0 +1,118 @@
+<script type="text/javascript" src="js/slick.min.js"></script>
+
+<script type="text/javascript">
+    function startCarousel(){
+    $('.center').slick({
+        centerMode: true,
+        centerPadding: '180px',
+        slidesToShow: 3,
+        swipeToSlide: true, // custom feat.
+        responsive: [
+        {
+            breakpoint: 1500,
+            settings: {
+            arrows: false,
+            centerMode: true,
+            centerPadding: '80px',
+            slidesToShow: 3
+            }
+        },
+        {
+            breakpoint: 1080,
+            settings: {
+            arrows: true,
+            centerMode: true,
+            centerPadding: '10px',
+            slidesToShow: 3
+            }
+        },
+        {
+            breakpoint: 760,
+            settings: {
+            arrows: true,
+            centerMode: true,
+            centerPadding: '80px',
+            slidesToShow: 1
+            }
+        }
+        ]
+    });
+    }
+
+    function httpGetAsync(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+        xmlHttp.send(null);
+    }
+
+    function showInfoCurrent(){
+        const currentSlide = $('.center').slick('slickCurrentSlide');
+
+        httpGetAsync(`http://127.0.0.1:5000/series/${currentSlide}`, (res) =>{
+            try{
+            const parsedResponse = JSON.parse(res);
+            if(typeof parsedResponse.data.Poster !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Poster;
+            if(typeof parsedResponse.data.Title !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Title;
+            if(typeof parsedResponse.data.Plot !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Plot;
+            
+            var additionalInfo = ''; //additional information about the series
+            if(typeof parsedResponse.data.Year !== 'undefined') additionalInfo += 'Year: ' + parsedResponse.data.Year + '</p><p>';
+            if(typeof parsedResponse.data.Writer !== 'undefined') additionalInfo += '\tWriters: ' + parsedResponse.data.Writer + '</p><p>';
+            if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += '\nActors: ' + parsedResponse.data.Actors + '</p><p>';
+
+            document.getElementById('info-additional').innerHTML=additionalInfo;
+            document.getElementById('info-title').innerHTML = 'Item information';
+            }catch(e){
+            console.log(e); //throw error or flash it
+            }
+            
+        });
+    }
+
+    function recommendMeSomething(){
+        httpGetAsync('http://127.0.0.1:5000/series/any', (res) =>{
+            try{
+                const parsedResponse = JSON.parse(res);
+                if(typeof parsedResponse.data.Poster !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Poster;
+                if(typeof parsedResponse.data.Title !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Title;
+                if(typeof parsedResponse.data.Plot !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Plot;
+                
+                var additionalInfo = ''; //additional information about the series
+                if(typeof parsedResponse.data.Year !== 'undefined') additionalInfo += 'Year: ' + parsedResponse.data.Year + '</p><p>';
+                if(typeof parsedResponse.data.Writer !== 'undefined') additionalInfo += '\tWriters: ' + parsedResponse.data.Writer + '</p><p>';
+                if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += '\nActors: ' + parsedResponse.data.Actors + '</p><p>';
+
+                document.getElementById('info-additional').innerHTML=additionalInfo;
+                document.getElementById('info-title').innerHTML = 'Your recommendation';
+                
+                $('.center').slick('slickGoTo', parsedResponse.index, true);
+            }catch(e){
+                console.log(e); //throw error or flash it
+            }
+        });
+    }
+    
+    // Request series from the database and showcase them in the carousel
+    httpGetAsync('http://127.0.0.1:5000/series/infoSeries', (res) =>{
+    try{
+        const parsedResponse = JSON.parse(res);
+        var addedHTMLSeries = '<div class="center">\n\t';
+        for(let serie of parsedResponse) {
+            if(typeof serie.Poster !== 'undefined'){
+                addedHTMLSeries += `<div class="content-sliders text-center">\n\t<img class="content-sliders-image" src="${serie.Poster}" alt="img">\n</div>`;
+            }
+        }
+        addedHTMLSeries += '\n</div>';
+        document.getElementById('media-content-carousel').innerHTML = addedHTMLSeries;
+        startCarousel();
+    }catch(e){
+        console.log(e); //throw error or flash it
+    }
+    
+    });
+</script>

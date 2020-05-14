@@ -1,0 +1,117 @@
+<script type="text/javascript" src="js/slick.min.js"></script>
+
+<script type="text/javascript">
+    function startCarousel(){
+    $('.center').slick({
+        centerMode: true,
+        centerPadding: '180px',
+        slidesToShow: 3,
+        swipeToSlide: true, // custom feat.
+        responsive: [
+        {
+            breakpoint: 1500,
+            settings: {
+            arrows: false,
+            centerMode: true,
+            centerPadding: '80px',
+            slidesToShow: 3
+            }
+        },
+        {
+            breakpoint: 1080,
+            settings: {
+            arrows: true,
+            centerMode: true,
+            centerPadding: '10px',
+            slidesToShow: 3
+            }
+        },
+        {
+            breakpoint: 760,
+            settings: {
+            arrows: true,
+            centerMode: true,
+            centerPadding: '80px',
+            slidesToShow: 1
+            }
+        }
+        ]
+    });
+    }
+
+    function httpGetAsync(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+        xmlHttp.send(null);
+    }
+
+    function showInfoCurrent(){
+        const currentSlide = $('.center').slick('slickCurrentSlide');
+
+        httpGetAsync(`http://127.0.0.1:5000/movies/${currentSlide}`, (res) =>{
+            try{
+                const parsedResponse = JSON.parse(res);
+                if(typeof parsedResponse.data.Poster !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Poster;
+                if(typeof parsedResponse.data.Title !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Title;
+                if(typeof parsedResponse.data.Plot !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Plot;
+                
+                var additionalInfo = ''; //additional information about the Movies
+                if(typeof parsedResponse.data.Year !== 'undefined') additionalInfo += 'Year: ' + parsedResponse.data.Year + '</p><p>';
+                if(typeof parsedResponse.data.Writer !== 'undefined') additionalInfo += '\tWriters: ' + parsedResponse.data.Writer + '</p><p>';
+                if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += '\nActors: ' + parsedResponse.data.Actors + '</p><p>';
+
+                document.getElementById('info-additional').innerHTML=additionalInfo;
+                document.getElementById('info-title').innerHTML = 'Item information';
+            }catch(e){
+                console.log(e); //throw error or flash it
+            }
+            
+        });
+    }
+
+    function recommendMeSomething(){
+        httpGetAsync('http://127.0.0.1:5000/movies/any', (res) =>{
+            try{
+                const parsedResponse = JSON.parse(res);
+                if(typeof parsedResponse.data.Poster !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Poster;
+                if(typeof parsedResponse.data.Title !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Title;
+                if(typeof parsedResponse.data.Plot !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Plot;
+                
+                var additionalInfo = ''; //additional information about the Movies
+                if(typeof parsedResponse.data.Year !== 'undefined') additionalInfo += 'Year: ' + parsedResponse.data.Year + '</p><p>';
+                if(typeof parsedResponse.data.Writer !== 'undefined') additionalInfo += '\tWriters: ' + parsedResponse.data.Writer + '</p><p>';
+                if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += '\nActors: ' + parsedResponse.data.Actors + '</p><p>';
+
+                document.getElementById('info-additional').innerHTML=additionalInfo;
+                document.getElementById('info-title').innerHTML = 'Your recommendation';
+                $('.center').slick('slickGoTo', parsedResponse.index, true);
+            }catch(e){
+                console.log(e); //throw error or flash it
+            }
+        });
+    }
+    
+    // Request Movies from the database and showcase them in the carousel
+    httpGetAsync('http://127.0.0.1:5000/movies/infoMovies', (res) =>{
+    try{
+        const parsedResponse = JSON.parse(res);
+        var addedHTMLMovies = '<div class="center">\n\t';
+        for(let movie of parsedResponse) {
+            if(typeof movie.Poster !== 'undefined'){
+                addedHTMLMovies += `<div class="content-sliders text-center">\n\t<img class="content-sliders-image" src="${movie.Poster}" alt="img">\n</div>`;
+            }
+        }
+        addedHTMLMovies += '\n</div>';
+        document.getElementById('media-content-carousel').innerHTML = addedHTMLMovies;
+        startCarousel();
+    }catch(e){
+        console.log(e); //throw error or flash it
+    }
+    
+    });
+</script>

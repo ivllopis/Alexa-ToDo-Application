@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const axios = require('axios');
+const hbs  = require('express-handlebars');
 //const qs = require('qs');
 require('dotenv').config();
 
 const seriesRouter = require('./routes/series');
+const moviesRouter = require('./routes/movies');
 
 
 //In-memory storage of logged-in users
@@ -16,14 +18,24 @@ const seriesRouter = require('./routes/series');
 const app = express();
 
 app.use(express.static('public')); //serves automatically index.html
+
+// View engine setup
+// Use `.hbs` for extensions and find partials in `views/partials`.
+console.log(path.join(__dirname, 'views/layouts'));
+app.engine('hbs', hbs({
+  extname: '.hbs',
+  defaultLayout: 'layout',
+  partialsDir:  path.join(__dirname, 'views/partials'),
+  layoutsDir:  path.join(__dirname, 'views/layouts')
+}));
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
+
 app.use('/series', seriesRouter);
+app.use('/movies', moviesRouter);
 
 app.get('/', (req, res) => {
-  res.redirect('/series');
-  //res.sendFile(path.join(__dirname, 'public/index.html'));
-});
-
-app.get('/movies', (req, res) => {
+  // res.render('index');
   res.redirect('/series');
 });
 

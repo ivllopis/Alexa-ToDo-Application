@@ -1,0 +1,49 @@
+<!--  Body    -->
+<div class="container-fluid bg-light pt-4" id="media-content-carousel">
+    <div class="text-center" style="height: 250px;"><img class="content-sliders-loader" src="css/ajax-loader.gif" alt="loader_gif"></div>
+</div>
+
+<div class="container-fluid bg-light p-4 text-center">  
+    
+    <button type="button" class="btn btn-primary" onclick="showInfoCurrent()" data-toggle="modal" data-target="#exampleModal">
+    Info
+    </button>
+    <br/>
+
+    <button type="button" class="btn btn-secondary mt-2" onclick="recommendMeSomething()" data-toggle="modal" data-target="#exampleModal">
+    Recommend me
+    </button>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="info-title" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="info-title">Item information</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="media">
+            <img id="info-picture" src="" class="w-25 mr-3" alt="img_x">
+            <div class="media-body">
+                <h5 class="mt-0" id="info-name"></h5>
+                <p id="info-description"></p><br/>
+                <p id="info-additional"></p>
+            </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<!--  Footer  -->
+{{> footer}}
+
+<!--     Optional block      -->
+{{> footer_carousel_series}}
+

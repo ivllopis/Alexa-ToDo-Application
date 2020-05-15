@@ -8,6 +8,7 @@ require('dotenv').config();
 
 const seriesRouter = require('./routes/series');
 const moviesRouter = require('./routes/movies');
+const videogamesRouter = require('./routes/videogames');
 
 
 //In-memory storage of logged-in users
@@ -33,6 +34,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use('/series', seriesRouter);
 app.use('/movies', moviesRouter);
+app.use('/videogames', videogamesRouter);
 
 app.get('/', (req, res) => {
   // res.render('index');

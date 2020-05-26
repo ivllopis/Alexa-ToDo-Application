@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="css/slick.css"/>
-    <link rel="stylesheet" type="text/css" href="css/slick-theme.css"/>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/slick-theme.css"/>
+    <link rel="stylesheet" href="/css/style.css">
     <title>My webapplication</title>
 </head>
 
@@ -35,12 +35,18 @@
                 <a href="/videogames" class="btn btn-light" role="button">Videogames</a>
               </li>
               <li class="nav-item">
-                <button type="button" class="btn btn-light">Books</button>
+                <a href="/books" class="btn btn-light" role="button">Books</a>
               </li>
               <!-- If User is logged in or not-->
-              <li class="nav-item">
-                <button type="button" class="btn btn-light">Sign in</button>
-              </li>
+              {{#if user}}
+                <li class="nav-item" data-turbolinks="false">
+                  <a href="/auth/signout" class="btn btn-light" role="button">Sign out</a>
+                </li>
+              {{else}}
+                <li class="nav-item">
+                  <a href="/auth/signin" class="btn btn-light" role="button">Sign in</a>
+                </li>
+              {{/if}}
             </ul>
             <form class="form-inline my-2 my-lg-0">
               <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
@@ -50,7 +56,18 @@
     </nav>
 
     <!--  Body    -->
-    {{{body}}}
+    <main role="main">
+      {{#each error}}
+        <div class="alert alert-danger" role="alert">
+          <p class="mb-3">{{ this.message }}</p>
+          {{#if this.debug }}
+            <pre class="alert-pre border bg-light p-2"><code>{{ this.debug }}</code></pre>
+          {{/if}}
+        </div>
+      {{/each}}
+
+      {{{body}}}
+    </main>
 
 </body>
 

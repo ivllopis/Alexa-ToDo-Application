@@ -54,7 +54,7 @@ router.get('/:id', (req, res) => {
         const indexSerie = parseInt(req.params.id);
         if(isNaN(indexSerie)){
             res.send("This serie is not valid."); //normally we would flash around this error!
-        } else if(indexSerie > simpleDatabase.length) res.send("This series does not exist.");
+        } else if(indexSerie >= simpleDatabase.length) res.send("This series does not exist.");
         else res.json({index: indexSerie, data: simpleDatabase[indexSerie]});
     }catch(e){
         console.log(e);

@@ -1,4 +1,4 @@
-<script type="text/javascript" src="js/slick.min.js"></script>
+<script type="text/javascript" src="/js/slick.min.js"></script>
 
 <script type="text/javascript">
     function startCarousel(){
@@ -50,10 +50,15 @@
         xmlHttp.send(null);
     }
 
+    {{#if ps4}}
+        const videogames_dir = 'http://127.0.0.1:5000/videogames/ps4';
+    {{else if pc}}
+        const videogames_dir = 'http://127.0.0.1:5000/videogames/pc';
+    {{/if}}
+
     function showInfoCurrent(){
         const currentSlide = $('.center').slick('slickCurrentSlide');
-
-        httpGetAsync(`http://127.0.0.1:5000/videogames/${currentSlide}`, (res) =>{
+        httpGetAsync(`${videogames_dir}/${currentSlide}`, (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
                 if(typeof parsedResponse.data.cover !== 'undefined'){
@@ -101,7 +106,7 @@
     }
 
     function recommendMeSomething(){
-        httpGetAsync('http://127.0.0.1:5000/videogames/any', (res) =>{
+        httpGetAsync(`${videogames_dir}/any`, (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
                 if(typeof parsedResponse.data.cover !== 'undefined'){
@@ -136,8 +141,6 @@
                     }
                     additionalInfo += parsedResponse.data.genres[n_genres-1] + '</p><p>';
                 }
-                //if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += '\nActors: ' + parsedResponse.data.Actors + '</p><p>';
-
                 document.getElementById('info-additional').innerHTML=additionalInfo;
                 document.getElementById('info-title').innerHTML = 'Your recommendation';
                 $('.center').slick('slickGoTo', parsedResponse.index, true);
@@ -148,7 +151,7 @@
     }
     
     // Request Videogames from the database and showcase them in the carousel
-    httpGetAsync('http://127.0.0.1:5000/videogames/infoVideogames', (res) =>{
+    httpGetAsync(`${videogames_dir}/infoVideogames`, (res) =>{
     try{
         const parsedResponse = JSON.parse(res);
         var addedHTMLVideogames = '<div class="center">\n\t';

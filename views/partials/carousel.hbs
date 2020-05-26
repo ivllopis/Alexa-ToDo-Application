@@ -1,5 +1,9 @@
 <div class="container-fluid bg-light pt-4" id="media-content-carousel">
-    <div class="text-center" style="height: 250px;"><img class="content-sliders-loader" src="css/ajax-loader.gif" alt="loader_gif"></div>
+    <div class="text-center" style="height: 250px;">
+        <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
 </div>
 
 <div class="container-fluid bg-light p-4 text-center">  
@@ -8,13 +12,6 @@
         Info
     </button>
     <br/>
-
-    <!-- {{#if author}}
-        <button type="button" class="btn btn-primary mt-2" onclick="showInfoCurrent()" data-toggle="modal" data-target="#exampleModal">
-            {{firstname}} : argument
-        </button>
-        <br/>
-    {{/if}} -->
 
     <button type="button" class="btn btn-secondary mt-2" onclick="recommendMeSomething()" data-toggle="modal" data-target="#exampleModal">
         Recommend me

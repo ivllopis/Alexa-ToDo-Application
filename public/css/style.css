@@ -16,6 +16,19 @@
     height: 100%;
 }
 
+a .card-title{
+    color: rgb(0, 0, 0);
+}
+
+a:hover{
+    text-decoration: none;
+}
+
+.card-title:hover{
+    color: #0062cc;
+    /*color: rgb(43, 65, 227);*/
+}
+
 @media screen and (max-width: 1500px) {
     .content-sliders{
         height: 400px;

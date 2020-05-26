@@ -2,27 +2,71 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const axios = require('axios');
+const cookieParser = require('cookie-parser');
 const hbs  = require('express-handlebars');
-//const qs = require('qs');
+var session = require('express-session');
+const flash = require('connect-flash');
+
 require('dotenv').config();
 
+// Routes
 const seriesRouter = require('./routes/series');
 const moviesRouter = require('./routes/movies');
 const videogamesRouter = require('./routes/videogames');
+const booksRouter = require('./routes/books');
 
-
+// Configure passport
 //In-memory storage of logged-in users
 // For demo purposes only, production apps should store this in a reliable storage
 
-//var users = {};
+var users = {};
+
 
 const app = express();
 
-app.use(express.static('public')); //serves automatically index.html
+app.use(express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+// Add headers for the 'origin blocked' CORS policy
+app.use(function (req, res, next) {
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5000');
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  // Pass to next layer of middleware
+  next();
+});
+
+// <SessionSnippet>
+// Session middleware
+// NOTE: Uses default in-memory session store, which is not
+// suitable for production
+app.use(session({
+  secret: 'your_secret_value_here', // Esto hay que MIRARLO!!!
+  resave: false,
+  saveUninitialized: false,
+  unset: 'destroy'
+}));
+
+// Flash middleware
+//app.use(flash());
+
 
 // View engine setup
 // Use `.hbs` for extensions and find partials in `views/partials`.
-console.log(path.join(__dirname, 'views/layouts'));
+//console.log(path.join(__dirname, 'views/layouts'));
 app.engine('hbs', hbs({
   extname: '.hbs',
   defaultLayout: 'layout',
@@ -35,9 +79,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.use('/series', seriesRouter);
 app.use('/movies', moviesRouter);
 app.use('/videogames', videogamesRouter);
+app.use('/books', booksRouter);
 
 app.get('/', (req, res) => {
-  // res.render('index');
   res.redirect('/series');
 });
 

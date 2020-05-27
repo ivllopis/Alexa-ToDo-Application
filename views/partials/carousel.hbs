@@ -7,13 +7,39 @@
 </div>
 
 <div class="container-fluid bg-light p-4 text-center">  
-    
-    <button type="button" class="btn btn-primary" onclick="showInfoCurrent()" data-toggle="modal" data-target="#exampleModal">
-        Info
-    </button>
+    <div class="row">    
+        {{#if ps4}}
+            <div class="col-1"></div>
+            <div class="col-2">
+                <a href="/videogames/ps4_completed" class="btn btn-warning" role="button">Not completed</a>
+            </div>
+        {{else if pc}}
+            <div class="col-1"></div>
+            <div class="col-2">
+                <a href="/videogames/pc_completed" class="btn btn-warning" role="button">Not completed</a>
+            </div>
+        {{else if pc_completed}}
+            <div class="col-1"></div>
+            <div class="col-2">
+                <a href="/videogames/pc" class="btn btn-success" role="button">Completed</a>
+            </div>
+        {{else if ps4_completed}}
+            <div class="col-1"></div>
+            <div class="col-2">
+                <a href="/videogames/ps4" class="btn btn-success" role="button">Completed</a>
+            </div>
+        {{else}}
+            <div class="col-3"></div>
+        {{/if}}
+        <div class="col-6">
+            <button type="button" class="btn btn-primary" onclick="showInfoCurrent()" data-toggle="modal" data-target="#exampleModal">
+                Info
+            </button>
+        </div>
+    </div>
     <br/>
 
-    <button type="button" class="btn btn-secondary mt-2" onclick="recommendMeSomething()" data-toggle="modal" data-target="#exampleModal">
+    <button type="button" class="btn btn-secondary mt-1" onclick="recommendMeSomething()" data-toggle="modal" data-target="#exampleModal">
         Recommend me
     </button>
 

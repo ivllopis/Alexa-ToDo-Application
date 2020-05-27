@@ -1,28 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
+const TodoistApi = require('./todoistapi');
 
 var videogames_names = {pc: [], pc_completed: [], ps4: [], ps4_completed: []};
 var simpleDatabase = {pc: [], pc_completed: [], ps4: [], ps4_completed: []};
 
-async function getDataTodoist() {
-    try {
-            return axios.get('https://api.todoist.com/sync/v8/sync', {
-              params: {
-                  token: process.env.TODOIST_API_KEY,
-                  sync_token: '*',
-                  resource_types: '["items"]'
-              }
-            });
-    } catch (error) {
-            console.error(error);
-    }
-}
-
 async function synchronizeData() {
     try{
-        console.log("Juegos de PC en Todoist:");
-        let datafromTodoist = await getDataTodoist();
+        let datafromTodoist = await TodoistApi();
         
         for(let item of datafromTodoist.data.items) {
             if(item.project_id === 2236528198){
@@ -55,7 +41,7 @@ async function getVideogames() {
                         dataVideogameRaw = await getVideogame(videogame, 'permissive');
                         if(!dataVideogameRaw.data.length){
                             console.warn(videogame + " could not be found in the database.");
-                            break;                        
+                            continue;                        
                         }
                     }
                 }
@@ -84,16 +70,20 @@ async function getVideogames() {
                 dataVideogame.cover = coverVideogameUrl;
                 
                 // Get the genre to the videogame
-                let genres_videogame = [];
-                for(let idgenre of dataVideogame.genres){
-                    var translatedGenre = await getGenre(idgenre);
-                    genres_videogame.push(translatedGenre.data[0].name);
+                if(typeof dataVideogame.genres !== 'undefined'){
+                    let genres_videogame = [];
+                    for(let idgenre of dataVideogame.genres){
+                        var translatedGenre = await getGenre(idgenre);
+                        genres_videogame.push(translatedGenre.data[0].name);
+                    }
+                    dataVideogame.genres = genres_videogame;
+                } else {
+                    dataVideogame.genres = ['Unknown genre'];
                 }
-                dataVideogame.genres = genres_videogame;
 
                 // Put the videogame in the temporal database
                 simpleDatabase[platform].push(dataVideogame);
-                console.log(videogame + " completed.");
+                //console.log(videogame + " completed.");
 
             } catch (error) {
                 console.log(videogame + " could not be completed.");
@@ -101,6 +91,7 @@ async function getVideogames() {
             }
         }
     }
+    console.log("Completed loading videogames.");
 }
 
 async function getVideogame(nameVideogame, mode) {
@@ -154,20 +145,6 @@ async function getGenre(idGenre) {
     }
 }
 
-async function getDeveloper(idCompany) {
-    try {
-            return axios.post('https://api-v3.igdb.com/companies',
-            `fields name; where id = ${idCompany};`, //body of filter parameters to include in the POST request
-                {
-                headers: {
-                    'user-key': process.env.IGDB_API_KEY
-                }
-                });
-    } catch (error) {
-            console.error(error);
-    }
-}
-
 // Make sure the database is up to date (In the future this will be triggered by the user!)
 synchronizeData();
 
@@ -183,6 +160,14 @@ router.get('/ps4', (req, res) => {
 
 router.get('/pc', (req, res) => {
     res.render('videogames', {pc: true});
+});
+
+router.get('/ps4_completed', (req, res) => {
+    res.render('videogames', {ps4_completed: true});
+});
+
+router.get('/pc_completed', (req, res) => {
+    res.render('videogames', {pc_completed: true});
 });
 
 router.get('/pc/any', (req, res) => {
@@ -222,6 +207,48 @@ router.get('/ps4/:id', (req, res) => {
             res.send("This videogame is not valid."); //normally we would flash around this error!
         } else if(indexVideogame > simpleDatabase.ps4.length) res.send("This videogame does not exist.");
         else res.json({index: indexVideogame, data: simpleDatabase.ps4[indexVideogame]});
+    }catch(e){
+        console.log(e);
+    }
+});
+
+router.get('/ps4_completed/any', (req, res) => {
+    const recommended_random_videogame = Math.round(Math.random() * simpleDatabase.ps4_completed.length);
+    res.json({index: recommended_random_videogame, data: simpleDatabase.ps4_completed[recommended_random_videogame]});
+});
+
+router.get('/ps4_completed/infoVideogames', async (req, res) => {
+    res.json(simpleDatabase.ps4_completed); //add some security
+});
+
+router.get('/ps4_completed/:id', (req, res) => {
+    try{
+        const indexVideogame = parseInt(req.params.id);
+        if(isNaN(indexVideogame)){
+            res.send("This videogame is not valid."); //normally we would flash around this error!
+        } else if(indexVideogame > simpleDatabase.ps4_completed.length) res.send("This videogame does not exist.");
+        else res.json({index: indexVideogame, data: simpleDatabase.ps4_completed[indexVideogame]});
+    }catch(e){
+        console.log(e);
+    }
+});
+
+router.get('/pc_completed/any', (req, res) => {
+    const recommended_random_videogame = Math.round(Math.random() * simpleDatabase.pc_completed.length);
+    res.json({index: recommended_random_videogame, data: simpleDatabase.pc_completed[recommended_random_videogame]});
+});
+
+router.get('/pc_completed/infoVideogames', async (req, res) => {
+    res.json(simpleDatabase.pc_completed); //add some security
+});
+
+router.get('/pc_completed/:id', (req, res) => {
+    try{
+        const indexVideogame = parseInt(req.params.id);
+        if(isNaN(indexVideogame)){
+            res.send("This videogame is not valid."); //normally we would flash around this error!
+        } else if(indexVideogame > simpleDatabase.pc_completed.length) res.send("This videogame does not exist.");
+        else res.json({index: indexVideogame, data: simpleDatabase.pc_completed[indexVideogame]});
     }catch(e){
         console.log(e);
     }

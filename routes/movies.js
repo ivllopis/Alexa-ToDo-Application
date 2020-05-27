@@ -2,22 +2,53 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const axios = require('axios');
+const TodoistApi = require('./todoistapi');
 
-const movies_names = ['Ghostbusters', 'Gone with the wind', 'John Wick', 'Taxi Driver', "Howl's Moving Castle", 'Lady Bird', 'Ex Machina', "How to train your dragon"];
+const movies_names = [];
 var simpleDatabase = [];
+
+async function synchronizeData() {
+    try{
+        let datafromTodoist = await TodoistApi();
+        
+        for(let item of datafromTodoist.data.items) {
+            if(item.project_id === 2236986256){
+                movies_names.push(item.content);
+            }
+        }
+        // Start archiving in the database (temporal)
+        getMovies();
+    } catch (error){
+        console.log(error);
+    }
+}
 
 async function getMovies() {
     for(let movie of movies_names) {
         try {
-            const dataMovie = await getMovie(movie);
-            simpleDatabase.push(dataMovie.data);
-            //console.log(movie);
-            //console.log(dataMovie.data);
+            const dataMovieRaw = await getMovie(movie);
+            var dataMovie = dataMovieRaw.data;
+
+            if((!dataMovie.hasOwnProperty("Poster")) || (dataMovie.Response === 'False')){
+                console.warn(movie + " could not be found in the database.");
+                continue;
+            }
+            if((typeof dataMovie.Poster === 'undefined') || (dataMovie.Poster === 'N/A')){
+                console.warn(movie + " could not be found in the database.");
+                continue;
+            }
+            if((typeof dataMovie.Title === 'undefined') || (dataMovie.Title === 'N/A')){
+                dataMovie.Title = movie;
+            }
+            if((typeof dataMovie.Plot === 'undefined') || (dataMovie.Plot === 'N/A')){
+                dataMovie.Plot = "The plot could not be found for this movie.";
+            }
+            simpleDatabase.push(dataMovie);
         } catch (error) {
             console.error(error);
         }
     }
-    //return simpleDatabase;
+    console.log("Completed loading movies.");
 }
 
 async function getMovie(nameMovie) {
@@ -34,7 +65,7 @@ async function getMovie(nameMovie) {
 }
 
 // Make sure the database is up to date (In the future this will be triggered by the user!)
-getMovies();
+synchronizeData();
 
 router.get('/', (req, res) => {
     res.render('movies');

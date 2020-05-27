@@ -54,6 +54,10 @@
         const videogames_dir = 'http://127.0.0.1:5000/videogames/ps4';
     {{else if pc}}
         const videogames_dir = 'http://127.0.0.1:5000/videogames/pc';
+    {{else if ps4_completed}}
+        const videogames_dir = 'http://127.0.0.1:5000/videogames/ps4_completed';
+    {{else if pc_completed}}
+        const videogames_dir = 'http://127.0.0.1:5000/videogames/pc_completed';
     {{/if}}
 
     function showInfoCurrent(){

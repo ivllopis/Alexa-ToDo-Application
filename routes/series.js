@@ -2,22 +2,54 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const axios = require('axios');
+const TodoistApi = require('./todoistapi');
 
-const series_names = ['Brooklyn Nine-Nine', 'Game of Thrones', 'Lost', 'Big Mouth', 'Rick and Morty', 'Naruto Shippuden', 'Dragon Ball Z', 'Vikings', 'After Life', 'Lucifer', 'The Witcher'];
+const series_names = [];
 var simpleDatabase = [];
+
+async function synchronizeData() {
+    try{
+        //console.log("Series en Todoist:");
+        let datafromTodoist = await TodoistApi();
+
+        for(let item of datafromTodoist.data.items) {
+            if(item.project_id === 2236986238){
+                series_names.push(item.content);
+            }
+        }
+        // Start archiving in the database (temporal)
+        getSeries();
+    } catch (error){
+        console.log(error);
+    }
+}
 
 async function getSeries() {
     for(let serie of series_names) {
         try {
-            const dataSerie = await getSerie(serie);
-            simpleDatabase.push(dataSerie.data);
-            //console.log(serie);
-            //console.log(dataSerie.data);
+            const dataSerieRaw = await getSerie(serie);
+            var dataSerie = dataSerieRaw.data;
+
+            if((!dataSerie.hasOwnProperty("Poster")) || (dataSerie.Response === 'False')){
+                console.warn(serie + " could not be found in the database.");
+                continue;
+            }
+            if((typeof dataSerie.Poster === 'undefined') || (dataSerie.Poster === 'N/A')){
+                console.warn(serie + " could not be found in the database.");
+                continue;
+            }
+            if((typeof dataSerie.Title === 'undefined') || (dataSerie.Title === 'N/A')){
+                dataSerie.Title = serie;
+            }
+            if((typeof dataSerie.Plot === 'undefined') || (dataSerie.Plot === 'N/A')){
+                dataSerie.Plot = "The plot could not be found for this serie.";
+            }
+            simpleDatabase.push(dataSerie);
         } catch (error) {
             console.error(error);
         }
     }
-    //return simpleDatabase;
+    console.log("Completed loading series.");
 }
 
 async function getSerie(nameSerie) {
@@ -34,7 +66,7 @@ async function getSerie(nameSerie) {
 }
 
 // Make sure the database is up to date (In the future this will be triggered by the user!)
-getSeries();
+synchronizeData();
 
 router.get('/', (req, res) => {
     res.render('series');

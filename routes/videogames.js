@@ -3,6 +3,8 @@ const router = express.Router();
 const axios = require('axios');
 const TodoistApi = require('./todoistapi');
 
+const authRouter = require('./auth');
+
 var videogames_names = {pc: [], pc_completed: [], ps4: [], ps4_completed: []};
 var simpleDatabase = {pc: [], pc_completed: [], ps4: [], ps4_completed: []};
 
@@ -148,38 +150,36 @@ async function getGenre(idGenre) {
 // Make sure the database is up to date (In the future this will be triggered by the user!)
 synchronizeData();
 
-router.get('/', (req, res) => {
-    //res.render('videogames');
-    res.render('videogames_landing');
-    //res.send("This is my videogame page.");
+router.get('/', authRouter.requireAuth, (req, res) => {
+    res.render('videogames_landing', {success_msg: req.flash('success_msg'), error_msg: req.flash('error_msg')});
 });
 
-router.get('/ps4', (req, res) => {
+router.get('/ps4', authRouter.requireAuth, (req, res) => {
     res.render('videogames', {ps4: true});
 });
 
-router.get('/pc', (req, res) => {
+router.get('/pc', authRouter.requireAuth, (req, res) => {
     res.render('videogames', {pc: true});
 });
 
-router.get('/ps4_completed', (req, res) => {
+router.get('/ps4_completed', authRouter.requireAuth, (req, res) => {
     res.render('videogames', {ps4_completed: true});
 });
 
-router.get('/pc_completed', (req, res) => {
+router.get('/pc_completed', authRouter.requireAuth, (req, res) => {
     res.render('videogames', {pc_completed: true});
 });
 
-router.get('/pc/any', (req, res) => {
+router.get('/pc/any', authRouter.requireAuth, (req, res) => {
     const recommended_random_videogame = Math.round(Math.random() * simpleDatabase.pc.length);
     res.json({index: recommended_random_videogame, data: simpleDatabase.pc[recommended_random_videogame]});
 });
 
-router.get('/pc/infoVideogames', async (req, res) => {
+router.get('/pc/infoVideogames', authRouter.requireAuth, async (req, res) => {
     res.json(simpleDatabase.pc); //add some security
 });
 
-router.get('/pc/:id', (req, res) => {
+router.get('/pc/:id', authRouter.requireAuth, (req, res) => {
     try{
         const indexVideogame = parseInt(req.params.id);
         if(isNaN(indexVideogame)){
@@ -191,16 +191,16 @@ router.get('/pc/:id', (req, res) => {
     }
 });
 
-router.get('/ps4/any', (req, res) => {
+router.get('/ps4/any', authRouter.requireAuth, (req, res) => {
     const recommended_random_videogame = Math.round(Math.random() * simpleDatabase.ps4.length);
     res.json({index: recommended_random_videogame, data: simpleDatabase.ps4[recommended_random_videogame]});
 });
 
-router.get('/ps4/infoVideogames', async (req, res) => {
+router.get('/ps4/infoVideogames', authRouter.requireAuth, async (req, res) => {
     res.json(simpleDatabase.ps4); //add some security
 });
 
-router.get('/ps4/:id', (req, res) => {
+router.get('/ps4/:id', authRouter.requireAuth, (req, res) => {
     try{
         const indexVideogame = parseInt(req.params.id);
         if(isNaN(indexVideogame)){
@@ -212,16 +212,16 @@ router.get('/ps4/:id', (req, res) => {
     }
 });
 
-router.get('/ps4_completed/any', (req, res) => {
+router.get('/ps4_completed/any', authRouter.requireAuth, (req, res) => {
     const recommended_random_videogame = Math.round(Math.random() * simpleDatabase.ps4_completed.length);
     res.json({index: recommended_random_videogame, data: simpleDatabase.ps4_completed[recommended_random_videogame]});
 });
 
-router.get('/ps4_completed/infoVideogames', async (req, res) => {
+router.get('/ps4_completed/infoVideogames', authRouter.requireAuth, async (req, res) => {
     res.json(simpleDatabase.ps4_completed); //add some security
 });
 
-router.get('/ps4_completed/:id', (req, res) => {
+router.get('/ps4_completed/:id', authRouter.requireAuth, (req, res) => {
     try{
         const indexVideogame = parseInt(req.params.id);
         if(isNaN(indexVideogame)){
@@ -233,16 +233,16 @@ router.get('/ps4_completed/:id', (req, res) => {
     }
 });
 
-router.get('/pc_completed/any', (req, res) => {
+router.get('/pc_completed/any', authRouter.requireAuth, (req, res) => {
     const recommended_random_videogame = Math.round(Math.random() * simpleDatabase.pc_completed.length);
     res.json({index: recommended_random_videogame, data: simpleDatabase.pc_completed[recommended_random_videogame]});
 });
 
-router.get('/pc_completed/infoVideogames', async (req, res) => {
+router.get('/pc_completed/infoVideogames', authRouter.requireAuth, async (req, res) => {
     res.json(simpleDatabase.pc_completed); //add some security
 });
 
-router.get('/pc_completed/:id', (req, res) => {
+router.get('/pc_completed/:id', authRouter.requireAuth, (req, res) => {
     try{
         const indexVideogame = parseInt(req.params.id);
         if(isNaN(indexVideogame)){

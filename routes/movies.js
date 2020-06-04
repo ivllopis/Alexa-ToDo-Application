@@ -4,6 +4,8 @@ const path = require('path');
 const axios = require('axios');
 const TodoistApi = require('./todoistapi');
 
+const authRouter = require('./auth');
+
 const movies_names = [];
 var simpleDatabase = [];
 
@@ -26,7 +28,14 @@ async function synchronizeData() {
 async function getMovies() {
     for(let movie of movies_names) {
         try {
-            const dataMovieRaw = await getMovie(movie);
+            const year = movie.match(/\((.*)\)/);
+            let dataMovieRaw;
+            if(year !== null){
+                movie = movie.replace(` ${year[0]}`, "");
+                dataMovieRaw = await getMovie(movie, year[1]);
+            } else {
+                dataMovieRaw = await getMovie(movie);
+            }
             var dataMovie = dataMovieRaw.data;
 
             if((!dataMovie.hasOwnProperty("Poster")) || (dataMovie.Response === 'False')){
@@ -51,14 +60,24 @@ async function getMovies() {
     console.log("Completed loading movies.");
 }
 
-async function getMovie(nameMovie) {
+async function getMovie(nameMovie, year) {
     try {
-            return axios.get('http://www.omdbapi.com/', {
-              params: {
-                  apikey: process.env.OMDb_API_KEY,
-                  t: nameMovie
-              }
-            });
+            if(typeof year === 'undefined'){
+                return axios.get('http://www.omdbapi.com/', {
+                    params: {
+                        apikey: process.env.OMDb_API_KEY,
+                        t: nameMovie
+                    }
+                });
+            } else {
+                return axios.get('http://www.omdbapi.com/', {
+                    params: {
+                        apikey: process.env.OMDb_API_KEY,
+                        t: nameMovie,
+                        y: year
+                    }
+                });
+            }
     } catch (error) {
             console.error(error);
     }
@@ -67,20 +86,20 @@ async function getMovie(nameMovie) {
 // Make sure the database is up to date (In the future this will be triggered by the user!)
 synchronizeData();
 
-router.get('/', (req, res) => {
-    res.render('movies');
+router.get('/', authRouter.requireAuth, (req, res) => {
+    res.render('movies', {success_msg: req.flash('success_msg'), error_msg: req.flash('error_msg')});
 });
 
-router.get('/any', (req, res) => {
+router.get('/any', authRouter.requireAuth, (req, res) => {
     const recommended_random_movie = Math.round(Math.random() * simpleDatabase.length);
     res.json({index: recommended_random_movie, data: simpleDatabase[recommended_random_movie]});
 });
 
-router.get('/infoMovies', async (req, res) => {
+router.get('/infoMovies', authRouter.requireAuth, async (req, res) => {
     res.json(simpleDatabase);
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', authRouter.requireAuth, (req, res) => {
     try{
         const indexMovie = parseInt(req.params.id);
         if(isNaN(indexMovie)){

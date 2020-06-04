@@ -53,7 +53,7 @@
     function showInfoCurrent(){
         const currentSlide = $('.center').slick('slickCurrentSlide');
 
-        httpGetAsync(`http://127.0.0.1:5000/series/${currentSlide}`, (res) =>{
+        httpGetAsync(`https://localhost:5000/series/${currentSlide}`, (res) =>{
             try{
             const parsedResponse = JSON.parse(res);
             if(typeof parsedResponse.data.Poster !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Poster;
@@ -75,7 +75,7 @@
     }
 
     function recommendMeSomething(){
-        httpGetAsync('http://127.0.0.1:5000/series/any', (res) =>{
+        httpGetAsync('https://localhost:5000/series/any', (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
                 if(typeof parsedResponse.data.Poster !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Poster;
@@ -98,7 +98,7 @@
     }
     
     // Request series from the database and showcase them in the carousel
-    httpGetAsync('http://127.0.0.1:5000/series/infoSeries', (res) =>{
+    httpGetAsync('https://localhost:5000/series/infoSeries', (res) =>{
     try{
         const parsedResponse = JSON.parse(res);
         var addedHTMLSeries = '<div class="center">\n\t';

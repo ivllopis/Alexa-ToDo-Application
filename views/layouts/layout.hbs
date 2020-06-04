@@ -25,47 +25,57 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
-              <li class="nav-item active">
-                <a href="/series" class="btn btn-light" role="button">Series</a>
-              </li>
-              <li class="nav-item">
-                <a href="/movies" class="btn btn-light" role="button">Movies</a>
-              </li>
-              <li class="nav-item">
-                <a href="/videogames" class="btn btn-light" role="button">Videogames</a>
-              </li>
-              <li class="nav-item">
-                <a href="/books" class="btn btn-light" role="button">Books</a>
-              </li>
-              <!-- If User is logged in or not-->
+              <!-- Check if User is logged in or not-->
               {{#if user}}
+                <li class="nav-item active">
+                  <a href="/series" class="btn btn-light" role="button">Series</a>
+                </li>
+                <li class="nav-item">
+                  <a href="/movies" class="btn btn-light" role="button">Movies</a>
+                </li>
+                <li class="nav-item">
+                  <a href="/videogames" class="btn btn-light" role="button">Videogames</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#" class="btn btn-light" role="button">Books</a>
+                </li>
+                <form class="form-inline my-2 my-lg-0">
+                  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
                 <li class="nav-item" data-turbolinks="false">
-                  <a href="/auth/signout" class="btn btn-light" role="button">Sign out</a>
+                  <a href="/auth/logout" class="btn btn-light" role="button">Log out</a>
                 </li>
               {{else}}
                 <li class="nav-item">
-                  <a href="/auth/signin" class="btn btn-light" role="button">Sign in</a>
+                  <a href="/auth/login" class="btn btn-light" role="button">Log in</a>
                 </li>
               {{/if}}
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-              <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
         </div>
     </nav>
 
     <!--  Body    -->
     <main role="main">
-      {{#each error}}
-        <div class="alert alert-danger" role="alert">
-          <p class="mb-3">{{ this.message }}</p>
-          {{#if this.debug }}
-            <pre class="alert-pre border bg-light p-2"><code>{{ this.debug }}</code></pre>
-          {{/if}}
+      
+      {{#if success_msg}}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ success_msg }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-      {{/each}}
+      {{/if}}
 
+      {{#if error_msg}}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ error_msg }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      {{/if}}
+      
       {{{body}}}
     </main>
 

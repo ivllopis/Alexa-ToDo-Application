@@ -53,7 +53,7 @@
     function showInfoCurrent(){
         const currentSlide = $('.center').slick('slickCurrentSlide');
 
-        httpGetAsync(`http://127.0.0.1:5000/movies/${currentSlide}`, (res) =>{
+        httpGetAsync(`https://localhost:5000/movies/${currentSlide}`, (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
                 if(typeof parsedResponse.data.Poster !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Poster;
@@ -75,7 +75,7 @@
     }
 
     function recommendMeSomething(){
-        httpGetAsync('http://127.0.0.1:5000/movies/any', (res) =>{
+        httpGetAsync('https://localhost:5000/movies/any', (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
                 if(typeof parsedResponse.data.Poster !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Poster;
@@ -97,7 +97,7 @@
     }
     
     // Request Movies from the database and showcase them in the carousel
-    httpGetAsync('http://127.0.0.1:5000/movies/infoMovies', (res) =>{
+    httpGetAsync('https://localhost:5000/movies/infoMovies', (res) =>{
     try{
         const parsedResponse = JSON.parse(res);
         var addedHTMLMovies = '<div class="center">\n\t';

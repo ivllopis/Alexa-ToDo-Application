@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const path = require('path');
 const axios = require('axios');
 const TodoistApi = require('./todoistapi');
+
+const authRouter = require('./auth');
 
 const series_names = [];
 var simpleDatabase = [];
@@ -27,7 +28,15 @@ async function synchronizeData() {
 async function getSeries() {
     for(let serie of series_names) {
         try {
-            const dataSerieRaw = await getSerie(serie);
+            const year = serie.match(/\((.*)\)/);
+            let dataSerieRaw;
+            if(year !== null){
+                serie = serie.replace(` ${year[0]}`, "");
+                dataSerieRaw = await getSerie(serie, year[1]);
+            } else {
+                dataSerieRaw = await getSerie(serie);
+            }
+
             var dataSerie = dataSerieRaw.data;
 
             if((!dataSerie.hasOwnProperty("Poster")) || (dataSerie.Response === 'False')){
@@ -52,14 +61,24 @@ async function getSeries() {
     console.log("Completed loading series.");
 }
 
-async function getSerie(nameSerie) {
+async function getSerie(nameSerie, year) {
     try {
-            return axios.get('http://www.omdbapi.com/', {
-              params: {
-                  apikey: process.env.OMDb_API_KEY,
-                  t: nameSerie
-              }
-            });
+            if(typeof year === 'undefined'){
+                return axios.get('http://www.omdbapi.com/', {
+                    params: {
+                        apikey: process.env.OMDb_API_KEY,
+                        t: nameSerie
+                    }
+                });
+            } else {
+                return axios.get('http://www.omdbapi.com/', {
+                    params: {
+                        apikey: process.env.OMDb_API_KEY,
+                        t: nameSerie,
+                        y: year
+                    }
+                });
+            }
     } catch (error) {
             console.error(error);
     }
@@ -68,20 +87,20 @@ async function getSerie(nameSerie) {
 // Make sure the database is up to date (In the future this will be triggered by the user!)
 synchronizeData();
 
-router.get('/', (req, res) => {
-    res.render('series');
+router.get('/', authRouter.requireAuth, (req, res) => {
+    res.render('series', {success_msg: req.flash('success_msg'), error_msg: req.flash('error_msg')});
 });
 
-router.get('/any', (req, res) => {
+router.get('/any', authRouter.requireAuth, (req, res) => {
     const recommended_random_serie = Math.round(Math.random() * simpleDatabase.length);
     res.json({index: recommended_random_serie, data: simpleDatabase[recommended_random_serie]});
 });
 
-router.get('/infoSeries', async (req, res) => {
+router.get('/infoSeries', authRouter.requireAuth, async (req, res) => {
     res.json(simpleDatabase);
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', authRouter.requireAuth, (req, res) => {
     try{
         const indexSerie = parseInt(req.params.id);
         if(isNaN(indexSerie)){

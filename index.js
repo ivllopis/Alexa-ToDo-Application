@@ -1,7 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const path = require('path');
-const axios = require('axios');
+const fs = require('fs');
+const https = require('https');
 const cookieParser = require('cookie-parser');
 const hbs  = require('express-handlebars');
 var session = require('express-session');
@@ -14,11 +14,11 @@ const seriesRouter = require('./routes/series');
 const moviesRouter = require('./routes/movies');
 const videogamesRouter = require('./routes/videogames');
 const booksRouter = require('./routes/books');
+const authRouter = require('./routes/auth');
 
 // Configure passport
 //In-memory storage of logged-in users
 // For demo purposes only, production apps should store this in a reliable storage
-
 var users = {};
 
 
@@ -54,25 +54,35 @@ app.use(function (req, res, next) {
 // NOTE: Uses default in-memory session store, which is not
 // suitable for production
 app.use(session({
-  secret: 'your_secret_value_here', // Esto hay que MIRARLO!!!
+  secret: process.env.SESSION_SECRET, // Esto hay que MIRARLO!!!
   resave: false,
   saveUninitialized: false,
   unset: 'destroy'
 }));
 
 // Flash middleware
-//app.use(flash());
+app.use(flash());
+
+// Set up local vars for template layout
+app.use((req, res, next) => {
+  // Set the authenticated user in the
+  // template locals
+  if (req.session.user) {
+    res.locals.user = req.session.user;
+  }
+  next();
+});
 
 
 // View engine setup
 // Use `.hbs` for extensions and find partials in `views/partials`.
-//console.log(path.join(__dirname, 'views/layouts'));
 app.engine('hbs', hbs({
   extname: '.hbs',
   defaultLayout: 'layout',
   partialsDir:  path.join(__dirname, 'views/partials'),
   layoutsDir:  path.join(__dirname, 'views/layouts')
 }));
+
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -80,12 +90,18 @@ app.use('/series', seriesRouter);
 app.use('/movies', moviesRouter);
 app.use('/videogames', videogamesRouter);
 app.use('/books', booksRouter);
+app.use('/auth', authRouter);
 
 app.get('/', (req, res) => {
   res.redirect('/series');
 });
 
 const port = process.env.PORT || 5000;
-app.listen(port, () => {
+
+https.createServer({
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.cert')
+}, app)
+.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
 });

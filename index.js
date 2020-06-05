@@ -21,7 +21,6 @@ const authRouter = require('./routes/auth');
 // For demo purposes only, production apps should store this in a reliable storage
 var users = {};
 
-
 const app = express();
 
 app.use(express.static('public'));
@@ -54,7 +53,7 @@ app.use(function (req, res, next) {
 // NOTE: Uses default in-memory session store, which is not
 // suitable for production
 app.use(session({
-  secret: process.env.SESSION_SECRET, // Esto hay que MIRARLO!!!
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   unset: 'destroy'

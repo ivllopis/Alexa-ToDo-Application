@@ -39,13 +39,9 @@ router.post('/login', async (req, res) => {
             }
         } else {
             res.render('login', {error_msg: 'This username does not appear in our database.'});
-            //req.flash('error_msg', 'This username does not appear in our database.');
-            //res.redirect('/auth/login');
         }
 	} else {
         res.render('login', {error_msg: 'Please, enter username and password.'});
-        //req.flash('error_msg', 'Please, enter username and password.');
-        //res.redirect('/auth/login');
 	}
 });
 

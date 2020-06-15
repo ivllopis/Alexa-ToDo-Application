@@ -1,6 +1,8 @@
 <script type="text/javascript" src="/js/slick.min.js"></script>
 
 <script type="text/javascript">
+    const home_url = 'https://recommender-279710.ey.r.appspot.com';
+
     function startCarousel(){
     $('.center').slick({
         centerMode: true,
@@ -51,13 +53,13 @@
     }
 
     {{#if ps4}}
-        const videogames_dir = 'https://localhost:5000/videogames/ps4';
+        const videogames_dir = home_url + '/videogames/ps4';
     {{else if pc}}
-        const videogames_dir = 'https://localhost:5000/videogames/pc';
+        const videogames_dir = home_url + '/videogames/pc';
     {{else if ps4_completed}}
-        const videogames_dir = 'https://localhost:5000/videogames/ps4_completed';
+        const videogames_dir = home_url + '/videogames/ps4_completed';
     {{else if pc_completed}}
-        const videogames_dir = 'https://localhost:5000/videogames/pc_completed';
+        const videogames_dir = home_url + '/videogames/pc_completed';
     {{/if}}
 
     function showInfoCurrent(){

@@ -60,7 +60,7 @@ async function getVideogames() {
 
                 // Get the first cover that has higher quality than 520px height
                 for(var i = 0; i < coverVideogame.data.length; i++){
-                    if((coverVideogame.data[i].height > 500) || (typeof coverVideogame.data[i+1] === 'undefined')){
+                    if((coverVideogame.data[i].height > 270) || (typeof coverVideogame.data[i+1] === 'undefined')){
                         coverVideogameUrl = coverVideogame.data[i].url;
                         break;
                     }
@@ -68,7 +68,7 @@ async function getVideogames() {
                 
                 // Format the url and find the cover in its original size from IGDB
                 coverVideogameUrl = "https:" + coverVideogameUrl;
-                coverVideogameUrl = coverVideogameUrl.replace("t_thumb", "t_original");
+                coverVideogameUrl = coverVideogameUrl.replace("t_thumb", "t_cover_big"); //t_original
                 dataVideogame.cover = coverVideogameUrl;
                 
                 // Get the genre to the videogame

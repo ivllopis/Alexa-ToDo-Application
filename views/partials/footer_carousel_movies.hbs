@@ -1,6 +1,8 @@
 <script type="text/javascript" src="/js/slick.min.js"></script>
 
 <script type="text/javascript">
+    const home_url = 'https://recommender-279710.ey.r.appspot.com';
+
     function startCarousel(){
     $('.center').slick({
         centerMode: true,
@@ -53,7 +55,7 @@
     function showInfoCurrent(){
         const currentSlide = $('.center').slick('slickCurrentSlide');
 
-        httpGetAsync(`https://localhost:5000/movies/${currentSlide}`, (res) =>{
+        httpGetAsync(`${home_url}/movies/${currentSlide}`, (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
                 if(typeof parsedResponse.data.Poster !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Poster;
@@ -75,7 +77,7 @@
     }
 
     function recommendMeSomething(){
-        httpGetAsync('https://localhost:5000/movies/any', (res) =>{
+        httpGetAsync(`${home_url}/movies/any`, (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
                 if(typeof parsedResponse.data.Poster !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Poster;
@@ -97,7 +99,7 @@
     }
     
     // Request Movies from the database and showcase them in the carousel
-    httpGetAsync('https://localhost:5000/movies/infoMovies', (res) =>{
+    httpGetAsync(`${home_url}/movies/infoMovies`, (res) =>{
     try{
         const parsedResponse = JSON.parse(res);
         var addedHTMLMovies = '<div class="center">\n\t';

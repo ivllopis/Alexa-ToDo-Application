@@ -95,12 +95,8 @@ app.get('/', (req, res) => {
   res.redirect('/series');
 });
 
-const port = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
-https.createServer({
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.cert')
-}, app)
-.listen(port, () => {
-  console.log(`Example app listening on port ${port}!`);
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
 });

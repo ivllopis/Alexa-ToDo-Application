@@ -1,7 +1,5 @@
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
-const https = require('https');
 const cookieParser = require('cookie-parser');
 const hbs  = require('express-handlebars');
 var session = require('express-session');
@@ -15,11 +13,11 @@ const moviesRouter = require('./routes/movies');
 const videogamesRouter = require('./routes/videogames');
 const booksRouter = require('./routes/books');
 const authRouter = require('./routes/auth');
+const updateDatabase = require('./routes/update_database');
 
 // Configure passport
 //In-memory storage of logged-in users
 // For demo purposes only, production apps should store this in a reliable storage
-var users = {};
 
 const app = express();
 
@@ -72,7 +70,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
 // View engine setup
 // Use `.hbs` for extensions and find partials in `views/partials`.
 app.engine('hbs', hbs({
@@ -90,6 +87,8 @@ app.use('/movies', moviesRouter);
 app.use('/videogames', videogamesRouter);
 app.use('/books', booksRouter);
 app.use('/auth', authRouter);
+
+//updateDatabase(); /////////
 
 app.get('/', (req, res) => {
   res.redirect('/series');

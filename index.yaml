@@ -1,0 +1,59 @@
+indexes:
+- kind: Videogame
+  properties:
+  - name: Platform
+  - name: Name
+- kind: Videogame
+  properties:
+  - name: Platform
+  - name: Completed
+  - name: Slide_number
+  - name: Cover
+- kind: Videogame
+  properties:
+  - name: Platform
+  - name: Completed
+  - name: Name
+- kind: Videogame
+  properties:
+  - name: Platform
+  - name: Completed
+  - name: Slide_number
+- kind: Videogame
+  properties:
+  - name: Platform
+  - name: Completed
+  - name: Slide_number
+    direction: desc
+- kind: Videogame
+  properties:
+  - name: Platform
+  - name: Slide_number
+- kind: Serie
+  properties:
+  - name: Completed
+  - name: Slide_number
+  - name: Cover
+- kind: Serie
+  properties:
+  - name: Completed
+  - name: Slide_number
+    direction: desc
+- kind: Serie
+  properties:
+  - name: Completed
+  - name: Name
+- kind: Movie
+  properties:
+  - name: Completed
+  - name: Name
+- kind: Movie
+  properties:
+  - name: Completed
+  - name: Slide_number
+    direction: desc
+- kind: Movie
+  properties:
+  - name: Completed
+  - name: Slide_number
+  - name: Cover

@@ -2,14 +2,15 @@
   "name": "alexa-todo",
   "version": "1.0.0",
   "description": "This package allows me to connect with my Todoist account and fetch data about my lists and hopefully connect them to Alexa.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "author": "Ivan Llopis",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/datastore": "^6.0.0",
     "axios": "^0.19.2",
     "bcrypt": "^4.0.1",
     "connect-flash": "^0.1.1",
@@ -18,12 +19,11 @@
     "express": "^4.17.1",
     "express-handlebars": "^4.0.4",
     "express-session": "^1.17.1",
-    "fs": "0.0.1-security",
-    "https": "^1.0.0",
-    "moment": "^2.25.1",
+    "moment": "^2.27.0",
+    "node-datetime": "^2.1.2",
     "simple-oauth2": "^3.4.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.3"
+    "nodemon": "^2.0.4"
   }
 }

@@ -3,55 +3,6 @@
 <script type="text/javascript">
     const home_url = 'https://recommender-279710.ey.r.appspot.com';
 
-    function startCarousel(){
-    $('.center').slick({
-        centerMode: true,
-        centerPadding: '180px',
-        slidesToShow: 3,
-        swipeToSlide: true, // custom feat.
-        responsive: [
-        {
-            breakpoint: 1500,
-            settings: {
-            arrows: false,
-            centerMode: true,
-            centerPadding: '80px',
-            slidesToShow: 3
-            }
-        },
-        {
-            breakpoint: 1080,
-            settings: {
-            arrows: true,
-            centerMode: true,
-            centerPadding: '10px',
-            slidesToShow: 3
-            }
-        },
-        {
-            breakpoint: 760,
-            settings: {
-            arrows: true,
-            centerMode: true,
-            centerPadding: '80px',
-            slidesToShow: 1
-            }
-        }
-        ]
-    });
-    }
-
-    function httpGetAsync(theUrl, callback)
-    {
-        var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() { 
-            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-                callback(xmlHttp.responseText);
-        }
-        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
-        xmlHttp.send(null);
-    }
-
     {{#if ps4}}
         const videogames_dir = home_url + '/videogames/ps4';
     {{else if pc}}
@@ -67,45 +18,43 @@
         httpGetAsync(`${videogames_dir}/${currentSlide}`, (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
-                if(typeof parsedResponse.data.cover !== 'undefined'){
-                    document.getElementById('info-picture').src=parsedResponse.data.cover;
-                } else{
+                if(typeof parsedResponse.data.Cover !== 'undefined'){
+                    document.getElementById('info-picture').src=parsedResponse.data.Cover;
+                } else {
                     document.getElementById('info-picture').src='';
-                    document.getElementById('info-picture').alt=parsedResponse.data.name;
+                    document.getElementById('info-picture').alt=parsedResponse.data.Name;
                 }
 
-                if(typeof parsedResponse.data.name !== 'undefined'){
-                    document.getElementById('info-name').innerHTML = parsedResponse.data.name;
-                }else{
+                if(typeof parsedResponse.data.Name !== 'undefined'){
+                    document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
+                } else {
                     document.getElementById('info-name').innerHTML = 'This game could not be found.';
                 }
 
-                if(typeof parsedResponse.data.storyline !== 'undefined'){
-                    document.getElementById('info-description').innerHTML = 'Storyline: ' + parsedResponse.data.storyline;
-                }else{
+                if(typeof parsedResponse.data.Storyline !== 'undefined'){
+                    document.getElementById('info-description').innerHTML = 'Storyline: ' + parsedResponse.data.Storyline;
+                } else {
                     document.getElementById('info-description').innerHTML = 'Storyline: could not be found for the game.';
-                    console.log({message: parsedResponse.data.storyline});
                 }
 
                 
                 var additionalInfo = ''; //additional information about the Videogames
-                if(typeof parsedResponse.data.summary !== 'undefined') {
-                    additionalInfo += 'Summary: ' + parsedResponse.data.summary + '</p><p>';
+                if(typeof parsedResponse.data.Summary !== 'undefined') {
+                    additionalInfo += 'Summary: ' + parsedResponse.data.Summary + '</p><p>';
                 }
-                if(typeof parsedResponse.data.genres !== 'undefined') {
+                if(typeof parsedResponse.data.Genres !== 'undefined') {
                     additionalInfo += 'Genres: ';
-                    const n_genres = parsedResponse.data.genres.length; // number of genres for this videogame
+                    const n_genres = parsedResponse.data.Genres.length; // number of genres for this videogame
                     for(var i = 0; i < n_genres-1; i++){
-                        additionalInfo += parsedResponse.data.genres[i] + ', ';
+                        additionalInfo += parsedResponse.data.Genres[i] + ', ';
                     }
-                    additionalInfo += parsedResponse.data.genres[n_genres-1] + '</p><p>';
+                    additionalInfo += parsedResponse.data.Genres[n_genres-1] + '</p><p>';
                 }
-                //if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += '\nActors: ' + parsedResponse.data.Actors + '</p><p>';
 
                 document.getElementById('info-additional').innerHTML=additionalInfo;
                 document.getElementById('info-title').innerHTML = 'Item information';
-            }catch(e){
-                console.log(e); //throw error or flash it
+            } catch(error){
+                console.log(error); //throw error or flash it
             }
             
         });
@@ -115,43 +64,43 @@
         httpGetAsync(`${videogames_dir}/any`, (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
-                if(typeof parsedResponse.data.cover !== 'undefined'){
-                    document.getElementById('info-picture').src=parsedResponse.data.cover;
-                } else{
+                if(typeof parsedResponse.data.Cover !== 'undefined'){
+                    document.getElementById('info-picture').src=parsedResponse.data.Cover;
+                } else {
                     document.getElementById('info-picture').src='';
-                    document.getElementById('info-picture').alt=parsedResponse.data.name;
+                    document.getElementById('info-picture').alt=parsedResponse.data.Name;
                 }
 
-                if(typeof parsedResponse.data.name !== 'undefined'){
-                    document.getElementById('info-name').innerHTML = parsedResponse.data.name;
-                }else{
+                if(typeof parsedResponse.data.Name !== 'undefined'){
+                    document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
+                } else {
                     document.getElementById('info-name').innerHTML = 'This game could not be found.';
                 }
 
-                if(typeof parsedResponse.data.storyline !== 'undefined'){
-                    document.getElementById('info-description').innerHTML = 'Storyline: ' + parsedResponse.data.storyline;
-                }else{
+                if(typeof parsedResponse.data.Storyline !== 'undefined'){
+                    document.getElementById('info-description').innerHTML = 'Storyline: ' + parsedResponse.data.Storyline;
+                } else {
                     document.getElementById('info-description').innerHTML = 'Storyline: could not be found for the game.';
                 }
 
                 
                 var additionalInfo = ''; //additional information about the Videogames
-                if(typeof parsedResponse.data.summary !== 'undefined') {
-                    additionalInfo += 'Summary: ' + parsedResponse.data.summary + '</p><p>';
+                if(typeof parsedResponse.data.Summary !== 'undefined') {
+                    additionalInfo += 'Summary: ' + parsedResponse.data.Summary + '</p><p>';
                 }
-                if(typeof parsedResponse.data.genres !== 'undefined') {
+                if(typeof parsedResponse.data.Genres !== 'undefined') {
                     additionalInfo += 'Genres: ';
-                    const n_genres = parsedResponse.data.genres.length; // number of genres for this videogame
+                    const n_genres = parsedResponse.data.Genres.length; // number of genres for this videogame
                     for(var i = 0; i < n_genres-1; i++){
-                        additionalInfo += parsedResponse.data.genres[i] + ', ';
+                        additionalInfo += parsedResponse.data.Genres[i] + ', ';
                     }
-                    additionalInfo += parsedResponse.data.genres[n_genres-1] + '</p><p>';
+                    additionalInfo += parsedResponse.data.Genres[n_genres-1] + '</p><p>';
                 }
                 document.getElementById('info-additional').innerHTML=additionalInfo;
                 document.getElementById('info-title').innerHTML = 'Your recommendation';
                 $('.center').slick('slickGoTo', parsedResponse.index, true);
-            }catch(e){
-                console.log(e); //throw error or flash it
+            } catch(error){
+                console.log(error); //throw error or flash it
             }
         });
     }
@@ -162,15 +111,15 @@
         const parsedResponse = JSON.parse(res);
         var addedHTMLVideogames = '<div class="center">\n\t';
         for(let videogame of parsedResponse) {
-            if(typeof videogame.cover !== 'undefined'){ //what to do if the element is not found?
-                addedHTMLVideogames += `<div class="content-sliders text-center">\n\t<img class="content-sliders-image" src="${videogame.cover}" alt="img">\n</div>`;
+            if(typeof videogame.Cover !== 'undefined'){ //what to do if the element is not found?
+                addedHTMLVideogames += `<div class="content-sliders text-center">\n\t<img class="content-sliders-image" src="${videogame.Cover}" alt="img">\n</div>`;
             }
         }
         addedHTMLVideogames += '\n</div>';
         document.getElementById('media-content-carousel').innerHTML = addedHTMLVideogames;
         startCarousel();
-    }catch(e){
-        console.log(e); //throw error or flash it
+    } catch(error){
+        console.log(error); //throw error or flash it
     }
     
     });

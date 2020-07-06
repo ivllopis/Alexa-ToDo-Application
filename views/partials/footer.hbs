@@ -13,4 +13,53 @@
             $(".alert-danger").alert('close');
         }, 2000);
     });
+
+    function startCarousel(){
+    $('.center').slick({
+        centerMode: true,
+        centerPadding: '180px',
+        slidesToShow: 3,
+        swipeToSlide: true, // custom feat.
+        responsive: [
+        {
+            breakpoint: 1500,
+            settings: {
+            arrows: false,
+            centerMode: true,
+            centerPadding: '80px',
+            slidesToShow: 3
+            }
+        },
+        {
+            breakpoint: 1080,
+            settings: {
+            arrows: true,
+            centerMode: true,
+            centerPadding: '10px',
+            slidesToShow: 3
+            }
+        },
+        {
+            breakpoint: 760,
+            settings: {
+            arrows: true,
+            centerMode: true,
+            centerPadding: '40px',
+            slidesToShow: 1
+            }
+        }
+        ]
+    });
+    }
+
+    function httpGetAsync(theUrl, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+        xmlHttp.send(null);
+    }
 </script>

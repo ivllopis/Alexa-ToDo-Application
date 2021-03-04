@@ -225,7 +225,4 @@ async function trythis(nameshow, year){
 // synchronizeData();
 //sync_token_db('T8vRyIxQU_CeLifXys36sd3Z19qTwL59r4twbf4qlsKPLYShZsPTDZ_OqOHlk0xvfDI84fV4Qddp7pknmhMByoN4vnBlOqYaLH0NeMvcgSTdUGw');
 // trythis('Groundhog day');
-entityKeyasd = datastore.key(['Not_found', 'idk']);
-console.log(entityKeyasd);
-entityKeyasd.kind = 'Video_ass'
-console.log(entityKeyasd);
+// entityKeyasd = datastore.key(['Not_found', 'idk']);

@@ -221,7 +221,7 @@ async function completedElementfromtheDatabase(entityKey, date) {
             if(date !== null){
                 formattedDate = datetime.create(date, 'Y/m/d H:M').format();
             } else {
-                reject(new Error("Completed element has not completion date."));
+                formattedDate = 'YYYY/mm/dd H:M'
             }
 
             let [entity] = await datastore.get(entityKey);
@@ -231,7 +231,8 @@ async function completedElementfromtheDatabase(entityKey, date) {
                 entityKey.kind = 'Not_found'
                 [entity] = await datastore.get(entityKey);
                 if(!entity){
-                    reject(new Error(`Error: I cannot mark ${entityKey.name} as completed, because I could not find it in the database.`));
+                    console.warn(`Warning: I cannot mark ${entityKey.name} as completed, because I could not find it in the database.`);
+                    reject(new Error(`I cannot mark ${entityKey.name} as completed, because I could not find it in the database.`));
                 }
             }
 
@@ -449,14 +450,19 @@ async function updateDatabase() {
 
                 // What to do if it has been marked as completed
                 if(item.checked){
-                    console.log("COMPLETED SERIE OR MOVIE! YAY!!");
-                    console.log(item.content);
-                    let updatedEntity = await completedElementfromtheDatabase(entityKey, item.date_completed);
-                    batchStoreEntities.push({
-                        key: updatedEntity[datastore.KEY],
-                        data: updatedEntity,
-                        excludeFromIndexes: excludefromindexes
-                    });
+                    try{
+                        let updatedEntity = await completedElementfromtheDatabase(entityKey, item.date_completed);
+                        
+                        batchStoreEntities.push({
+                            key: updatedEntity[datastore.KEY],
+                            data: updatedEntity,
+                            excludeFromIndexes: excludefromindexes
+                        });
+                        
+                    } catch (error) {
+                        console.log("Something went wrong during checking a game.");
+                        console.log(error);
+                    }
                     continue;
                 }
 
@@ -474,13 +480,13 @@ async function updateDatabase() {
                 if(item.checked){
                     try{
                         let updatedEntity = await completedElementfromtheDatabase(entityKey, item.date_completed);
+
                         batchStoreEntities.push({
                             key: updatedEntity[datastore.KEY],
                             data: updatedEntity,
                             excludeFromIndexes: excludefromindexes
                         });
                         
-
                     } catch (error) {
                         console.log("Something went wrong during checking a game.");
                         console.log(error);

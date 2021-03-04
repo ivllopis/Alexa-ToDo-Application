@@ -20,7 +20,8 @@ async function fetchDataOMDb(name, year) {
                 return axios.get('http://www.omdbapi.com/', {
                     params: {
                         apikey: process.env.OMDb_API_KEY,
-                        t: name
+                        t: name,
+                        plot: 'full'
                     }
                 });
             } else {
@@ -28,7 +29,8 @@ async function fetchDataOMDb(name, year) {
                     params: {
                         apikey: process.env.OMDb_API_KEY,
                         t: name,
-                        y: year
+                        y: year,
+                        plot: 'full'
                     }
                 });
             }

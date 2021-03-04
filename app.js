@@ -88,7 +88,7 @@ app.use('/videogames', videogamesRouter);
 app.use('/books', booksRouter);
 app.use('/auth', authRouter);
 
-//updateDatabase(); /////////
+updateDatabase(); /////////
 
 app.get('/', (req, res) => {
   res.redirect('/series');

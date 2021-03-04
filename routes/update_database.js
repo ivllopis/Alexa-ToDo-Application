@@ -228,7 +228,11 @@ async function completedElementfromtheDatabase(entityKey, date) {
 
             // Check if the entity exists in the database (it should, as we are updating information)
             if(!entity){
-                reject(new Error(`Error: I cannot mark ${entity.Name} as completed, because I could not find it.`));
+                entityKey.kind = 'Not_found'
+                [entity] = await datastore.get(entityKey);
+                if(!entity){
+                    reject(new Error(`Error: I cannot mark ${entityKey.name} as completed, because I could not find it in the database.`));
+                }
             }
 
             // Update the information and mark the entity as completed
@@ -422,7 +426,12 @@ async function updateDatabase() {
                         if(entity){
                             console.log("Found a movie to delete!");
                         } else {
-                            console.log("The deleted item was either not important for the database or was already deleted.");
+                            [entity] = await getEntityDatabaseById('Not_found', item.id);
+                            if(entity){
+                                console.log("Found an item with no identified info to delete!");
+                            } else {
+                                console.log("The deleted item was either not important for the database or was already deleted.");
+                            }
                         }
                     }
                 }

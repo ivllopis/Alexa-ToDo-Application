@@ -6,6 +6,11 @@ const datetime = require('node-datetime');
 const apiCalls = require('./routes/apiCalls');
 const queries = require('./routes/queries');
 
+const seriesfolderid = 2236986238;
+const moviesfolderid = 2236986256;
+const PS4folderid = 2236528201;
+const PCfolderid = 2236528198;
+
 require('dotenv').config();
 
 async function getInfoEntity(slide_n, kind, completed, filterPlatformproperty) {
@@ -58,21 +63,34 @@ async function getCovers(kind, completed, filterPlatformproperty) {
 
 async function synchronizeData() {
     try{
-        let datafromTodoist = await apiCalls.getDataTodoist('Et5y4WepCai34kSQnZQuWPSx3iaU_vtCxou--7MurxDBJcILwBglBQAxhdlu9cjLF9nTZsakQ92pxxZjnRpZbqYeTah080kjfU8MS_fvz8R8ttg');
+        let datafromTodoist = await apiCalls.getDataTodoist('J9sPKQ9CiZ8nJZN1kAwfpX572eFbs30Hq52SYWVGmWJHsbmE1eKhDcBd6LbO3rElwhW_6wFBPwp9xLMCAZhKCkKvDMtsvvZh0bMueqITNa_5PQ');
         
         //console.log(datafromTodoist.data);
         //console.log(datafromTodoist.data);
         for(item of datafromTodoist.data.items){
-            console.log(item);
+            // console.log(item);
+            /*
             if(item.date_completed !== null){
                 const date = datetime.create(item.date_completed, 'Y/m/d H:M');
                 const formattedDate = date.format();
+                console.log("===========  Completed Item ===========");
                 console.log(item.content);
                 console.log(item.date_completed);
                 console.log("DATE:");
                 console.log(formattedDate + "\n\n");
+            }*/
+
+            if((item.project_id === moviesfolderid)){ //  || (item.project_id === seriesfolderid)
+                console.log("===========  Series/Movies ===========");
+                console.log(item.content);
+                // ===========  Videogames ===========
             }
-            
+
+            if((item.project_id === PS4folderid)){ //(item.project_id === PCfolderid) || 
+                console.log("===========  Videogames ===========");
+                console.log(item.content);
+                // ===========  Videogames ===========
+            }
            //console.log(item);
         }
         //let newdata = await TodoistApi(datafromTodoist.data.sync_token);
@@ -184,9 +202,15 @@ const getVisits = (kind, platform, completed) => {
   return datastore.runQuery(query);
 };
 
-async function trythis(){
-    const [entities] = await queries.getCovers('Serie', false);
-    console.log(entities);
+async function trythis(nameshow, year){
+    //const [entities] = await queries.getCovers('Serie', false);
+    if(typeof year === 'undefined'){
+        dataShowRaw = await apiCalls.fetchDataOMDb(nameshow);
+    } else {
+        dataShowRaw = await apiCalls.fetchDataOMDb(nameshow, year);
+    }
+    
+    console.log(dataShowRaw.data);
 
     /*if(!entities.length) console.log("I could not find anything in the database.");
     else {
@@ -198,6 +222,10 @@ async function trythis(){
 }
 
 //quickstart();
-//synchronizeData();
+// synchronizeData();
 //sync_token_db('T8vRyIxQU_CeLifXys36sd3Z19qTwL59r4twbf4qlsKPLYShZsPTDZ_OqOHlk0xvfDI84fV4Qddp7pknmhMByoN4vnBlOqYaLH0NeMvcgSTdUGw');
-trythis();
+// trythis('Groundhog day');
+entityKeyasd = datastore.key(['Not_found', 'idk']);
+console.log(entityKeyasd);
+entityKeyasd.kind = 'Video_ass'
+console.log(entityKeyasd);

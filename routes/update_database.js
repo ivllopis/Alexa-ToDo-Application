@@ -66,17 +66,18 @@ async function getShowData(nameshow) {
             dataShowRaw = dataShowRaw.data;
 
             if(dataShowRaw.Response === 'False'){
-                if(dataShowRaw.Error === 'Movie not found!'){
-                    console.warn(nameshow + " could not be found in the database.");
-                    dataShow.Name = nameshow;
-                    dataShow.NotFound = true;
-                    dataShow.Type = 'Serie/Movie';
-                    resolve(dataShow);
-                    return;
-                } else {
+                //if(dataShowRaw.Error === 'Movie not found!'){
+                console.warn(nameshow + " could not be found in the database.");
+                dataShow.Name = nameshow;
+                dataShow.NotFound = true;
+                dataShow.Type = 'Serie/Movie';
+                resolve(dataShow);
+                return;
+                /*} else {
                     console.warn(`Could not retrieve data information for the show ${nameshow}.`);
                     reject();
-                }
+                    return;
+                }*/
             }
             if((typeof dataShowRaw.Poster === 'undefined') || (dataShowRaw.Poster === 'N/A')){
                 console.warn(nameshow + " could not be found in the database.");
@@ -232,6 +233,7 @@ async function completedElementfromtheDatabase(entityKey, date) {
                 if(!entity){
                     console.warn(`Warning: I cannot mark ${entityKey.name} as completed, because I could not find it in the database.`);
                     reject(-1);
+                    return;
                 }
             }
 

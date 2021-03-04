@@ -388,6 +388,7 @@ async function updateDatabase() {
         
         // Check if there is an existing sync_token in the database to do a partial sync
         const [sync_tokens] = await getEntitiesDatabase('Sync_token');
+        global.twitchcredentials = await apiCalls.getTwitchAccessToken();
 
         const transaction = datastore.transaction();
 

@@ -202,15 +202,17 @@ const getVisits = (kind, platform, completed) => {
   return datastore.runQuery(query);
 };
 
-async function trythis(nameshow, year){
+async function trythis(nameshow){
     //const [entities] = await queries.getCovers('Serie', false);
-    if(typeof year === 'undefined'){
-        dataShowRaw = await apiCalls.fetchDataOMDb(nameshow);
-    } else {
-        dataShowRaw = await apiCalls.fetchDataOMDb(nameshow, year);
+    try{
+        // res = await apiCalls.getTwitchAccessToken();
+        global.twitchcredentials = await apiCalls.getTwitchAccessToken();
+        dataShowRaw = await apiCalls.getVideogame(nameshow, 'general');
+        
+        console.log(dataShowRaw.data);
+    } catch (error){
+        console.log(error)
     }
-    
-    console.log(dataShowRaw.data);
 
     /*if(!entities.length) console.log("I could not find anything in the database.");
     else {
@@ -224,5 +226,5 @@ async function trythis(nameshow, year){
 //quickstart();
 // synchronizeData();
 //sync_token_db('T8vRyIxQU_CeLifXys36sd3Z19qTwL59r4twbf4qlsKPLYShZsPTDZ_OqOHlk0xvfDI84fV4Qddp7pknmhMByoN4vnBlOqYaLH0NeMvcgSTdUGw');
-// trythis('Groundhog day');
+// trythis('Bloodborne');
 // entityKeyasd = datastore.key(['Not_found', 'idk']);

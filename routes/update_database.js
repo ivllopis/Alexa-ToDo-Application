@@ -74,9 +74,8 @@ async function getShowData(nameshow) {
                     resolve(dataShow);
                     return;
                 } else {
-                    console.warn("There was an error retrieving the information for a show.");
-                    reject(new Error ("There was an error retrieving the information for a show."));
-                    return;
+                    console.warn(`Could not retrieve data information for the show ${nameshow}.`);
+                    reject();
                 }
             }
             if((typeof dataShowRaw.Poster === 'undefined') || (dataShowRaw.Poster === 'N/A')){
@@ -232,7 +231,7 @@ async function completedElementfromtheDatabase(entityKey, date) {
                 [entity] = await datastore.get(entityKey);
                 if(!entity){
                     console.warn(`Warning: I cannot mark ${entityKey.name} as completed, because I could not find it in the database.`);
-                    reject(new Error(`I cannot mark ${entityKey.name} as completed, because I could not find it in the database.`));
+                    reject(-1);
                 }
             }
 
@@ -262,9 +261,7 @@ async function calculateSlideNumbersEntireDatabase() {
             // For Series
             var [entities] = await getEntitiesDatabase('Serie', false);
 
-            if(!entities.length){
-                reject(new Error("I could not find any non-completed serie in the database."));
-            } else {
+            if(entities.length){
                 for(const [index, entity] of entities.entries()){
                     entity.Slide_number = index;
                     batchUpdateEntities.push({
@@ -291,9 +288,7 @@ async function calculateSlideNumbersEntireDatabase() {
             // For Movies
             [entities] = await getEntitiesDatabase('Movie', false);
 
-            if(!entities.length){
-                reject(new Error("I could not find any non-completed movie in the database."));
-            } else {
+            if(entities.length){
                 for(const [index, entity] of entities.entries()){
                     entity.Slide_number = index;
                     batchUpdateEntities.push({
@@ -323,9 +318,7 @@ async function calculateSlideNumbersEntireDatabase() {
             // For Non-completed PC games
             [entities] = await getEntitiesDatabase('Videogame', false, 'PC');
 
-            if(!entities.length){
-                reject(new Error("I could not find any non-completed PC game in the database."));
-            } else {
+            if(entities.length){
                 for(const [index, entity] of entities.entries()){
                     entity.Slide_number = index;
                     batchUpdateEntities.push({
@@ -353,9 +346,7 @@ async function calculateSlideNumbersEntireDatabase() {
             // For Non-completed PS4 games
             [entities] = await getEntitiesDatabase('Videogame', false, 'PS4');
 
-            if(!entities.length){
-                reject(new Error("I could not find any non-completed PS4 game in the database."));
-            } else {
+            if(entities.length){
                 for(const [index, entity] of entities.entries()){
                     entity.Slide_number = index;
                     batchUpdateEntities.push({
@@ -452,16 +443,16 @@ async function updateDatabase() {
                 if(item.checked){
                     try{
                         let updatedEntity = await completedElementfromtheDatabase(entityKey, item.date_completed);
-                        
-                        batchStoreEntities.push({
-                            key: updatedEntity[datastore.KEY],
-                            data: updatedEntity,
-                            excludeFromIndexes: excludefromindexes
-                        });
-                        
+                        if(updatedEntity !== -1){
+                            batchStoreEntities.push({
+                                key: updatedEntity[datastore.KEY],
+                                data: updatedEntity,
+                                excludeFromIndexes: excludefromindexes
+                            });
+                        }
                     } catch (error) {
-                        console.log("Something went wrong during checking a game.");
-                        console.log(error);
+                        console.warn("Something went wrong during checking a game.");
+                        console.warn(error);
                     }
                     continue;
                 }
@@ -480,16 +471,16 @@ async function updateDatabase() {
                 if(item.checked){
                     try{
                         let updatedEntity = await completedElementfromtheDatabase(entityKey, item.date_completed);
-
-                        batchStoreEntities.push({
-                            key: updatedEntity[datastore.KEY],
-                            data: updatedEntity,
-                            excludeFromIndexes: excludefromindexes
-                        });
-                        
+                        if(updatedEntity !== -1){
+                            batchStoreEntities.push({
+                                key: updatedEntity[datastore.KEY],
+                                data: updatedEntity,
+                                excludeFromIndexes: excludefromindexes
+                            });
+                        }
                     } catch (error) {
-                        console.log("Something went wrong during checking a game.");
-                        console.log(error);
+                        console.warn("Something went wrong during checking a game.");
+                        console.warn(error);
                     }
                     continue;
                 }

@@ -10,11 +10,19 @@ router.get('/', authRouter.requireAuth, (req, res) => {
     res.render('movies', {success_msg: req.flash('success_msg'), error_msg: req.flash('error_msg')});
 });
 
-router.get('/any', authRouter.requireAuth, async (req, res) => {
+router.get('/any', async (req, res) => {
     const [entities] = await queries.getNumberEntities('Movie', false);
     const num_total_entities = entities[0].Slide_number;
     const random_number = Math.round(Math.random() * num_total_entities);
     const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Movie', false);
+    res.json({index: random_number, data: recommended_random_entity[0]});
+});
+
+router.get('/any_completed', async (req, res) => {
+    const [entities] = await queries.getNumberEntities('Movie', true);
+    const num_total_entities = entities[0].Slide_number;
+    const random_number = Math.round(Math.random() * num_total_entities);
+    const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Movie', true);
     res.json({index: random_number, data: recommended_random_entity[0]});
 });
 

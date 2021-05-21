@@ -26,7 +26,25 @@ router.get('/pc_completed', authRouter.requireAuth, (req, res) => {
     res.render('videogames', {pc_completed: true});
 });
 
-router.get('/pc/any', authRouter.requireAuth, async (req, res) => {
+router.get('/any', async (req, res) => {
+    const random_number_platform = Math.round(Math.random());
+    if (random_number_platform === 1) {
+        // Recommend a PC game
+        const [entities] = await queries.getNumberEntities('Videogame', false, 'PC');
+        const num_total_entities = entities[0].Slide_number;
+        const random_number = Math.round(Math.random() * num_total_entities);
+        const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Videogame', false, 'PC');
+    } else {
+        // Recommend a PS4 game
+        const [entities] = await queries.getNumberEntities('Videogame', false, 'PS4');
+        const num_total_entities = entities[0].Slide_number;
+        const random_number = Math.round(Math.random() * num_total_entities);
+        const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Videogame', false, 'PS4');
+    }
+    res.json({index: random_number, data: recommended_random_entity[0]});
+});
+
+router.get('/pc/any', async (req, res) => {
     const [entities] = await queries.getNumberEntities('Videogame', false, 'PC');
     const num_total_entities = entities[0].Slide_number;
     const random_number = Math.round(Math.random() * num_total_entities);
@@ -60,7 +78,7 @@ router.get('/pc/:id', authRouter.requireAuth, async (req, res) => {
     }
 });
 
-router.get('/pc_completed/any', authRouter.requireAuth, async (req, res) => {
+router.get('/pc_completed/any', async (req, res) => {
     const [entities] = await queries.getNumberEntities('Videogame', true, 'PC');
     const num_total_entities = entities[0].Slide_number;
     const random_number = Math.round(Math.random() * num_total_entities);
@@ -94,7 +112,7 @@ router.get('/pc_completed/:id', authRouter.requireAuth, async (req, res) => {
     }
 });
 
-router.get('/ps4/any', authRouter.requireAuth, async (req, res) => {
+router.get('/ps4/any', async (req, res) => {
     const [entities] = await queries.getNumberEntities('Videogame', false, 'PS4');
     const num_total_entities = entities[0].Slide_number;
     const random_number = Math.round(Math.random() * num_total_entities);
@@ -128,7 +146,7 @@ router.get('/ps4/:id', authRouter.requireAuth, async (req, res) => {
     }
 });
 
-router.get('/ps4_completed/any', authRouter.requireAuth, async (req, res) => {
+router.get('/ps4_completed/any', async (req, res) => {
     const [entities] = await queries.getNumberEntities('Videogame', true, 'PS4');
     const num_total_entities = entities[0].Slide_number;
     const random_number = Math.round(Math.random() * num_total_entities);

@@ -10,7 +10,7 @@ router.get('/', authRouter.requireAuth, (req, res) => {
     res.render('series', {success_msg: req.flash('success_msg'), error_msg: req.flash('error_msg')});
 });
 
-router.get('/any', authRouter.requireAuth, async (req, res) => {
+router.get('/any', async (req, res) => {
     const [entities] = await queries.getNumberEntities('Serie', false);
     const num_total_entities = entities[0].Slide_number;
     const random_number = Math.round(Math.random() * num_total_entities);

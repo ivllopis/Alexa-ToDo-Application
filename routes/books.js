@@ -45,7 +45,7 @@ async function test() {
 router.get('/', (req, res) => {
     //res.render('series');
     //res.json(simpleDatabase);
-    res.send("This is currently implemented.");
+    res.send("This is currently left to be implemented.");
 });
 
 module.exports = router;

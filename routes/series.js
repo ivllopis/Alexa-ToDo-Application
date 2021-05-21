@@ -18,6 +18,14 @@ router.get('/any', authRouter.requireAuth, async (req, res) => {
     res.json({index: random_number, data: recommended_random_entity[0]});
 });
 
+router.get('/any_completed', async (req, res) => {
+    const [entities] = await queries.getNumberEntities('Serie', true);
+    const num_total_entities = entities[0].Slide_number;
+    const random_number = Math.round(Math.random() * num_total_entities);
+    const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Serie', true);
+    res.json({index: random_number, data: recommended_random_entity[0]});
+});
+
 router.get('/infoSeries', authRouter.requireAuth, async (req, res) => {
     queries.getCovers('Serie', false)
     .then(infoSeries => {

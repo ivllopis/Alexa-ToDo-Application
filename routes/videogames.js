@@ -28,20 +28,44 @@ router.get('/pc_completed', authRouter.requireAuth, (req, res) => {
 
 router.get('/any', async (req, res) => {
     const random_number_platform = Math.round(Math.random());
+    
     if (random_number_platform === 1) {
         // Recommend a PC game
         const [entities] = await queries.getNumberEntities('Videogame', false, 'PC');
         const num_total_entities = entities[0].Slide_number;
         const random_number = Math.round(Math.random() * num_total_entities);
         const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Videogame', false, 'PC');
+        res.json({index: random_number, data: recommended_random_entity[0]});
     } else {
         // Recommend a PS4 game
         const [entities] = await queries.getNumberEntities('Videogame', false, 'PS4');
         const num_total_entities = entities[0].Slide_number;
         const random_number = Math.round(Math.random() * num_total_entities);
         const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Videogame', false, 'PS4');
+        res.json({index: random_number, data: recommended_random_entity[0]});
     }
-    res.json({index: random_number, data: recommended_random_entity[0]});
+
+});
+
+router.get('/any_completed', async (req, res) => {
+    const random_number_platform = Math.round(Math.random());
+    
+    if (random_number_platform === 1) {
+        // Recommend a PC game
+        const [entities] = await queries.getNumberEntities('Videogame', true, 'PC');
+        const num_total_entities = entities[0].Slide_number;
+        const random_number = Math.round(Math.random() * num_total_entities);
+        const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Videogame', true, 'PC');
+        res.json({index: random_number, data: recommended_random_entity[0]});
+    } else {
+        // Recommend a PS4 game
+        const [entities] = await queries.getNumberEntities('Videogame', true, 'PS4');
+        const num_total_entities = entities[0].Slide_number;
+        const random_number = Math.round(Math.random() * num_total_entities);
+        const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Videogame', true, 'PS4');
+        res.json({index: random_number, data: recommended_random_entity[0]});
+    }
+    
 });
 
 router.get('/pc/any', async (req, res) => {

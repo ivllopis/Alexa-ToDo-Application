@@ -96,7 +96,7 @@ async function getGenre(idGenre) {
 async function getTwitchAccessToken() {
     try {
             return axios.post('https://id.twitch.tv/oauth2/token',
-                {},
+                null,
                 {
                     params: {
                         'client_id': process.env.IGDB_API_CLIENT_ID,

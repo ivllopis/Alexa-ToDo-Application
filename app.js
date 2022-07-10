@@ -54,7 +54,10 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  unset: 'destroy'
+  unset: 'keep', // or 'destroy'
+  cookie: {
+      maxAge: 5 * 60 * 1000 // 5 min expiring session
+  }
 }));
 
 // Flash middleware
@@ -72,7 +75,7 @@ app.use((req, res, next) => {
 
 // View engine setup
 // Use `.hbs` for extensions and find partials in `views/partials`.
-app.engine('hbs', hbs({
+app.engine('hbs', hbs.engine({
   extname: '.hbs',
   defaultLayout: 'layout',
   partialsDir:  path.join(__dirname, 'views/partials'),
@@ -88,7 +91,7 @@ app.use('/videogames', videogamesRouter);
 app.use('/books', booksRouter);
 app.use('/auth', authRouter);
 
-updateDatabase(); /////////
+updateDatabase();
 
 app.get('/', (req, res) => {
   res.redirect('/series');

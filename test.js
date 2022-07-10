@@ -5,6 +5,7 @@ const datetime = require('node-datetime');
 
 const apiCalls = require('./routes/apiCalls');
 const queries = require('./routes/queries');
+const update_calls = require('./routes/update_database');
 
 const seriesfolderid = 2236986238;
 const moviesfolderid = 2236986256;
@@ -12,6 +13,41 @@ const PS4folderid = 2236528201;
 const PCfolderid = 2236528198;
 
 require('dotenv').config();
+
+const getEntitiesDatabase = (kind, completed, filterPlatformproperty) => {
+    let query;
+    if(filterPlatformproperty) {
+        if(completed) {
+            query = datastore
+            .createQuery(kind)
+            .filter('Platform', '=', filterPlatformproperty)
+            .filter('Completed', '=', true)
+            .order('Name', {ascending: true});
+        } else {
+            query = datastore
+            .createQuery(kind)
+            .filter('Platform', '=', filterPlatformproperty)
+            .filter('Completed', '=', false)
+            .order('Name', {ascending: true});
+        }
+    } else if(kind === 'Sync_token') {
+        query = datastore
+        .createQuery(kind)
+        .order('Token', {ascending: true});
+    } else if(completed) {
+        query = datastore
+        .createQuery(kind)
+        .filter('Completed', '=', completed)
+        .order('Name', {ascending: true});
+    } else {
+        query = datastore
+        .createQuery(kind)
+        .filter('Completed', '=', false)
+        .order('Name', {ascending: true});
+    }
+
+    return datastore.runQuery(query);
+};
 
 async function getInfoEntity(slide_n, kind, completed, filterPlatformproperty) {
     let query;
@@ -205,11 +241,16 @@ const getVisits = (kind, platform, completed) => {
 async function trythis(nameshow){
     //const [entities] = await queries.getCovers('Serie', false);
     try{
+        console.log("Twitch Token")
+        let twitchtoken = await apiCalls.getTwitchAccessToken();
+        console.log(twitchtoken)
+        console.log("=============\n\n")
+        // console.log(twitchtoken)
         // res = await apiCalls.getTwitchAccessToken();
-        global.twitchcredentials = await apiCalls.getTwitchAccessToken();
-        dataShowRaw = await apiCalls.getVideogame(nameshow, 'general');
+        // global.twitchcredentials = await apiCalls.getTwitchAccessToken();
+        // dataShowRaw = await apiCalls.getVideogame(nameshow, 'general');
         
-        console.log(dataShowRaw.data);
+        // console.log(dataShowRaw.data);
     } catch (error){
         console.log(error)
     }
@@ -223,8 +264,8 @@ async function trythis(nameshow){
     }*/
 }
 
-//quickstart();
+// quickstart();
 // synchronizeData();
-//sync_token_db('T8vRyIxQU_CeLifXys36sd3Z19qTwL59r4twbf4qlsKPLYShZsPTDZ_OqOHlk0xvfDI84fV4Qddp7pknmhMByoN4vnBlOqYaLH0NeMvcgSTdUGw');
+// sync_token_db('T8vRyIxQU_CeLifXys36sd3Z19qTwL59r4twbf4qlsKPLYShZsPTDZ_OqOHlk0xvfDI84fV4Qddp7pknmhMByoN4vnBlOqYaLH0NeMvcgSTdUGw');
 // trythis('Bloodborne');
 // entityKeyasd = datastore.key(['Not_found', 'idk']);

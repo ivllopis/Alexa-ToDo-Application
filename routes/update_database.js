@@ -4,10 +4,10 @@ const datastore = new Datastore();
 const datetime = require('node-datetime');
 const apiCalls = require('./apiCalls');
 
-const seriesfolderid = 2236986238;
-const moviesfolderid = 2236986256;
-const PS4folderid = 2236528201;
-const PCfolderid = 2236528198;
+const seriesfolderid = '2236986238';
+const moviesfolderid = '2236986256';
+const PS4folderid = '2236528201';
+const PCfolderid = '2236528198';
 const excludefromindexes = ['Storyline', 'Summary', 'Tags', 'Synopsis', 'Writers', 'Actors'];
 
 const getEntityDatabaseById = (kind, id) => {
@@ -409,19 +409,19 @@ async function updateDatabase() {
 
             // What to do if it has been deleted
             if(item.is_deleted){
-                let [entity] = await getEntityDatabaseById('Videogame', item.id);
+                let [entity] = await getEntityDatabaseById('Videogame', parseInt(item.id));
                 if(entity){
                     console.log("Found a videogame to delete!");
                 } else {
-                    [entity] = await getEntityDatabaseById('Serie', item.id);
+                    [entity] = await getEntityDatabaseById('Serie', parseInt(item.id));
                     if(entity){
                         console.log("Found a serie to delete!");
                     } else {
-                        [entity] = await getEntityDatabaseById('Movie', item.id);
+                        [entity] = await getEntityDatabaseById('Movie', parseInt(item.id));
                         if(entity){
                             console.log("Found a movie to delete!");
                         } else {
-                            [entity] = await getEntityDatabaseById('Not_found', item.id);
+                            [entity] = await getEntityDatabaseById('Not_found', parseInt(item.id));
                             if(entity){
                                 console.log("Found an item with no identified info to delete!");
                             } else {
@@ -440,12 +440,12 @@ async function updateDatabase() {
 
                 // ===========  Series or Movies ===========
                 // Possible things can happen: the item has changed its name, it has been marked as completed, has been deleted, or it is a new entry
-                entityKey = (item.project_id === seriesfolderid) ? datastore.key(['Serie', item.id]) : datastore.key(['Movie', item.id]);
+                entityKey = (item.project_id === seriesfolderid) ? datastore.key(['Serie', parseInt(item.id)]) : datastore.key(['Movie', parseInt(item.id)]);
 
                 // What to do if it has been marked as completed
                 if(item.checked){
                     try{
-                        let updatedEntity = await completedElementfromtheDatabase(entityKey, item.date_completed);
+                        let updatedEntity = await completedElementfromtheDatabase(entityKey, item.completed_at);
                         if(updatedEntity !== -1){
                             batchStoreEntities.push({
                                 key: updatedEntity[datastore.KEY],
@@ -468,12 +468,12 @@ async function updateDatabase() {
                 
                 // ===========  Videogames ===========
                 // Possible things can happen: the item has changed its name, it has been marked as completed, has been deleted, or it is a new entry
-                entityKey = datastore.key(['Videogame', item.id]);
+                entityKey = datastore.key(['Videogame', parseInt(item.id)]);
 
                 // What to do if it has been marked as completed
                 if(item.checked){
                     try{
-                        let updatedEntity = await completedElementfromtheDatabase(entityKey, item.date_completed);
+                        let updatedEntity = await completedElementfromtheDatabase(entityKey, item.completed_at);
                         if(updatedEntity !== -1){
                             batchStoreEntities.push({
                                 key: updatedEntity[datastore.KEY],
@@ -499,13 +499,13 @@ async function updateDatabase() {
             if(dataEntityformatted && entityKey){
                 if(dataEntityformatted.hasOwnProperty("NotFound")){
                     batchStoreEntities.push({
-                        key: datastore.key(['Not_found', item.id]),
+                        key: datastore.key(['Not_found', parseInt(item.id)]),
                         data: dataEntityformatted,
                         excludeFromIndexes: excludefromindexes
                     });
                 } else {
                     // Check if the entity was previosuly not found
-                    let deleteTokenKey = datastore.key(['Not_found', item.id]);
+                    let deleteTokenKey = datastore.key(['Not_found', parseInt(item.id)]);
                     let [deleteEntity] = await datastore.get(deleteTokenKey);
                     if(deleteEntity) batchDeleteEntities.push(deleteTokenKey);
                     batchStoreEntities.push({
@@ -533,7 +533,7 @@ async function updateDatabase() {
                 transaction.save(batchStoreEntities);
             }
 
-            // TODO: Save new sync_token into database once the information is updated
+            // Save new sync_token into database once the information is updated
             const tokenKey = datastore.key(['Sync_token', 'Sync_token']);
             console.log('Saving new token into the database... \n');
             transaction.save({
@@ -547,7 +547,7 @@ async function updateDatabase() {
             await transaction.commit();
             console.log("Done.");
             
-            // TODO: Check consistency of the database
+            // Check consistency of the database
             await updateSlideNumbersDatabase();
 
             // TODO: Inform the user that the database has been updated and free the semaphor

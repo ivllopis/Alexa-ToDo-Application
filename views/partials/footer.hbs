@@ -14,10 +14,24 @@
         }, 2000);
     });
 
+    var filtered = false;
+
+    $('.js-filter-slides-button').on('click', function(){
+        if (filtered === false) {
+            $('.center').slick('slickFilter',':even'); /* TO DO: Add more functionalities to the filter*/
+            $(this).text('Unfilter Slides');
+            filtered = true;
+        } else {
+            $('.center').slick('slickUnfilter');
+            $(this).text('Filter Slides');
+            filtered = false;
+        }
+    });
+
     function startCarousel(){
     $('.center').slick({
         centerMode: true,
-        centerPadding: '180px',
+        centerPadding: '5px', // dots: true, tengo que pensar más sobre esto
         slidesToShow: 3,
         swipeToSlide: true, // custom feat.
         responsive: [
@@ -26,7 +40,7 @@
             settings: {
             arrows: false,
             centerMode: true,
-            centerPadding: '80px',
+            centerPadding: '5px',
             slidesToShow: 3
             }
         },
@@ -35,7 +49,7 @@
             settings: {
             arrows: true,
             centerMode: true,
-            centerPadding: '10px',
+            centerPadding: '5px',
             slidesToShow: 3
             }
         },
@@ -44,7 +58,7 @@
             settings: {
             arrows: true,
             centerMode: true,
-            centerPadding: '40px',
+            centerPadding: '5px',
             slidesToShow: 1
             }
         }

@@ -29,7 +29,7 @@
 }
 
 .content-sliders{
-    height: 520px;
+    height: 460px;
 }
 
 .content-sliders-loader{
@@ -44,7 +44,11 @@
     margin-left: auto;
     margin-right: auto;
     height: 100%;
-    max-width: 90%;
+    max-width: 70%;
+}
+
+.tag-button{
+    font-size: .775rem;
 }
 
 a .card-title{

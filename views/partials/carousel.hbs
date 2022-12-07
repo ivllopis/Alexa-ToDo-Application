@@ -1,4 +1,16 @@
-<div class="container-fluid bg-light pt-4" id="media-content-carousel">
+<div class="container-fluid bg-light">  
+    <div class="row">
+        <div class="col-11 text-right">
+            <button type="button" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                Filter slides
+            </button>
+        </div>
+        <div class="col-1"></div>
+    </div>
+</div>
+
+
+<div class="container-fluid bg-light pt-2 pb-4" id="media-content-carousel">
     <div class="text-center" style="height: 250px;">
         <div class="spinner-border" role="status">
             <span class="sr-only">Loading...</span>
@@ -36,12 +48,14 @@
                 Info
             </button>
         </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-secondary mt-1" onclick="recommendMeSomething()" data-toggle="modal" data-target="#exampleModal">
+                Recommend me
+            </button>
+        </div>
+        <div class="col-1"></div>
     </div>
     <br/>
-
-    <button type="button" class="btn btn-secondary mt-1" onclick="recommendMeSomething()" data-toggle="modal" data-target="#exampleModal">
-        Recommend me
-    </button>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="info-title" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">

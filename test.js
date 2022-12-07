@@ -7,10 +7,10 @@ const apiCalls = require('./routes/apiCalls');
 const queries = require('./routes/queries');
 const update_calls = require('./routes/update_database');
 
-const seriesfolderid = 2236986238;
-const moviesfolderid = 2236986256;
-const PS4folderid = 2236528201;
-const PCfolderid = 2236528198;
+const seriesfolderid = '2236986238';
+const moviesfolderid = '2236986256';
+const PS4folderid = '2236528201';
+const PCfolderid = '2236528198';
 
 require('dotenv').config();
 
@@ -99,22 +99,22 @@ async function getCovers(kind, completed, filterPlatformproperty) {
 
 async function synchronizeData() {
     try{
-        let datafromTodoist = await apiCalls.getDataTodoist('J9sPKQ9CiZ8nJZN1kAwfpX572eFbs30Hq52SYWVGmWJHsbmE1eKhDcBd6LbO3rElwhW_6wFBPwp9xLMCAZhKCkKvDMtsvvZh0bMueqITNa_5PQ');
+        let datafromTodoist = await apiCalls.getDataTodoist('Bb19VvNlXqEid5KzEYVES-RfcQACrvm_1DtRKAgfI2NiXlq5IMFz8dEpva69why6A-d9LKFu1CK8YRGEjKEbnCHlULlGWKuRu-x7Evayrxdbcg');
         
         //console.log(datafromTodoist.data);
         //console.log(datafromTodoist.data);
         for(item of datafromTodoist.data.items){
-            // console.log(item);
-            /*
-            if(item.date_completed !== null){
-                const date = datetime.create(item.date_completed, 'Y/m/d H:M');
+            console.log(item);
+            
+            if(item.completed_at !== null){
+                const date = datetime.create(item.completed_at, 'Y/m/d H:M');
                 const formattedDate = date.format();
                 console.log("===========  Completed Item ===========");
                 console.log(item.content);
-                console.log(item.date_completed);
+                console.log(item.completed_at);
                 console.log("DATE:");
                 console.log(formattedDate + "\n\n");
-            }*/
+            }
 
             if((item.project_id === moviesfolderid)){ //  || (item.project_id === seriesfolderid)
                 console.log("===========  Series/Movies ===========");
@@ -265,7 +265,7 @@ async function trythis(nameshow){
 }
 
 // quickstart();
-// synchronizeData();
+synchronizeData();
 // sync_token_db('T8vRyIxQU_CeLifXys36sd3Z19qTwL59r4twbf4qlsKPLYShZsPTDZ_OqOHlk0xvfDI84fV4Qddp7pknmhMByoN4vnBlOqYaLH0NeMvcgSTdUGw');
 // trythis('Bloodborne');
 // entityKeyasd = datastore.key(['Not_found', 'idk']);

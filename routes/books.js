@@ -6,7 +6,7 @@ var simpleDatabase = {};
 
 async function getData() {
     try {
-            return axios.get('https://api.todoist.com/sync/v8/sync', {
+            return axios.get('https://api.todoist.com/sync/v9/sync', {
               params: {
                   token: process.env.TODOIST_API_KEY,
                   sync_token: '*',

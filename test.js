@@ -102,7 +102,7 @@ async function synchronizeData() {
         let datafromTodoist = await apiCalls.getDataTodoist('Bb19VvNlXqEid5KzEYVES-RfcQACrvm_1DtRKAgfI2NiXlq5IMFz8dEpva69why6A-d9LKFu1CK8YRGEjKEbnCHlULlGWKuRu-x7Evayrxdbcg');
         
         //console.log(datafromTodoist.data);
-        //console.log(datafromTodoist.data);
+        // console.log(datafromTodoist.data);
         for(item of datafromTodoist.data.items){
             console.log(item);
             
@@ -116,13 +116,13 @@ async function synchronizeData() {
                 console.log(formattedDate + "\n\n");
             }
 
-            if((item.project_id === moviesfolderid)){ //  || (item.project_id === seriesfolderid)
+            if((item.project_id === moviesfolderid) || (item.project_id === seriesfolderid)){ //  
                 console.log("===========  Series/Movies ===========");
                 console.log(item.content);
                 // ===========  Videogames ===========
             }
 
-            if((item.project_id === PS4folderid)){ //(item.project_id === PCfolderid) || 
+            if((item.project_id === PCfolderid) || (item.project_id === PS4folderid)){ // 
                 console.log("===========  Videogames ===========");
                 console.log(item.content);
                 // ===========  Videogames ===========

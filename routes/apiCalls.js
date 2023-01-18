@@ -2,15 +2,21 @@ const axios = require('axios');
 
 async function getDataTodoist(sync_token) {
     try {
-            return axios.get('https://api.todoist.com/sync/v9/sync', {
-              params: {
-                  token: process.env.TODOIST_API_KEY,
-                  sync_token: sync_token !== 'undefined' ? sync_token : '*',
-                  resource_types: '["items"]'
-              }
+            return axios.post('https://api.todoist.com/sync/v9/sync', {
+                sync_token: sync_token !== 'undefined' ? sync_token : '*',
+                resource_types: '["items"]'
+                /*params: {
+                    //token: process.env.TODOIST_API_KEY,
+                    
+                    }*/
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.TODOIST_API_KEY}`
+                }
             });
     } catch (error) {
-            console.error(error);
+            console.error(`Error in apiCalls / getDataTodoist: \n${error}`);
     }
 }
 

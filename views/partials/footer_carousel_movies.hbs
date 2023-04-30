@@ -56,7 +56,18 @@
         var addedHTMLMovies = '<div class="center">\n\t';
         for(let movie of parsedResponse) {
             if(typeof movie.Cover !== 'undefined'){
-                addedHTMLMovies += `<div class="content-sliders text-center">\n\t<img class="content-sliders-image" src="${movie.Cover}" alt="img">\n</div>`;
+                let alt_img_name = movie.Name;
+                addedHTMLMovies += '<div class="content-sliders text-center';
+                if(typeof movie.Tags !== 'undefined'){
+                    // If the movie have a list of Tags
+                    for (let tag_name of movie.Tags){
+                        // We add the tags existing for this movie as classes
+                        addedHTMLMovies += ' ' + tag_name;
+                    }
+                    alt_img_name = alt_img_name.toLowerCase().replace(/\s/g, "");      
+                }
+                
+                addedHTMLMovies += `">\n\t<img class="content-sliders-image" src="${movie.Cover}" alt="img_${alt_img_name}">\n</div>`;
             }
         }
         addedHTMLMovies += '\n</div>';

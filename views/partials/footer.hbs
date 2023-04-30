@@ -14,17 +14,32 @@
         }, 2000);
     });
 
-    var filtered = false;
+    var previousfilterbuttonId = 'undefined';
 
     $('.js-filter-slides-button').on('click', function(){
-        if (filtered === false) {
-            $('.center').slick('slickFilter',':even'); /* TO DO: Add more functionalities to the filter*/
-            $(this).text('Unfilter Slides');
-            filtered = true;
-        } else {
-            $('.center').slick('slickUnfilter');
-            $(this).text('Filter Slides');
-            filtered = false;
+        // Unfliter previously possible filters applied to the carousel
+        $('.center').slick('slickUnfilter');
+        
+        // Obtain the filter we want to apply through the data-filter
+        var filter = $(this).data('filter');
+
+        if (previousfilterbuttonId !== 'undefined') {
+            // We remove the style ('active' class) of the button of the previous applied filter
+            var button = document.getElementById(previousfilterbuttonId);
+            button.classList.remove('active');
+        }
+        // We assign this button id as the next previous filter button id
+        previousfilterbuttonId = $(this).attr('id');
+        
+        if(filter === 'animes'){
+            // Filter animes
+            $('.center').slick('slickFilter', '.anime');
+        } else if (filter === 'oldschool') {
+            // Filter old school shows
+            $('.center').slick('slickFilter', '.old-school');
+        } else if (filter === 'soulslike') {
+            // Filter souls-like games
+            $('.center').slick('slickFilter', '.souls-like');
         }
     });
 

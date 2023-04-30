@@ -7,7 +7,6 @@ async function getCovers(kind, completed, filterPlatformproperty) {
         if(completed !== undefined) {
             query = datastore
             .createQuery(kind)
-            .select(['Cover', 'Slide_number'])
             .filter('Platform', '=', filterPlatformproperty)
             .filter('Completed', '=', completed)
             .order('Slide_number', {ascending: true});
@@ -17,11 +16,9 @@ async function getCovers(kind, completed, filterPlatformproperty) {
     } else if(completed !== undefined) {
         query = datastore
         .createQuery(kind)
-        .select(['Cover', 'Slide_number'])
         .filter('Completed', '=', completed)
         .order('Slide_number', {ascending: true});
     }
-
     return datastore.runQuery(query);
 }
 

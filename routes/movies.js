@@ -7,7 +7,7 @@ const queries = require('./queries');
 // Make sure the database is up to date (In the future this will be triggered by the user!)
 
 router.get('/', authRouter.requireAuth, (req, res) => {
-    res.render('movies', {success_msg: req.flash('success_msg'), error_msg: req.flash('error_msg')});
+    res.render('movies', {success_msg: req.flash('success_msg'), error_msg: req.flash('error_msg'), movies: true});
 });
 
 router.get('/any', async (req, res) => {

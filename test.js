@@ -79,7 +79,7 @@ async function getCovers(kind, completed, filterPlatformproperty) {
         if(completed !== undefined) {
             query = datastore
             .createQuery(kind)
-            .select(['Cover', 'Slide_number'])
+            .select(['Name', 'Cover', 'Tags', 'Slide_number'])
             .filter('Platform', '=', filterPlatformproperty)
             .filter('Completed', '=', completed)
             .order('Slide_number', {ascending: true});
@@ -89,7 +89,7 @@ async function getCovers(kind, completed, filterPlatformproperty) {
     } else if(completed !== undefined) {
         query = datastore
         .createQuery(kind)
-        .select(['Cover', 'Slide_number'])
+        .select(['Name', 'Cover', 'Tags', 'Slide_number'])
         .filter('Completed', '=', completed)
         .order('Slide_number', {ascending: true});
     }
@@ -228,44 +228,47 @@ async function sync_token_db(token) {
     console.log(`Saved ${tokenEntity.key}: ${tokenEntity.data.Token}`);
 }
 
-const getVisits = (kind, platform, completed) => {
-  const query = datastore
-        .createQuery(kind)
-        .filter('Platform', '=', platform)
-        .filter('Completed', '=', completed)
-        .order('Name', {ascending: true});
+async function getVisits(kind, completed, platform) {
+    console.log(kind, completed, platform);
+    if (platform !== undefined){
+        query = datastore
+            .createQuery(kind)
+            .filter('Platform', '=', platform)
+            .filter('Completed', '=', completed)
+            .order('Name', {ascending: true});
+    } else {
+        query = datastore
+            .createQuery(kind)
+            .select(['Name', 'Tags'])
+            .filter('Completed', '=', completed)
+            .order('Name', {ascending: true});
+    }
 
   return datastore.runQuery(query);
 };
 
 async function trythis(nameshow){
-    //const [entities] = await queries.getCovers('Serie', false);
     try{
-        console.log("Twitch Token")
-        let twitchtoken = await apiCalls.getTwitchAccessToken();
-        console.log(twitchtoken)
-        console.log("=============\n\n")
-        // console.log(twitchtoken)
-        // res = await apiCalls.getTwitchAccessToken();
-        // global.twitchcredentials = await apiCalls.getTwitchAccessToken();
-        // dataShowRaw = await apiCalls.getVideogame(nameshow, 'general');
-        
-        // console.log(dataShowRaw.data);
+        const [entities] = await getVisits('Serie', false);
+        const elements = entities.slice(0, 55);
+        console.log(elements);
+        for(let element of elements) {
+            if(typeof element.Tags !== 'undefined'){
+                console.log("New Element:");
+                console.log(element);
+                for (let tag of element.Tags) {
+                    console.log("Tag: ", tag);
+                }
+                console.log("\n\n");
+            }
+        }
     } catch (error){
         console.log(error)
     }
-
-    /*if(!entities.length) console.log("I could not find anything in the database.");
-    else {
-        for(const [index, entity] of entities.entries()){
-            console.log("Index: " + index);
-            console.log(entity);
-        }
-    }*/
 }
 
 // quickstart();
-synchronizeData();
+// synchronizeData();
 // sync_token_db('T8vRyIxQU_CeLifXys36sd3Z19qTwL59r4twbf4qlsKPLYShZsPTDZ_OqOHlk0xvfDI84fV4Qddp7pknmhMByoN4vnBlOqYaLH0NeMvcgSTdUGw');
 // trythis('Bloodborne');
 // entityKeyasd = datastore.key(['Not_found', 'idk']);

@@ -33,7 +33,7 @@ indexes:
   properties:
   - name: Completed
   - name: Slide_number
-  - name: Cover
+    direction: asc  
 - kind: Serie
   properties:
   - name: Completed
@@ -51,9 +51,9 @@ indexes:
   properties:
   - name: Completed
   - name: Slide_number
-    direction: desc
+    direction: asc
 - kind: Movie
   properties:
   - name: Completed
   - name: Slide_number
-  - name: Cover
+    direction: desc

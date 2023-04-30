@@ -5,6 +5,7 @@
 
     function showInfoCurrent(){
         const currentSlide = $('.center').slick('slickCurrentSlide');
+        // TO DO: Get a data-id referring to the slide_number instead of the slick current slide number, which the filter might affect.
 
         httpGetAsync(`${home_url}/series/${currentSlide}`, (res) =>{
             try{
@@ -57,7 +58,18 @@
         var addedHTMLSeries = '<div class="center">\n\t';
         for(let serie of parsedResponse) {
             if(typeof serie.Cover !== 'undefined'){
-                addedHTMLSeries += `<div class="content-sliders text-center">\n\t<img class="content-sliders-image" src="${serie.Cover}" alt="img">\n</div>`;
+                let alt_img_name = serie.Name;
+                addedHTMLSeries += '<div class="content-sliders text-center';
+                if(typeof serie.Tags !== 'undefined'){
+                    // If the series have a list of Tags
+                    for (let tag_name of serie.Tags){
+                        // We add the tags existing for this serie as classes
+                        addedHTMLSeries += ' ' + tag_name;
+                    }
+                    alt_img_name = alt_img_name.toLowerCase().replace(/\s/g, "");      
+                }
+                
+                addedHTMLSeries += `">\n\t<img class="content-sliders-image" src="${serie.Cover}" alt="img_${alt_img_name}">\n</div>`;
             }
         }
         addedHTMLSeries += '\n</div>';

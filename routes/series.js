@@ -7,7 +7,7 @@ const queries = require('./queries');
 // Make sure the database is up to date (In the future this will be triggered by the user!)
 
 router.get('/', authRouter.requireAuth, (req, res) => {
-    res.render('series', {success_msg: req.flash('success_msg'), error_msg: req.flash('error_msg')});
+    res.render('series', {success_msg: req.flash('success_msg'), error_msg: req.flash('error_msg'), series: true});
 });
 
 router.get('/any', async (req, res) => {
@@ -29,6 +29,8 @@ router.get('/any_completed', async (req, res) => {
 router.get('/infoSeries', authRouter.requireAuth, async (req, res) => {
     queries.getCovers('Serie', false)
     .then(infoSeries => {
+        console.log("InfoSeries: ");
+        console.log(infoSeries);
         res.json(infoSeries[0]);
     }).catch(error => {
         res.send("Error occured:" + error);

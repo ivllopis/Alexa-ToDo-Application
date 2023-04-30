@@ -50,6 +50,9 @@
                     }
                     additionalInfo += parsedResponse.data.Genres[n_genres-1] + '</p><p>';
                 }
+                if(typeof parsedResponse.data.Date_completion !== 'undefined') {
+                    additionalInfo += 'Date of completion: ' + parsedResponse.data.Date_completion + '</p><p>';
+                }
 
                 document.getElementById('info-additional').innerHTML=additionalInfo;
                 document.getElementById('info-title').innerHTML = 'Item information';
@@ -111,8 +114,18 @@
         const parsedResponse = JSON.parse(res);
         var addedHTMLVideogames = '<div class="center">\n\t';
         for(let videogame of parsedResponse) {
-            if(typeof videogame.Cover !== 'undefined'){ //what to do if the element is not found?
-                addedHTMLVideogames += `<div class="content-sliders text-center">\n\t<img class="content-sliders-image" src="${videogame.Cover}" alt="img">\n</div>`;
+            if(typeof videogame.Cover !== 'undefined'){
+                let alt_img_name = videogame.Name;
+                addedHTMLVideogames += '<div class="content-sliders text-center';
+                if(typeof videogame.Tags !== 'undefined'){
+                    // If the videogame has a list of Tags
+                    for (let tag_name of videogame.Tags){
+                        // We add the tags existing for this videogame as classes
+                        addedHTMLVideogames += ' ' + tag_name;
+                    }
+                    alt_img_name = alt_img_name.toLowerCase().replace(/\s/g, "");      
+                }
+                addedHTMLVideogames += `">\n\t<img class="content-sliders-image" src="${videogame.Cover}" alt="img_${alt_img_name}">\n</div>`;
             }
         }
         addedHTMLVideogames += '\n</div>';

@@ -1,11 +1,43 @@
 <div class="container-fluid bg-light">  
     <div class="row">
-        <div class="col-11 text-right">
-            <button type="button" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
-                Filter slides
+        <!-- The total sum of div col-x numbers should add up to 12 in total -->
+        {{#if series}}
+            <div class="col-9"></div>
+            <div class="col-1 text-right">
+                <button type="button" data-filter="animes" id="anime-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                    Animes
+                </button>
+            </div>
+            <div class="col-1 text-right">
+                <button type="button" data-filter="oldschool" id="oldschool-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                    Old school
+                </button>
+            </div>
+        {{else if movies}}
+            <div class="col-9"></div>
+            <div class="col-1 text-right">
+                <button type="button" data-filter="animes" id="anime-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                    Animes
+                </button>
+            </div>
+            <div class="col-1 text-right">
+                <button type="button" data-filter="oldschool" id="oldschool-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                    Old school
+                </button>
+            </div>
+        {{else}}
+            <div class="col-10"></div>
+            <div class="col-1 text-right">
+                <button type="button"  data-filter="soulslike" id="soulslike-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                    Souls-like
+                </button>
+            </div>
+        {{/if}}
+        <div class="col-1">
+            <button type="button" id="clear-filters-button-id" class="btn btn-outline-dark btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                Clear Filters
             </button>
         </div>
-        <div class="col-1"></div>
     </div>
 </div>
 

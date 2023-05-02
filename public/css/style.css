@@ -47,6 +47,38 @@
     max-width: 70%;
 }
 
+.button-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    text-align: right; /* align the list items to the right */
+}
+
+.button-list li {
+    display: inline-block; /* display the list items inline */
+    margin-left: 10px; /* add some space between the buttons */
+}
+
+.button-bottom-carousel-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    /*max-width: 600px;*/
+}
+
+/* Style for the left button */
+.left-button-bottom-carousel {
+    margin-left: 10%;
+    margin-right: 15%;
+}
+
+/* Style for the right button */
+.right-button-bottom-carousel {
+    margin-right: 10%;
+    margin-left: 15%;
+}
+
 .tag-button{
     font-size: .775rem;
 }

@@ -1,44 +1,21 @@
-<div class="container-fluid bg-light">  
-    <div class="row">
-        <!-- The total sum of div col-x numbers should add up to 12 in total -->
+<div class="container-fluid bg-light pt-1">
+    <ul class="button-list">
         {{#if series}}
-            <div class="col-9"></div>
-            <div class="col-1 text-right">
-                <button type="button" data-filter="animes" id="anime-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+            <li><button type="button" data-filter="animes" id="anime-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
                     Animes
-                </button>
-            </div>
-            <div class="col-1 text-right">
-                <button type="button" data-filter="oldschool" id="oldschool-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                </button></li>
+            <li><button type="button" data-filter="oldschool" id="oldschool-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
                     Old school
-                </button>
-            </div>
-        {{else if movies}}
-            <div class="col-9"></div>
-            <div class="col-1 text-right">
-                <button type="button" data-filter="animes" id="anime-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
-                    Animes
-                </button>
-            </div>
-            <div class="col-1 text-right">
-                <button type="button" data-filter="oldschool" id="oldschool-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
-                    Old school
-                </button>
-            </div>
+                </button></li>
         {{else}}
-            <div class="col-10"></div>
-            <div class="col-1 text-right">
-                <button type="button"  data-filter="soulslike" id="soulslike-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+            <li></li><button type="button"  data-filter="soulslike" id="soulslike-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
                     Souls-like
-                </button>
-            </div>
+                </button></li>
         {{/if}}
-        <div class="col-1">
-            <button type="button" id="clear-filters-button-id" class="btn btn-outline-dark btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+        <li><button type="button" data-filter="clear" id="clear-filters-button-id" class="btn btn-outline-dark btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
                 Clear Filters
-            </button>
-        </div>
-    </div>
+            </button></li>            
+    </ul>
 </div>
 
 
@@ -50,44 +27,26 @@
     </div>
 </div>
 
-<div class="container-fluid p-4 text-center">  
-    <div class="row">    
+<div class="container-fluid p-4 text-center">
+    <div class="button-bottom-carousel-container">
         {{#if ps4}}
-            <div class="col-1"></div>
-            <div class="col-2">
-                <a href="/videogames/ps4_completed" class="btn btn-warning" role="button">Not completed</a>
-            </div>
+            <a href="/videogames/ps4_completed" class="btn btn-warning btn-sm left-button-bottom-carousel" role="button">Not completed</a>
         {{else if pc}}
-            <div class="col-1"></div>
-            <div class="col-2">
-                <a href="/videogames/pc_completed" class="btn btn-warning" role="button">Not completed</a>
-            </div>
+            <a href="/videogames/pc_completed" class="btn btn-warning btn-sm left-button-bottom-carousel" role="button">Not completed</a>
         {{else if pc_completed}}
-            <div class="col-1"></div>
-            <div class="col-2">
-                <a href="/videogames/pc" class="btn btn-success" role="button">Completed</a>
-            </div>
+            <a href="/videogames/pc" class="btn btn-success btn-sm left-button-bottom-carousel" role="button">Completed</a>
         {{else if ps4_completed}}
-            <div class="col-1"></div>
-            <div class="col-2">
-                <a href="/videogames/ps4" class="btn btn-success" role="button">Completed</a>
-            </div>
+            <a href="/videogames/ps4" class="btn btn-success btn-sm left-button-bottom-carousel" role="button">Completed</a>
         {{else}}
-            <div class="col-3"></div>
+            <div href="/videogames/ps4" class="btn btn-success btn-sm left-button-bottom-carousel" style="visibility: hidden;" role="button">Not Completed</div>
         {{/if}}
-        <div class="col-6">
-            <button type="button" class="btn btn-primary" onclick="showInfoCurrent()" data-toggle="modal" data-target="#exampleModal">
-                Info
-            </button>
-        </div>
-        <div class="col-2">
-            <button type="button" class="btn btn-secondary mt-1" onclick="recommendMeSomething()" data-toggle="modal" data-target="#exampleModal">
-                Recommend me
-            </button>
-        </div>
-        <div class="col-1"></div>
+        <button type="button" class="btn btn-primary" onclick="showInfoCurrent()" data-toggle="modal" data-target="#exampleModal">
+            Info
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm right-button-bottom-carousel" onclick="recommendMeSomething()" data-toggle="modal" data-target="#exampleModal">
+            Recommend me
+        </button>
     </div>
-    <br/>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="info-title" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">

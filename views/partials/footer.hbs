@@ -15,70 +15,88 @@
     });
 
     var previousfilterbuttonId = 'undefined';
+    var filter = 'undefined'
 
     $('.js-filter-slides-button').on('click', function(){
         // Unfliter previously possible filters applied to the carousel
         $('.center').slick('slickUnfilter');
-        
-        // Obtain the filter we want to apply through the data-filter
-        var filter = $(this).data('filter');
 
-        if (previousfilterbuttonId !== 'undefined') {
-            // We remove the style ('active' class) of the button of the previous applied filter
-            var button = document.getElementById(previousfilterbuttonId);
-            button.classList.remove('active');
-        }
         // We assign this button id as the next previous filter button id
-        previousfilterbuttonId = $(this).attr('id');
-        
-        if(filter === 'animes'){
-            // Filter animes
-            $('.center').slick('slickFilter', '.anime');
-        } else if (filter === 'oldschool') {
-            // Filter old school shows
-            $('.center').slick('slickFilter', '.old-school');
-        } else if (filter === 'soulslike') {
-            // Filter souls-like games
-            $('.center').slick('slickFilter', '.souls-like');
+        let filterbuttonId = $(this).attr('id');
+        let button = document.getElementById(previousfilterbuttonId);
+
+        if (filterbuttonId === previousfilterbuttonId && filter !== 'undefined') {
+            // We are clicking the same button to un-filter: we reset the button's style and blur to unfocus
+            // We have unfiltered the carousel by default
+            // We assign the undefined as the applied filter to the variable
+            filter = 'undefined';
+            button.classList.remove('active');
+            $(this).blur();
+        } else {
+            // Obtain the filter we want to apply through the data-filter
+            filter = $(this).data('filter');
+            
+            // List of available filters
+            if(filter === 'animes'){
+                // Filter animes
+                $('.center').slick('slickFilter', '.anime');
+            } else if (filter === 'oldschool') {
+                // Filter old school shows
+                $('.center').slick('slickFilter', '.old-school');
+            } else if (filter === 'soulslike') {
+                // Filter souls-like games
+                $('.center').slick('slickFilter', '.souls-like');
+            } else if (filter === 'clear') {
+                // We have unfiltered the carousel by default
+                // We assign the undefined as the applied filter to the variable
+                filter = 'undefined';
+            }
+
+            if (filterbuttonId !== previousfilterbuttonId && previousfilterbuttonId !== 'undefined') {
+                // We remove the style ('active' class) of the button of the previous applied filter
+                button.classList.remove('active');
+            }
         }
+        
+        previousfilterbuttonId = filterbuttonId;
     });
 
     function startCarousel(){
-    $('.center').slick({
-        centerMode: true,
-        centerPadding: '5px', // dots: true, tengo que pensar más sobre esto
-        slidesToShow: 3,
-        swipeToSlide: true, // custom feat.
-        responsive: [
-        {
-            breakpoint: 1500,
-            settings: {
-            arrows: false,
+        $('.center').slick({
             centerMode: true,
-            centerPadding: '5px',
-            slidesToShow: 3
+            centerPadding: '5px', // dots: true, tengo que pensar más sobre esto
+            slidesToShow: 3,
+            swipeToSlide: true, // custom feat.
+            responsive: [
+            {
+                breakpoint: 1500,
+                settings: {
+                arrows: false,
+                centerMode: true,
+                centerPadding: '5px',
+                slidesToShow: 3
+                }
+            },
+            {
+                breakpoint: 1080,
+                settings: {
+                arrows: true,
+                centerMode: true,
+                centerPadding: '5px',
+                slidesToShow: 3
+                }
+            },
+            {
+                breakpoint: 760,
+                settings: {
+                arrows: true,
+                centerMode: true,
+                centerPadding: '5px',
+                slidesToShow: 1
+                }
             }
-        },
-        {
-            breakpoint: 1080,
-            settings: {
-            arrows: true,
-            centerMode: true,
-            centerPadding: '5px',
-            slidesToShow: 3
-            }
-        },
-        {
-            breakpoint: 760,
-            settings: {
-            arrows: true,
-            centerMode: true,
-            centerPadding: '5px',
-            slidesToShow: 1
-            }
-        }
-        ]
-    });
+            ]
+        });
     }
 
     function httpGetAsync(theUrl, callback)

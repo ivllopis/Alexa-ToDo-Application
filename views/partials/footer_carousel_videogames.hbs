@@ -14,8 +14,11 @@
     {{/if}}
 
     function showInfoCurrent(){
-        const currentSlide = $('.center').slick('slickCurrentSlide');
-        httpGetAsync(`${videogames_dir}/${currentSlide}`, (res) =>{
+        // Get the center slide information
+        const center_slide = document.getElementsByClassName('slick-center')[0];
+        const current_slide_number = center_slide.getAttribute("data-slide-number");
+
+        httpGetAsync(`${videogames_dir}/${current_slide_number}`, (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
                 if(typeof parsedResponse.data.Cover !== 'undefined'){
@@ -64,6 +67,7 @@
     }
 
     function recommendMeSomething(){
+        // TODO: Use the var filter (defined in carousel) to make different API calls based on that
         httpGetAsync(`${videogames_dir}/any`, (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
@@ -116,16 +120,17 @@
         for(let videogame of parsedResponse) {
             if(typeof videogame.Cover !== 'undefined'){
                 let alt_img_name = videogame.Name;
+                alt_img_name = alt_img_name.replace(/\s/g, "");
+                
                 addedHTMLVideogames += '<div class="content-sliders text-center';
                 if(typeof videogame.Tags !== 'undefined'){
                     // If the videogame has a list of Tags
                     for (let tag_name of videogame.Tags){
                         // We add the tags existing for this videogame as classes
                         addedHTMLVideogames += ' ' + tag_name;
-                    }
-                    alt_img_name = alt_img_name.toLowerCase().replace(/\s/g, "");      
+                    } 
                 }
-                addedHTMLVideogames += `">\n\t<img class="content-sliders-image" src="${videogame.Cover}" alt="img_${alt_img_name}">\n</div>`;
+                addedHTMLVideogames += `" data-slide-number="${videogame.Slide_number}">\n\t<img class="content-sliders-image" src="${videogame.Cover}" alt="img_${alt_img_name}">\n</div>`;
             }
         }
         addedHTMLVideogames += '\n</div>';

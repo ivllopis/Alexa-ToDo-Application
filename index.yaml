@@ -6,9 +6,11 @@ indexes:
 - kind: Videogame
   properties:
   - name: Platform
-  - name: Completed
   - name: Slide_number
-  - name: Cover
+- kind: Videogame
+  properties:
+  - name: Tags
+  - name: Name
 - kind: Videogame
   properties:
   - name: Platform
@@ -28,7 +30,15 @@ indexes:
 - kind: Videogame
   properties:
   - name: Platform
+  - name: Completed
   - name: Slide_number
+  - name: Cover
+- kind: Videogame
+  properties:
+  - name: Tags
+  - name: Completed
+  - name: Platform
+  - name: Name
 - kind: Serie
   properties:
   - name: Completed
@@ -41,6 +51,11 @@ indexes:
     direction: desc
 - kind: Serie
   properties:
+  - name: Completed
+  - name: Name
+- kind: Serie
+  properties:
+  - name: Tags
   - name: Completed
   - name: Name
 - kind: Movie
@@ -57,3 +72,8 @@ indexes:
   - name: Completed
   - name: Slide_number
     direction: desc
+- kind: Movie
+  properties:
+  - name: Tags
+  - name: Completed
+  - name: Name

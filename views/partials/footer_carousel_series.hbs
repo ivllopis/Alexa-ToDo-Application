@@ -3,25 +3,42 @@
 <script type="text/javascript">
     const home_url = 'https://recommender-279710.ey.r.appspot.com';
 
+    {{#if series}}
+        const series_dir = home_url + '/series';
+    {{else if series_completed}}
+        const series_dir = home_url + '/series/completed';
+    {{/if}}
+    
+    function parseResponse(parsedResponse, mode){
+        if(typeof parsedResponse.data.Cover !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Cover;
+        if(typeof parsedResponse.data.Name !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
+        if(typeof parsedResponse.data.Synopsis !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Synopsis;
+        
+        var additionalInfo = ''; //additional information about the series
+        if(typeof parsedResponse.data.Year !== 'undefined') additionalInfo += 'Year: ' + parsedResponse.data.Year + '</p><p>';
+        if(typeof parsedResponse.data.Writers !== 'undefined') additionalInfo += '\tWriters: ' + parsedResponse.data.Writers + '</p><p>';
+        if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += '\nActors: ' + parsedResponse.data.Actors + '</p><p>';
+        if(typeof parsedResponse.data.Date_completion !== 'undefined') additionalInfo += '\nDate of completion: ' + parsedResponse.data.Date_completion + '</p><p>';
+
+        document.getElementById('info-additional').innerHTML=additionalInfo;
+
+        if (mode === 'info') {
+            document.getElementById('info-title').innerHTML = 'Item information';
+        } else if (mode === 'recommendation') {
+            document.getElementById('info-title').innerHTML = 'Your recommendation';
+            $('.center').slick('slickGoTo', parsedResponse.index, true);
+        }
+    }
+
     function showInfoCurrent(){
         // Get the center slide information
         const center_slide = document.getElementsByClassName('slick-center')[0];
         const current_slide_number = center_slide.getAttribute("data-slide-number");
 
-        httpGetAsync(`${home_url}/series/${current_slide_number}`, (res) =>{
+        httpGetAsync(`${series_dir}/${current_slide_number}`, (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
-                if(typeof parsedResponse.data.Cover !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Cover;
-                if(typeof parsedResponse.data.Name !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
-                if(typeof parsedResponse.data.Synopsis !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Synopsis;
-                
-                var additionalInfo = ''; //additional information about the series
-                if(typeof parsedResponse.data.Year !== 'undefined') additionalInfo += 'Year: ' + parsedResponse.data.Year + '</p><p>';
-                if(typeof parsedResponse.data.Writers !== 'undefined') additionalInfo += '\tWriters: ' + parsedResponse.data.Writers + '</p><p>';
-                if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += '\nActors: ' + parsedResponse.data.Actors + '</p><p>';
-
-                document.getElementById('info-additional').innerHTML=additionalInfo;
-                document.getElementById('info-title').innerHTML = 'Item information';
+                parseResponse(parsedResponse, 'info');
             } catch(error){
                 console.log(error); //throw error or flash it
             }
@@ -30,31 +47,31 @@
     }
 
     function recommendMeSomething(){
-        // TODO: Use the var filter (defined in carousel) to make different API calls based on that
-        httpGetAsync(`${home_url}/series/any`, (res) =>{
-            try{
-                const parsedResponse = JSON.parse(res);
-                if(typeof parsedResponse.data.Cover !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Cover;
-                if(typeof parsedResponse.data.Name !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
-                if(typeof parsedResponse.data.Synopsis !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Synopsis;
-                
-                var additionalInfo = ''; //additional information about the series
-                if(typeof parsedResponse.data.Year !== 'undefined') additionalInfo += 'Year: ' + parsedResponse.data.Year + '</p><p>';
-                if(typeof parsedResponse.data.Writers !== 'undefined') additionalInfo += '\tWriters: ' + parsedResponse.data.Writers + '</p><p>';
-                if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += '\nActors: ' + parsedResponse.data.Actors + '</p><p>';
-
-                document.getElementById('info-additional').innerHTML=additionalInfo;
-                document.getElementById('info-title').innerHTML = 'Your recommendation';
-                
-                $('.center').slick('slickGoTo', parsedResponse.index, true);
-            } catch(error){
-                console.log(error); //throw error or flash it
-            }
-        });
+        // We use the var filter (defined in carousel) to make different API calls based on the current filter applied to the slides
+        var parsedResponse;
+        if (filter === 'undefined') {
+            httpGetAsync(`${series_dir}/any`, (res) =>{
+                try{
+                    parsedResponse = JSON.parse(res);
+                    parseResponse(parsedResponse, 'recommendation');
+                } catch(error){
+                    console.log(error); //throw error or flash it
+                }
+            });
+        } else {
+            httpGetAsync(`${series_dir}/any/${filter}`, (res) =>{
+                try{
+                    parsedResponse = JSON.parse(res);
+                    parseResponse(parsedResponse, 'recommendation');
+                } catch(error){
+                    console.log(error); //throw error or flash it
+                }
+            });
+        }
     }
     
     // Request series from the database and showcase them in the carousel
-    httpGetAsync(`${home_url}/series/infoSeries`, (res) =>{
+    httpGetAsync(`${series_dir}/infoSeries`, (res) =>{
     try{
         const parsedResponse = JSON.parse(res);
         var addedHTMLSeries = '<div class="center">\n\t';

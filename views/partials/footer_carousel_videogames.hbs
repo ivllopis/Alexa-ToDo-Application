@@ -13,6 +13,52 @@
         const videogames_dir = home_url + '/videogames/pc_completed';
     {{/if}}
 
+    function parseResponse(parsedResponse, mode){
+        if(typeof parsedResponse.data.Cover !== 'undefined'){
+            document.getElementById('info-picture').src=parsedResponse.data.Cover;
+        } else {
+            document.getElementById('info-picture').src='';
+            document.getElementById('info-picture').alt=parsedResponse.data.Name;
+        }
+
+        if(typeof parsedResponse.data.Name !== 'undefined'){
+            document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
+        } else {
+            document.getElementById('info-name').innerHTML = 'This game could not be found.';
+        }
+
+        if(typeof parsedResponse.data.Storyline !== 'undefined'){
+            document.getElementById('info-description').innerHTML = 'Storyline: ' + parsedResponse.data.Storyline;
+        } else {
+            document.getElementById('info-description').innerHTML = 'Storyline: could not be found for the game.';
+        }
+
+        
+        var additionalInfo = ''; //additional information about the Videogames
+        if(typeof parsedResponse.data.Summary !== 'undefined') {
+            additionalInfo += 'Summary: ' + parsedResponse.data.Summary + '</p><p>';
+        }
+        if(typeof parsedResponse.data.Genres !== 'undefined') {
+            additionalInfo += 'Genres: ';
+            const n_genres = parsedResponse.data.Genres.length; // number of genres for this videogame
+            for(var i = 0; i < n_genres-1; i++){
+                additionalInfo += parsedResponse.data.Genres[i] + ', ';
+            }
+            additionalInfo += parsedResponse.data.Genres[n_genres-1] + '</p><p>';
+        }
+        if(typeof parsedResponse.data.Date_completion !== 'undefined') {
+            additionalInfo += 'Date of completion: ' + parsedResponse.data.Date_completion + '</p><p>';
+        }
+        document.getElementById('info-additional').innerHTML=additionalInfo;
+
+        if (mode === 'info') {
+            document.getElementById('info-title').innerHTML = 'Item information';
+        } else if (mode === 'recommendation') {
+            document.getElementById('info-title').innerHTML = 'Your recommendation';
+            $('.center').slick('slickGoTo', parsedResponse.index, true);
+        }
+    }
+
     function showInfoCurrent(){
         // Get the center slide information
         const center_slide = document.getElementsByClassName('slick-center')[0];
@@ -21,44 +67,7 @@
         httpGetAsync(`${videogames_dir}/${current_slide_number}`, (res) =>{
             try{
                 const parsedResponse = JSON.parse(res);
-                if(typeof parsedResponse.data.Cover !== 'undefined'){
-                    document.getElementById('info-picture').src=parsedResponse.data.Cover;
-                } else {
-                    document.getElementById('info-picture').src='';
-                    document.getElementById('info-picture').alt=parsedResponse.data.Name;
-                }
-
-                if(typeof parsedResponse.data.Name !== 'undefined'){
-                    document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
-                } else {
-                    document.getElementById('info-name').innerHTML = 'This game could not be found.';
-                }
-
-                if(typeof parsedResponse.data.Storyline !== 'undefined'){
-                    document.getElementById('info-description').innerHTML = 'Storyline: ' + parsedResponse.data.Storyline;
-                } else {
-                    document.getElementById('info-description').innerHTML = 'Storyline: could not be found for the game.';
-                }
-
-                
-                var additionalInfo = ''; //additional information about the Videogames
-                if(typeof parsedResponse.data.Summary !== 'undefined') {
-                    additionalInfo += 'Summary: ' + parsedResponse.data.Summary + '</p><p>';
-                }
-                if(typeof parsedResponse.data.Genres !== 'undefined') {
-                    additionalInfo += 'Genres: ';
-                    const n_genres = parsedResponse.data.Genres.length; // number of genres for this videogame
-                    for(var i = 0; i < n_genres-1; i++){
-                        additionalInfo += parsedResponse.data.Genres[i] + ', ';
-                    }
-                    additionalInfo += parsedResponse.data.Genres[n_genres-1] + '</p><p>';
-                }
-                if(typeof parsedResponse.data.Date_completion !== 'undefined') {
-                    additionalInfo += 'Date of completion: ' + parsedResponse.data.Date_completion + '</p><p>';
-                }
-
-                document.getElementById('info-additional').innerHTML=additionalInfo;
-                document.getElementById('info-title').innerHTML = 'Item information';
+                parseResponse(parsedResponse, 'info');
             } catch(error){
                 console.log(error); //throw error or flash it
             }
@@ -67,49 +76,26 @@
     }
 
     function recommendMeSomething(){
-        // TODO: Use the var filter (defined in carousel) to make different API calls based on that
-        httpGetAsync(`${videogames_dir}/any`, (res) =>{
-            try{
-                const parsedResponse = JSON.parse(res);
-                if(typeof parsedResponse.data.Cover !== 'undefined'){
-                    document.getElementById('info-picture').src=parsedResponse.data.Cover;
-                } else {
-                    document.getElementById('info-picture').src='';
-                    document.getElementById('info-picture').alt=parsedResponse.data.Name;
+        // We use the var filter (defined in carousel) to make different API calls based on the current filter applied to the slides
+        if (filter === 'undefined') {
+            httpGetAsync(`${videogames_dir}/any`, (res) =>{
+                try{
+                    const parsedResponse = JSON.parse(res);
+                    parseResponse(parsedResponse, 'recommendation');
+                } catch(error){
+                    console.log(error); //throw error or flash it
                 }
-
-                if(typeof parsedResponse.data.Name !== 'undefined'){
-                    document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
-                } else {
-                    document.getElementById('info-name').innerHTML = 'This game could not be found.';
+            });
+        } else {
+            httpGetAsync(`${videogames_dir}/any/${filter}`, (res) =>{
+                try{
+                    const parsedResponse = JSON.parse(res);
+                    parseResponse(parsedResponse, 'recommendation');
+                } catch(error){
+                    console.log(error); //throw error or flash it
                 }
-
-                if(typeof parsedResponse.data.Storyline !== 'undefined'){
-                    document.getElementById('info-description').innerHTML = 'Storyline: ' + parsedResponse.data.Storyline;
-                } else {
-                    document.getElementById('info-description').innerHTML = 'Storyline: could not be found for the game.';
-                }
-
-                
-                var additionalInfo = ''; //additional information about the Videogames
-                if(typeof parsedResponse.data.Summary !== 'undefined') {
-                    additionalInfo += 'Summary: ' + parsedResponse.data.Summary + '</p><p>';
-                }
-                if(typeof parsedResponse.data.Genres !== 'undefined') {
-                    additionalInfo += 'Genres: ';
-                    const n_genres = parsedResponse.data.Genres.length; // number of genres for this videogame
-                    for(var i = 0; i < n_genres-1; i++){
-                        additionalInfo += parsedResponse.data.Genres[i] + ', ';
-                    }
-                    additionalInfo += parsedResponse.data.Genres[n_genres-1] + '</p><p>';
-                }
-                document.getElementById('info-additional').innerHTML=additionalInfo;
-                document.getElementById('info-title').innerHTML = 'Your recommendation';
-                $('.center').slick('slickGoTo', parsedResponse.index, true);
-            } catch(error){
-                console.log(error); //throw error or flash it
-            }
-        });
+            });
+        }
     }
     
     // Request Videogames from the database and showcase them in the carousel

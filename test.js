@@ -247,28 +247,20 @@ async function getVisits(kind, completed, platform) {
   return datastore.runQuery(query);
 };
 
-async function trythis(nameshow){
+async function trythis(){
     try{
-        const [entities] = await getVisits('Serie', false);
-        const elements = entities.slice(0, 55);
-        console.log(elements);
-        for(let element of elements) {
-            if(typeof element.Tags !== 'undefined'){
-                console.log("New Element:");
-                console.log(element);
-                for (let tag of element.Tags) {
-                    console.log("Tag: ", tag);
-                }
-                console.log("\n\n");
-            }
+        const [entities] = await queries.getInfoEntitiesTag('Videogame', 'souls-like', true, 'PS4');
+        console.log(entities.length);
+        for (entity of entities){
+            console.log(entity.Name);
         }
     } catch (error){
-        console.log(error)
+        console.log(error);
     }
 }
 
 // quickstart();
 // synchronizeData();
 // sync_token_db('T8vRyIxQU_CeLifXys36sd3Z19qTwL59r4twbf4qlsKPLYShZsPTDZ_OqOHlk0xvfDI84fV4Qddp7pknmhMByoN4vnBlOqYaLH0NeMvcgSTdUGw');
-// trythis('Bloodborne');
+// trythis();
 // entityKeyasd = datastore.key(['Not_found', 'idk']);

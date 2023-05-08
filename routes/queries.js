@@ -72,6 +72,29 @@ async function getInfoEntity(slide_n, kind, completed, filterPlatformproperty) {
     return datastore.runQuery(query);
 }
 
+async function getInfoEntitiesTag(kind, filterTagproperty, completed, filterPlatformproperty) {
+    let query = datastore.createQuery(kind);
+    if(filterTagproperty !== undefined) {
+        query = query.filter('Tags', '=', filterTagproperty);
+    }
+    if(completed !== undefined) {
+        query = query.filter('Completed', '=', completed);
+    }
+    if(filterPlatformproperty !== undefined) {
+        if(completed !== undefined) {
+            query = query.filter('Platform', '=', filterPlatformproperty);
+        } else {
+            throw new Error("Provide second argument in the call getEntities.");
+        }
+    }
+    
+    // We order them by name
+    query = query.order('Name', {ascending: true});
+
+    return datastore.runQuery(query);
+}
+
 module.exports.getInfoEntity = getInfoEntity;
 module.exports.getCovers = getCovers;
+module.exports.getInfoEntitiesTag = getInfoEntitiesTag;
 module.exports.getNumberEntities = getNumberEntities;

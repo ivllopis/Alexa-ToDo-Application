@@ -69,11 +69,27 @@ router.get('/any_completed', async (req, res) => {
 });
 
 router.get('/pc/any', async (req, res) => {
-    const [entities] = await queries.getNumberEntities('Videogame', false, 'PC');
-    const num_total_entities = entities[0].Slide_number;
-    const random_number = Math.round(Math.random() * num_total_entities);
-    const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Videogame', false, 'PC');
-    res.json({index: random_number, data: recommended_random_entity[0]});
+    try {
+        const [entities] = await queries.getNumberEntities('Videogame', false, 'PC');
+        const num_total_entities = entities[0].Slide_number;
+        const random_number = Math.round(Math.random() * num_total_entities);
+        const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Videogame', false, 'PC');
+        res.json({index: random_number, data: recommended_random_entity[0]});
+    } catch(error) {
+        res.send(error);
+    }
+});
+
+router.get('/pc/any/:filtertag', async (req, res) => {
+    try {
+        const filtertag = req.params.filtertag;
+        const [entities] = await queries.getInfoEntitiesTag('Videogame', filtertag, false, 'PC');
+        const num_total_entities = entities.length;
+        const random_number = Math.round(Math.random() * num_total_entities);
+        res.json({index: random_number, data: entities[random_number]});
+    } catch(error) {
+        res.send(error);
+    }
 });
 
 router.get('/pc/infoVideogames', authRouter.requireAuth, async (req, res) => {
@@ -110,6 +126,18 @@ router.get('/pc_completed/any', async (req, res) => {
     res.json({index: random_number, data: recommended_random_entity[0]});
 });
 
+router.get('/pc_completed/any/:filtertag', async (req, res) => {
+    try {
+        const filtertag = req.params.filtertag;
+        const [entities] = await queries.getInfoEntitiesTag('Videogame', filtertag, true, 'PC');
+        const num_total_entities = entities.length;
+        const random_number = Math.round(Math.random() * num_total_entities);
+        res.json({index: random_number, data: entities[random_number]});
+    } catch(error) {
+        res.send(error);
+    }
+});
+
 router.get('/pc_completed/infoVideogames', authRouter.requireAuth, async (req, res) => {
     queries.getCovers('Videogame', true, 'PC')
     .then(infoPCVideogames => {
@@ -137,11 +165,27 @@ router.get('/pc_completed/:id', authRouter.requireAuth, async (req, res) => {
 });
 
 router.get('/ps4/any', async (req, res) => {
-    const [entities] = await queries.getNumberEntities('Videogame', false, 'PS4');
-    const num_total_entities = entities[0].Slide_number;
-    const random_number = Math.round(Math.random() * num_total_entities);
-    const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Videogame', false, 'PS4');
-    res.json({index: random_number, data: recommended_random_entity[0]});
+    try {
+        const [entities] = await queries.getNumberEntities('Videogame', false, 'PS4');
+        const num_total_entities = entities[0].Slide_number;
+        const random_number = Math.round(Math.random() * num_total_entities);
+        const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Videogame', false, 'PS4');
+        res.json({index: random_number, data: recommended_random_entity[0]});
+    } catch(error) {
+        res.send(error);
+    }
+});
+
+router.get('/ps4/any/:filtertag', async (req, res) => {
+    try {
+        const filtertag = req.params.filtertag;
+        const [entities] = await queries.getInfoEntitiesTag('Videogame', filtertag, false, 'PS4');
+        const num_total_entities = entities.length;
+        const random_number = Math.round(Math.random() * num_total_entities);
+        res.json({index: random_number, data: entities[random_number]});
+    } catch(error) {
+        res.send(error);
+    }
 });
 
 router.get('/ps4/infoVideogames', authRouter.requireAuth, async (req, res) => {
@@ -171,11 +215,27 @@ router.get('/ps4/:id', authRouter.requireAuth, async (req, res) => {
 });
 
 router.get('/ps4_completed/any', async (req, res) => {
-    const [entities] = await queries.getNumberEntities('Videogame', true, 'PS4');
-    const num_total_entities = entities[0].Slide_number;
-    const random_number = Math.round(Math.random() * num_total_entities);
-    const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Videogame', true, 'PS4');
-    res.json({index: random_number, data: recommended_random_entity[0]});
+    try {
+        const [entities] = await queries.getNumberEntities('Videogame', true, 'PS4');
+        const num_total_entities = entities[0].Slide_number;
+        const random_number = Math.round(Math.random() * num_total_entities);
+        const [recommended_random_entity] = await queries.getInfoEntity(random_number, 'Videogame', true, 'PS4');
+        res.json({index: random_number, data: recommended_random_entity[0]});
+    } catch(error) {
+        res.send(error);
+    }
+});
+
+router.get('/ps4_completed/any/:filtertag', async (req, res) => {
+    try {
+        const filtertag = req.params.filtertag;
+        const [entities] = await queries.getInfoEntitiesTag('Videogame', filtertag, true, 'PS4');
+        const num_total_entities = entities.length;
+        const random_number = Math.round(Math.random() * num_total_entities);
+        res.json({index: random_number, data: entities[random_number]});
+    } catch(error) {
+        res.send(error);
+    }
 });
 
 router.get('/ps4_completed/infoVideogames', authRouter.requireAuth, async (req, res) => {

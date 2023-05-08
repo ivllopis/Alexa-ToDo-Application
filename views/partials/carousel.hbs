@@ -1,14 +1,29 @@
 <div class="container-fluid bg-light pt-1">
     <ul class="button-list">
         {{#if series}}
-            <li><button type="button" data-filter="animes" id="anime-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+            <li><button type="button" data-filter="anime" id="anime-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
                     Animes
                 </button></li>
-            <li><button type="button" data-filter="oldschool" id="oldschool-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
-                    Old school
+            <li><button type="button" data-filter="docummentary" id="docummentary-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                    Docummentaries
+                </button></li>
+        {{else if series_completed}}
+            <li><button type="button" data-filter="anime" id="anime-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                    Animes
+                </button></li>
+            <li><button type="button" data-filter="docummentary" id="docummentary-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                    Docummentaries
+                </button></li>
+        {{else if movies}}
+            <li><button type="button" data-filter="anime" id="anime-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                    Animes
+                </button></li>
+        {{else if movies_completed}}
+            <li><button type="button" data-filter="anime" id="anime-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+                    Animes
                 </button></li>
         {{else}}
-            <li></li><button type="button"  data-filter="soulslike" id="soulslike-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
+            <li></li><button type="button"  data-filter="souls-like" id="souls-like-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
                     Souls-like
                 </button></li>
         {{/if}}
@@ -37,6 +52,14 @@
             <a href="/videogames/pc" class="btn btn-success btn-sm left-button-bottom-carousel" role="button">Completed</a>
         {{else if ps4_completed}}
             <a href="/videogames/ps4" class="btn btn-success btn-sm left-button-bottom-carousel" role="button">Completed</a>
+        {{else if movies}}
+            <a href="/movies/completed" class="btn btn-warning btn-sm left-button-bottom-carousel" role="button">Not completed</a>
+        {{else if movies_completed}}
+            <a href="/movies" class="btn btn-success btn-sm left-button-bottom-carousel" role="button">Completed</a>
+        {{else if series}}
+            <a href="/series/completed" class="btn btn-warning btn-sm left-button-bottom-carousel" role="button">Not completed</a>
+        {{else if series_completed}}
+            <a href="/series" class="btn btn-success btn-sm left-button-bottom-carousel" role="button">Completed</a>
         {{else}}
             <div href="/videogames/ps4" class="btn btn-success btn-sm left-button-bottom-carousel" style="visibility: hidden;" role="button">Not Completed</div>
         {{/if}}

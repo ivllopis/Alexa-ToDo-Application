@@ -66,18 +66,12 @@ async function getShowData(nameshow) {
             dataShowRaw = dataShowRaw.data;
 
             if(dataShowRaw.Response === 'False'){
-                //if(dataShowRaw.Error === 'Movie not found!'){
                 console.warn(nameshow + " could not be found in the database.");
                 dataShow.Name = nameshow;
                 dataShow.NotFound = true;
                 dataShow.Type = 'Serie/Movie';
                 resolve(dataShow);
                 return;
-                /*} else {
-                    console.warn(`Could not retrieve data information for the show ${nameshow}.`);
-                    reject();
-                    return;
-                }*/
             }
             if((typeof dataShowRaw.Poster === 'undefined') || (dataShowRaw.Poster === 'N/A')){
                 console.warn(nameshow + " could not be found in the database.");
@@ -102,6 +96,7 @@ async function getShowData(nameshow) {
             dataShow.Year = dataShowRaw.Year;
             dataShow.Completed = false;
             dataShow.Slide_number = 'N/A';
+            dataShow.Tags = [];
 
             resolve(dataShow);
         } catch (error) {
@@ -172,7 +167,7 @@ async function getVideogameData(namevideogame, platform) {
             dataVideogame.Slide_number = 'N/A';
             dataVideogame.Completed = false;
             dataVideogame.Active = false;
-            dataVideogame.Tags = 'N/A';
+            dataVideogame.Tags = [];
             
             // Get the genre to the videogame
             let genres_videogame = [];
@@ -203,9 +198,7 @@ async function updateSlideNumbersDatabase() {
             // Update Slide_number property for each kind
             let batchUpdateEntities = await calculateSlideNumbersEntireDatabase();
             if(batchUpdateEntities.length) {
-                console.log("Updating slide numbers in the database...");
                 await datastore.save(batchUpdateEntities);
-                console.log("Done updating slide numbers.");
                 resolve();
             }
         } catch (error) {
@@ -242,7 +235,6 @@ async function completedElementfromtheDatabase(entityKey, date) {
             entity.Date_completion = formattedDate;
 
             // Return updated entity to be saved into database
-            console.log(`Updating entity ${entity.Name} in the database.`);
             resolve(entity);
 
         } catch (error) {
@@ -395,12 +387,10 @@ async function updateDatabase() {
         if(!sync_tokens.length){
             // If it doesn't exist:
             // Use the default sync_token to perform a full sync with Todoist
-            console.log('Performing a full sync...');
             datafromTodoist = await apiCalls.getDataTodoist();
         } else {
             // If it exists:
             // Use the stored sync_token to perform a partial sync with the updates from Todoist
-            console.log(`Performing a partial sync with ${sync_tokens[0].Token} as input token...`);
             datafromTodoist = await apiCalls.getDataTodoist(sync_tokens[0].Token);
         }
 
@@ -462,7 +452,6 @@ async function updateDatabase() {
 
                 // What to do if it is a new entry || What to do if it has changed name
                 dataEntityformatted = await getShowData(item.content);
-                console.log(`Saving ${item.content} in the database... \n`);
 
             } else if((item.project_id === PCfolderid) || (item.project_id === PS4folderid)){
                 
@@ -492,7 +481,7 @@ async function updateDatabase() {
                 dataEntityformatted = (item.project_id === PCfolderid) ? await getVideogameData(item.content, 'PC') : await getVideogameData(item.content, 'PS4');
 
                 // Else the show has been found and has the correct format
-                console.log(`Saving ${item.content} in the database... \n`);
+                // console.log(`Saving ${item.content} in the database... \n`);
 
             }
 
@@ -523,19 +512,16 @@ async function updateDatabase() {
 
             // Delete deletable entities in batch
             if(batchDeleteEntities.length){
-                console.log("Deleting items from the database...");
                 transaction.delete(batchDeleteEntities);
             }
 
             // Save new entities in batch
             if(batchStoreEntities.length) {
-                console.log("Saving new entries into the database...");
                 transaction.save(batchStoreEntities);
             }
 
             // Save new sync_token into database once the information is updated
             const tokenKey = datastore.key(['Sync_token', 'Sync_token']);
-            console.log('Saving new token into the database... \n');
             transaction.save({
                 key: tokenKey,
                 data: {
@@ -545,7 +531,6 @@ async function updateDatabase() {
 
             // Perform a transaction to ensure that we do not lose information when updating the database
             await transaction.commit();
-            console.log("Done.");
             
             // Check consistency of the database
             await updateSlideNumbersDatabase();

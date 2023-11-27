@@ -49,6 +49,9 @@
         if(typeof parsedResponse.data.Date_completion !== 'undefined') {
             additionalInfo += 'Date of completion: ' + parsedResponse.data.Date_completion + '</p><p>';
         }
+        if(typeof parsedResponse.data.First_playthrough_h !== 'undefined') {
+            additionalInfo += 'First playthrough (hrs): ' + parsedResponse.data.First_playthrough_h + '</p><p>';
+        }
         document.getElementById('info-additional').innerHTML=additionalInfo;
 
         if (mode === 'info') {

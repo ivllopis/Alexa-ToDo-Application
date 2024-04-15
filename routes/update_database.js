@@ -496,7 +496,13 @@ async function updateDatabase() {
                     // Check if the entity was previosuly not found
                     let deleteTokenKey = datastore.key(['Not_found', parseInt(item.id)]);
                     let [deleteEntity] = await datastore.get(deleteTokenKey);
+                    // Delete the entity from Not Found before storing it in its intended category
                     if(deleteEntity) batchDeleteEntities.push(deleteTokenKey);
+
+                    // Check if the entity was previosuly stored in DB
+                    let [storedEntity] = await datastore.get(entityKey);
+                    // If the entity existed in DB, store its Tags field in the updated entity
+                    if(storedEntity) dataEntityformatted.Tags = storedEntity.Tags;
                     batchStoreEntities.push({
                         key: entityKey,
                         data: dataEntityformatted,

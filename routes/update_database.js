@@ -168,6 +168,7 @@ async function getVideogameData(namevideogame, platform) {
             dataVideogame.Completed = false;
             dataVideogame.Active = false;
             dataVideogame.Tags = [];
+            dataVideogame.Expected_time_to_beat_h = parseFloat(-1);
             
             // Get the genre to the videogame
             let genres_videogame = [];
@@ -479,9 +480,11 @@ async function updateDatabase() {
 
                 // What to do if it is a new entry || What to do if it has changed name
                 dataEntityformatted = (item.project_id === PCfolderid) ? await getVideogameData(item.content, 'PC') : await getVideogameData(item.content, 'PS4');
-
-                // Else the show has been found and has the correct format
-                // console.log(`Saving ${item.content} in the database... \n`);
+                
+                // Check if the entity was previosuly stored in DB
+                let [storedEntity] = await datastore.get(entityKey);
+                // If the entity existed in DB, store its Expected_time_to_beat_h field in the updated entity
+                if(storedEntity && dataEntityformatted) dataEntityformatted.Expected_time_to_beat_h = storedEntity.Expected_time_to_beat_h;
 
             }
 
@@ -503,6 +506,7 @@ async function updateDatabase() {
                     let [storedEntity] = await datastore.get(entityKey);
                     // If the entity existed in DB, store its Tags field in the updated entity
                     if(storedEntity) dataEntityformatted.Tags = storedEntity.Tags;
+
                     batchStoreEntities.push({
                         key: entityKey,
                         data: dataEntityformatted,

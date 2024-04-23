@@ -35,10 +35,8 @@
 
         
         var additionalInfo = ''; //additional information about the Videogames
-        if(typeof parsedResponse.data.Summary !== 'undefined') {
-            additionalInfo += 'Summary: ' + parsedResponse.data.Summary + '</p><p>';
-        }
-        if(typeof parsedResponse.data.Genres !== 'undefined') {
+        if(typeof parsedResponse.data.Summary !== 'undefined') additionalInfo += 'Summary: ' + parsedResponse.data.Summary + '</p><p>';
+        if(typeof parsedResponse.data.Genres !== 'undefined' && parsedResponse.data.Genres.length > 0) {
             additionalInfo += 'Genres: ';
             const n_genres = parsedResponse.data.Genres.length; // number of genres for this videogame
             for(var i = 0; i < n_genres-1; i++){
@@ -46,12 +44,19 @@
             }
             additionalInfo += parsedResponse.data.Genres[n_genres-1] + '</p><p>';
         }
-        if(typeof parsedResponse.data.Date_completion !== 'undefined') {
-            additionalInfo += 'Date of completion: ' + parsedResponse.data.Date_completion + '</p><p>';
+        if(typeof parsedResponse.data.Tags !== 'undefined' && parsedResponse.data.Tags.length > 0) {
+            additionalInfo += 'Tags: ';
+            const n_tags = parsedResponse.data.Tags.length; // number of tags for this videogame
+            for(var i = 0; i < n_tags-1; i++){
+                additionalInfo += parsedResponse.data.Tags[i] + ', ';
+            }
+            additionalInfo += parsedResponse.data.Tags[n_tags-1] + '</p><p>';
         }
-        if(typeof parsedResponse.data.First_playthrough_h !== 'undefined') {
-            additionalInfo += 'First playthrough (hrs): ' + parsedResponse.data.First_playthrough_h + '</p><p>';
-        }
+        if(typeof parsedResponse.data.Date_completion !== 'undefined') additionalInfo += 'Date of completion: ' + parsedResponse.data.Date_completion + '</p><p>';
+        if(typeof parsedResponse.data.Expected_time_to_beat_h !== 'undefined') additionalInfo += 'Expected time to beat: ' + parsedResponse.data.Expected_time_to_beat_h + 'h</p><p>';
+        if(typeof parsedResponse.data.First_playthrough_h !== 'undefined') additionalInfo += 'Time first playthrough: ' + parsedResponse.data.First_playthrough_h + 'h</p><p>';
+        if(typeof parsedResponse.data.Linked_video !== 'undefined') additionalInfo += '</p><iframe width="420" height="315" src="' + parsedResponse.data.Linked_video.replace("watch?v=", "embed/") + '"></iframe><p>';
+        
         document.getElementById('info-additional').innerHTML=additionalInfo;
 
         if (mode === 'info') {
@@ -115,7 +120,7 @@
                 if(typeof videogame.Tags !== 'undefined'){
                     // If the videogame has a list of Tags
                     for (let tag_name of videogame.Tags){
-                        // We add the tags existing for this videogame as classes
+                        // We add the tags existing for this videogame as HTML classes
                         addedHTMLVideogames += ' ' + tag_name;
                     } 
                 }

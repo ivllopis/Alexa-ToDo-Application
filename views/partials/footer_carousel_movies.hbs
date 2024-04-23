@@ -16,9 +16,17 @@
         
         let additionalInfo = ''; //additional information about the Movies
         if(typeof parsedResponse.data.Year !== 'undefined') additionalInfo += 'Year: ' + parsedResponse.data.Year + '</p><p>';
-        if(typeof parsedResponse.data.Writers !== 'undefined') additionalInfo += '\tWriters: ' + parsedResponse.data.Writers + '</p><p>';
-        if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += '\nActors: ' + parsedResponse.data.Actors + '</p><p>';
-        if(typeof parsedResponse.data.Date_completion !== 'undefined') additionalInfo += '\nDate of completion: ' + parsedResponse.data.Date_completion + '</p><p>';     
+        if(typeof parsedResponse.data.Writers !== 'undefined') additionalInfo += 'Writers: ' + parsedResponse.data.Writers + '</p><p>';
+        if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += 'Actors: ' + parsedResponse.data.Actors + '</p><p>';
+        if(typeof parsedResponse.data.Tags !== 'undefined' && parsedResponse.data.Tags.length > 0) {
+            additionalInfo += 'Tags: ';
+            const n_tags = parsedResponse.data.Tags.length; // number of tags for this videogame
+            for(var i = 0; i < n_tags-1; i++){
+                additionalInfo += parsedResponse.data.Tags[i] + ', ';
+            }
+            additionalInfo += parsedResponse.data.Tags[n_tags-1] + '</p><p>';
+        }
+        if(typeof parsedResponse.data.Date_completion !== 'undefined') additionalInfo += 'Date of completion: ' + parsedResponse.data.Date_completion + '</p><p>';     
         
         document.getElementById('info-additional').innerHTML=additionalInfo;
         if (mode === 'info') {

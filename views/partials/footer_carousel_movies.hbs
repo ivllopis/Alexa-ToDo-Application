@@ -26,7 +26,8 @@
             }
             additionalInfo += parsedResponse.data.Tags[n_tags-1] + '</p><p>';
         }
-        if(typeof parsedResponse.data.Date_completion !== 'undefined') additionalInfo += 'Date of completion: ' + parsedResponse.data.Date_completion + '</p><p>';     
+        if(typeof parsedResponse.data.Date_completion !== 'undefined') additionalInfo += 'Date of completion: ' + parsedResponse.data.Date_completion + '</p><p>';
+        if(typeof parsedResponse.data.Linked_video !== 'undefined') additionalInfo += '</p><iframe width="420" height="315" src="' + parsedResponse.data.Linked_video.replace("watch?v=", "embed/") + '"></iframe><p>';     
         
         document.getElementById('info-additional').innerHTML=additionalInfo;
         if (mode === 'info') {

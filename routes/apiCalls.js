@@ -5,10 +5,6 @@ async function getDataTodoist(sync_token) {
             return axios.post('https://api.todoist.com/sync/v9/sync', {
                 sync_token: sync_token !== 'undefined' ? sync_token : '*',
                 resource_types: '["items"]'
-                /*params: {
-                    //token: process.env.TODOIST_API_KEY,
-                    
-                    }*/
             },
             {
                 headers: {

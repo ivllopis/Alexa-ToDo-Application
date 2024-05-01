@@ -1,11 +1,7 @@
-const {Datastore} = require('@google-cloud/datastore');
-const datastore = new Datastore();
+const apiCalls = require('./routes/apiCalls');
+const axios = require('axios');
 
 const datetime = require('node-datetime');
-
-const apiCalls = require('./routes/apiCalls');
-const queries = require('./routes/queries');
-const update_calls = require('./routes/update_database');
 
 const seriesfolderid = '2236986238';
 const moviesfolderid = '2236986256';
@@ -14,96 +10,13 @@ const PCfolderid = '2236528198';
 
 require('dotenv').config();
 
-const getEntitiesDatabase = (kind, completed, filterPlatformproperty) => {
-    let query;
-    if(filterPlatformproperty) {
-        if(completed) {
-            query = datastore
-            .createQuery(kind)
-            .filter('Platform', '=', filterPlatformproperty)
-            .filter('Completed', '=', true)
-            .order('Name', {ascending: true});
-        } else {
-            query = datastore
-            .createQuery(kind)
-            .filter('Platform', '=', filterPlatformproperty)
-            .filter('Completed', '=', false)
-            .order('Name', {ascending: true});
-        }
-    } else if(kind === 'Sync_token') {
-        query = datastore
-        .createQuery(kind)
-        .order('Token', {ascending: true});
-    } else if(completed) {
-        query = datastore
-        .createQuery(kind)
-        .filter('Completed', '=', completed)
-        .order('Name', {ascending: true});
-    } else {
-        query = datastore
-        .createQuery(kind)
-        .filter('Completed', '=', false)
-        .order('Name', {ascending: true});
-    }
-
-    return datastore.runQuery(query);
-};
-
-async function getInfoEntity(slide_n, kind, completed, filterPlatformproperty) {
-    let query;
-    if(filterPlatformproperty !== undefined) {
-        if(completed !== undefined) {
-            query = datastore
-            .createQuery(kind)
-            .filter('Platform', '=', filterPlatformproperty)
-            .filter('Completed', '=', completed)
-            .filter('Slide_number', '=', slide_n)
-            .limit(1);
-        } else {
-            throw new Error("Provide second argument in the call getEntities.");
-        }
-    } else if(completed !== undefined) {
-        query = datastore
-        .createQuery(kind)
-        .filter('Completed', '=', completed)
-        .filter('Slide_number', '=', slide_n)
-        .limit(1);
-    }
-
-    return datastore.runQuery(query);
-}
-
-async function getCovers(kind, completed, filterPlatformproperty) {
-    let query;
-    if(filterPlatformproperty !== undefined) {
-        if(completed !== undefined) {
-            query = datastore
-            .createQuery(kind)
-            .select(['Name', 'Cover', 'Tags', 'Slide_number'])
-            .filter('Platform', '=', filterPlatformproperty)
-            .filter('Completed', '=', completed)
-            .order('Slide_number', {ascending: true});
-        } else {
-            throw new Error("Provide second argument in the call getEntities.");
-        }
-    } else if(completed !== undefined) {
-        query = datastore
-        .createQuery(kind)
-        .select(['Name', 'Cover', 'Tags', 'Slide_number'])
-        .filter('Completed', '=', completed)
-        .order('Slide_number', {ascending: true});
-    }
-
-    return datastore.runQuery(query);
-}
 
 async function synchronizeData() {
     try{
-        let datafromTodoist = await apiCalls.getDataTodoist('Bb19VvNlXqEid5KzEYVES-RfcQACrvm_1DtRKAgfI2NiXlq5IMFz8dEpva69why6A-d9LKFu1CK8YRGEjKEbnCHlULlGWKuRu-x7Evayrxdbcg');
+        let datafromTodoist = await apiCalls.getDataTodoist('SAqOI94fqtfd2qNGUj33TsAMzl3h5jLsgyWH4NdFkPy7qheT3clRGvqIavg_yQECKRpJR_-EG6XLJdIyM_Pb-7eeMyoUgaFDNn9EbYEO2pxiNw');
         
-        //console.log(datafromTodoist.data);
-        // console.log(datafromTodoist.data);
-        for(item of datafromTodoist.data.items){
+        console.log(datafromTodoist.data);
+        /*for(item of datafromTodoist.data.items){
             console.log(item);
             
             if(item.completed_at !== null){
@@ -119,148 +32,87 @@ async function synchronizeData() {
             if((item.project_id === moviesfolderid) || (item.project_id === seriesfolderid)){ //  
                 console.log("===========  Series/Movies ===========");
                 console.log(item.content);
-                // ===========  Videogames ===========
             }
 
             if((item.project_id === PCfolderid) || (item.project_id === PS4folderid)){ // 
                 console.log("===========  Videogames ===========");
                 console.log(item.content);
-                // ===========  Videogames ===========
             }
            //console.log(item);
-        }
-        //let newdata = await TodoistApi(datafromTodoist.data.sync_token);
+        }*/
     } catch (error){
         console.log(error);
     }
 }
 
-async function quickstart() {
-    // The kind for the new entity
-    const kind = 'Sync_token';
-
-    // The name/ID for the new entity
-    const name = 'Sync token';
-
-    // The Cloud Datastore key for the new entity
-    const taskKey = datastore.key([kind, name]);
-    const transaction = datastore.transaction();
-
-    try{
-        transaction.run((err) => {
-            if (err) {
-                // Error handling omitted.
-                console.log(err);
-                return;
-            }
-
-            transaction.get(taskKey, (err, entity) => {
-                if (err) {
-                    // Error handling omitted.
-                    console.log(err);
-                    return;
-                }
-                //console.log(entity);
-
-                if(typeof(entity) === 'undefined'){
-                    console.log("Did not find an entity like that in the database.");
-                    transaction.save({
-                        key: taskKey,
-                        data: {
-                            Description: "This is my another very new description",
-                            Completed: false,
-                            Beach: 1
-                        }
-                    });
-                    console.log("Creating a new entry...");
-                } else {
-                    console.log("Current entity:");
-                    console.log(entity);
-
-                    entity.Description = "This is my another new description";
-                    entity.Completed = true;
-                    entity.Beach = 5;
-
-                    transaction.save({
-                        key: taskKey,
-                        data: entity
-                    });
-                    console.log("New entity:");
-                    console.log(entity);
-                }
-
-                transaction.commit((err) => {
-                if (!err) {
-                    // Transaction committed successfully.
-                    console.log("Everything went fine!");
-                }
+async function fetchBookData(name, author) {
+    try {
+            if(typeof author === 'undefined'){
+                return axios.get('https://openlibrary.org/search.json', {
+                    params: {
+                        q: name,
+                        limit: 1
+                    }
                 });
-            });
-        });
-
-    } catch (error){
-        await transaction.rollback();
-        throw error;
+            } else {
+                return axios.get('https://openlibrary.org/search.json', {
+                    params: {
+                        title: name,
+                        author: author,
+                        limit: 1
+                    }
+                });
+            }
+    } catch (error) {
+            console.error(error);
     }
 }
 
-async function sync_token_db(token) {
-    // The kind for the new entity
-    const kind = 'Sync_token';
-
-    // The name/ID for the new entity
-    const name = 'Sync token';
-
-    // The Cloud Datastore key for the new entity
-    const tokenKey = datastore.key([kind, name]);
-
-    // Prepares the new entity
-    const tokenEntity = {
-        key: tokenKey,
-        data: {
-            Token: token
-        },
-    };
-
-    // Saves the entity
-    //await datastore.delete(tokenKey);
-    await datastore.save(tokenEntity);
-    console.log(`Saved ${tokenEntity.key}: ${tokenEntity.data.Token}`);
-}
-
-async function getVisits(kind, completed, platform) {
-    console.log(kind, completed, platform);
-    if (platform !== undefined){
-        query = datastore
-            .createQuery(kind)
-            .filter('Platform', '=', platform)
-            .filter('Completed', '=', completed)
-            .order('Name', {ascending: true});
-    } else {
-        query = datastore
-            .createQuery(kind)
-            .select(['Name', 'Tags'])
-            .filter('Completed', '=', completed)
-            .order('Name', {ascending: true});
+async function fetchBookDescription(book_key) {
+    try {
+        return axios.get(`https://openlibrary.org${book_key}.json`, null);
+    } catch (error) {
+            console.error(error);
     }
-
-  return datastore.runQuery(query);
-};
+}
 
 async function trythis(){
     try{
-        const [entities] = await queries.getInfoEntitiesTag('Videogame', 'souls-like', true, 'PS4');
-        console.log(entities.length);
-        for (entity of entities){
-            console.log(entity.Name);
+        let book_title = 'Well of Ascension (Brandon Sanderson)'; //'The Way of Kings (Brandon Sanderson)'; //'El libro de los caídos'; // 'Never (Ken Follett)';
+        let book_author = book_title.match(/\((.*)\)/);
+        let book_entities;
+        if(book_author !== null){
+            book_title = book_title.replace(` ${book_author[0]}`, "");
+            console.log(`Title: ${book_title}\t Author: ${book_author[1]}\n\n`);
+            book_entities = await fetchBookData(book_title, book_author[1]);
+        } else {
+            book_entities = await fetchBookData(book_title);
+        }
+
+        console.log(book_entities.data.docs[0]);
+        if(book_entities.data.docs.length === 0){
+            console.log("Not found!");
+        } else {
+            let entity = book_entities.data.docs[0];
+            let book_description = await fetchBookDescription(entity.key);
+            console.log("Title of the book: ", entity.title);
+            console.log("Author of the book: ", entity.author_name);
+            // Get the book description
+            console.log("Description Raw: ", book_description.data.description);
+            if (typeof book_description.data.description.value !== 'undefined'){
+                console.log("Description: ", book_description.data.description.value);
+            } else console.log("Description: ", book_description.data.description);
+            console.log("Rating: ", entity.ratings_average);
+            console.log("Publishing year: ", entity.first_publish_year);
+            console.log("Number of pages: ", entity.number_of_pages_median);
+            console.log("Cover URL: ", `https://covers.openlibrary.org/b/id/${entity.cover_i}-L.jpg`);
+            console.log("Author URL: ", `https://covers.openlibrary.org/a/olid/${entity.author_key[0]}-L.jpg`);
+            // TODO: Make the cover static (once stored in DB? So we have control of which one? Just like other parameters)
         }
     } catch (error){
         console.log(error);
     }
 }
 
-// quickstart();
 // synchronizeData();
-// sync_token_db('T8vRyIxQU_CeLifXys36sd3Z19qTwL59r4twbf4qlsKPLYShZsPTDZ_OqOHlk0xvfDI84fV4Qddp7pknmhMByoN4vnBlOqYaLH0NeMvcgSTdUGw');
-// trythis();
-// entityKeyasd = datastore.key(['Not_found', 'idk']);
+trythis();

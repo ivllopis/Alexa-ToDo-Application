@@ -14,7 +14,7 @@
         if(typeof parsedResponse.data.Name !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
         if(typeof parsedResponse.data.Synopsis !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Synopsis;
         
-        var additionalInfo = ''; //additional information about the series
+        var additionalInfo = ''; //additional information about the serie
         if(typeof parsedResponse.data.Year !== 'undefined') additionalInfo += 'Year: ' + parsedResponse.data.Year + '</p><p>';
         if(typeof parsedResponse.data.Writers !== 'undefined') additionalInfo += 'Writers: ' + parsedResponse.data.Writers + '</p><p>';
         if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += 'Actors: ' + parsedResponse.data.Actors + '</p><p>';
@@ -91,7 +91,7 @@
 
                 addedHTMLSeries += '<div class="content-sliders text-center';
                 if(typeof serie.Tags !== 'undefined'){
-                    // If the series have a list of Tags
+                    // If the series has a list of Tags
                     for (let tag_name of serie.Tags){
                         // We add the tags existing for this serie as classes
                         addedHTMLSeries += ' ' + tag_name;

@@ -56,7 +56,7 @@ app.use(session({
   saveUninitialized: false,
   unset: 'keep', // or 'destroy'
   cookie: {
-      maxAge: 5 * 60 * 1000 // 5 min expiring session
+      maxAge: 15 * 60 * 1000 // 15 min expiring session
   }
 }));
 

@@ -65,7 +65,7 @@ async function getVideogame(nameVideogame, mode) {
     }
 }
 
-async function getCover(idVideogame) {
+async function getVideogameCover(idVideogame) {
     try {
             return axios.post('https://api.igdb.com/v4/covers',
                 `fields *; where game = ${idVideogame};`, //body of filter parameters to include in the POST request
@@ -80,7 +80,7 @@ async function getCover(idVideogame) {
     }
 }
 
-async function getGenre(idGenre) {
+async function getVideogameGenre(idGenre) {
     try {
             return axios.post('https://api.igdb.com/v4/genres',
             `fields *; where id = ${idGenre};`, //body of filter parameters to include in the POST request
@@ -90,6 +90,37 @@ async function getGenre(idGenre) {
                         'Authorization': `Bearer ${global.twitchcredentials.data.access_token}`
                     }
                 });
+    } catch (error) {
+            console.error(error);
+    }
+}
+
+async function fetchBook(name, author) {
+    try {
+            if(typeof author === 'undefined'){
+                return axios.get('https://openlibrary.org/search.json', {
+                    params: {
+                        q: name,
+                        limit: 1
+                    }
+                });
+            } else {
+                return axios.get('https://openlibrary.org/search.json', {
+                    params: {
+                        title: name,
+                        author: author,
+                        limit: 1
+                    }
+                });
+            }
+    } catch (error) {
+            console.error(error);
+    }
+}
+
+async function fetchBookDescription(book_key) {
+    try {
+        return axios.get(`https://openlibrary.org${book_key}.json`, null);
     } catch (error) {
             console.error(error);
     }
@@ -114,6 +145,8 @@ async function getTwitchAccessToken() {
 module.exports.getDataTodoist = getDataTodoist;
 module.exports.fetchDataOMDb = fetchDataOMDb;
 module.exports.getVideogame = getVideogame;
-module.exports.getCover = getCover;
-module.exports.getGenre = getGenre;
+module.exports.getVideogameCover = getVideogameCover;
+module.exports.getVideogameGenre = getVideogameGenre;
+module.exports.fetchBook = fetchBook;
+module.exports.fetchBookDescription = fetchBookDescription;
 module.exports.getTwitchAccessToken = getTwitchAccessToken;

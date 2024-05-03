@@ -1,0 +1,121 @@
+<script type="text/javascript" src="/js/slick.min.js"></script>
+
+<script type="text/javascript">
+    const home_url = 'https://recommender-279710.ey.r.appspot.com';
+
+    {{#if books}}
+        const books_dir = home_url + '/books';
+    {{else if books_completed}}
+        const books_dir = home_url + '/books/completed';
+    {{/if}}
+
+    function parseResponse(parsedResponse, mode){
+        if(typeof parsedResponse.data.Cover !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Cover;
+        if(typeof parsedResponse.data.Name !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
+        if(typeof parsedResponse.data.Synopsis !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Synopsis;
+        
+        let additionalInfo = ''; //additional information about the book
+        if(typeof parsedResponse.data.Authors !== 'undefined' && parsedResponse.data.Authors.length > 0) {
+            additionalInfo += 'Authors: ';
+            const n_authors = parsedResponse.data.Authors.length; // number of authors for this book
+            for(var i = 0; i < n_authors-1; i++){
+                additionalInfo += parsedResponse.data.Authors[i] + ', ';
+            }
+            additionalInfo += parsedResponse.data.Authors[n_authors-1] + '</p><p>';
+        }
+        if(typeof parsedResponse.data.Publishing_year !== 'undefined') additionalInfo += 'Publishing year: ' + parsedResponse.data.Publishing_year + '</p><p>';
+        if(typeof parsedResponse.data.Rating !== 'undefined') additionalInfo += 'Rating: ' + parsedResponse.data.Rating.toFixed(2) + '/5</p><p>';
+        if(typeof parsedResponse.data.Number_of_pages !== 'undefined') additionalInfo += 'Number of pages: ' + parsedResponse.data.Number_of_pages + '</p><p>';
+        if(typeof parsedResponse.data.Tags !== 'undefined' && parsedResponse.data.Tags.length > 0) {
+            additionalInfo += 'Tags: ';
+            const n_tags = parsedResponse.data.Tags.length; // number of tags for this book
+            for(var i = 0; i < n_tags-1; i++){
+                additionalInfo += parsedResponse.data.Tags[i] + ', ';
+            }
+            additionalInfo += parsedResponse.data.Tags[n_tags-1] + '</p><p>';
+        }
+        if(typeof parsedResponse.data.Date_completion !== 'undefined') additionalInfo += 'Date of completion: ' + parsedResponse.data.Date_completion + '</p><p>';
+        if(typeof parsedResponse.data.Author_image !== 'undefined'){
+            let name_search = parsedResponse.data.Authors.length > 0 ? parsedResponse.data.Authors[0].replace(" ", "+") : parsedResponse.data.Name.replace(" ", "+");
+            additionalInfo += `</p><a href="https://www.google.es/search?q=${name_search}" target="_blank"><img width="315" height="420" src="${parsedResponse.data.Author_image}" alt="media"></a><p>`;   
+        }
+        if(typeof parsedResponse.data.Linked_video !== 'undefined') additionalInfo += '</p><iframe width="420" height="315" src="' + parsedResponse.data.Linked_video.replace("watch?v=", "embed/") + '"></iframe><p>';     
+        
+        document.getElementById('info-additional').innerHTML=additionalInfo;
+        if (mode === 'info') {
+            document.getElementById('info-title').innerHTML = 'Item information';
+        } else if (mode === 'recommendation') {
+            document.getElementById('info-title').innerHTML = 'Your recommendation';
+            $('.center').slick('slickGoTo', parsedResponse.index, true);
+        }
+    }
+
+    function showInfoCurrent(){
+        // Get the center slide information
+        const center_slide = document.getElementsByClassName('slick-center')[0];
+        const current_slide_number = center_slide.getAttribute("data-slide-number");
+
+        httpGetAsync(`${books_dir}/${current_slide_number}`, (res) =>{
+            try{
+                const parsedResponse = JSON.parse(res);
+                parseResponse(parsedResponse, 'info');
+            } catch(error){
+                console.log(error); //throw error or flash it
+            }
+        });
+    }
+
+    function recommendMeSomething(){
+        // We use the var filter (defined in carousel) to make different API calls based on the current filter applied to the slides
+        var parsedResponse;
+        if (filter === 'undefined') {
+            httpGetAsync(`${books_dir}/any`, (res) =>{
+                try{
+                    parsedResponse = JSON.parse(res);
+                    parseResponse(parsedResponse, 'recommendation');
+                } catch(error){
+                    console.log(error); //throw error or flash it
+                }
+            });
+        } else {
+            httpGetAsync(`${books_dir}/any/${filter}`, (res) =>{
+                try{
+                    parsedResponse = JSON.parse(res);
+                    parseResponse(parsedResponse, 'recommendation');
+                } catch(error){
+                    console.log(error); //throw error or flash it
+                }
+            });
+        }
+    }
+    
+    // Request books from the database and showcase them in the carousel
+    httpGetAsync(`${books_dir}/infoBooks`, (res) =>{
+        try{
+            const parsedResponse = JSON.parse(res);
+            var addedHTMLBooks = '<div class="center">\n\t';
+            for(let book of parsedResponse) {
+                if(typeof book.Cover !== 'undefined'){
+                    let alt_img_name = book.Name;
+                    alt_img_name = alt_img_name.replace(/\s/g, "");
+                    
+                    addedHTMLBooks += '<div class="content-sliders text-center';
+                    if(typeof book.Tags !== 'undefined'){
+                        // If the book has a list of Tags
+                        for (let tag_name of book.Tags){
+                            // We add the tags existing for this book as classes
+                            addedHTMLBooks += ' ' + tag_name;
+                        }    
+                    }  
+                    
+                    addedHTMLBooks += `" data-slide-number="${book.Slide_number}">\n\t<img class="content-sliders-image" src="${book.Cover}" alt="img_${alt_img_name}">\n</div>`;
+                }
+            }
+            addedHTMLBooks += '\n</div>';
+            document.getElementById('media-content-carousel').innerHTML = addedHTMLBooks;
+            startCarousel();
+        } catch(error){
+            console.log(error); //throw error or flash it
+        }
+    });
+</script>

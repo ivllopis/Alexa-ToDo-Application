@@ -54,7 +54,7 @@ router.get('/:id', authRouter.requireAuth, async (req, res) => {
         const [entities] = await queries.getNumberEntities('Movie', false);
         const num_total_entities = entities[0].Slide_number;
         if(isNaN(indexMovie)){
-            res.send("This serie is not valid."); //normally we would flash around this error!
+            res.send("This movie is not valid."); //normally we would flash around this error!
         } else if(indexMovie > num_total_entities) res.send("This movie does not exist.");
         else {
             const [entity] = await queries.getInfoEntity(indexMovie, 'Movie', false);
@@ -71,7 +71,7 @@ router.get('/completed/:id', authRouter.requireAuth, async (req, res) => {
         const [entities] = await queries.getNumberEntities('Movie', true);
         const num_total_entities = entities[0].Slide_number;
         if(isNaN(indexMovie)){
-            res.send("This serie is not valid."); //normally we would flash around this error!
+            res.send("This movie is not valid."); //normally we would flash around this error!
         } else if(indexMovie > num_total_entities) res.send("This movie does not exist.");
         else {
             const [entity] = await queries.getInfoEntity(indexMovie, 'Movie', true);

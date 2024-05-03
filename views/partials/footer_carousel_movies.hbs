@@ -14,13 +14,13 @@
         if(typeof parsedResponse.data.Name !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
         if(typeof parsedResponse.data.Synopsis !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Synopsis;
         
-        let additionalInfo = ''; //additional information about the Movies
+        let additionalInfo = ''; //additional information about the movie
         if(typeof parsedResponse.data.Year !== 'undefined') additionalInfo += 'Year: ' + parsedResponse.data.Year + '</p><p>';
         if(typeof parsedResponse.data.Writers !== 'undefined') additionalInfo += 'Writers: ' + parsedResponse.data.Writers + '</p><p>';
         if(typeof parsedResponse.data.Actors !== 'undefined') additionalInfo += 'Actors: ' + parsedResponse.data.Actors + '</p><p>';
         if(typeof parsedResponse.data.Tags !== 'undefined' && parsedResponse.data.Tags.length > 0) {
             additionalInfo += 'Tags: ';
-            const n_tags = parsedResponse.data.Tags.length; // number of tags for this videogame
+            const n_tags = parsedResponse.data.Tags.length; // number of tags for this movie
             for(var i = 0; i < n_tags-1; i++){
                 additionalInfo += parsedResponse.data.Tags[i] + ', ';
             }
@@ -77,7 +77,7 @@
         }
     }
     
-    // Request Movies from the database and showcase them in the carousel
+    // Request movies from the database and showcase them in the carousel
     httpGetAsync(`${movies_dir}/infoMovies`, (res) =>{
     try{
         const parsedResponse = JSON.parse(res);
@@ -89,7 +89,7 @@
                 
                 addedHTMLMovies += '<div class="content-sliders text-center';
                 if(typeof movie.Tags !== 'undefined'){
-                    // If the movie have a list of Tags
+                    // If the movie has a list of Tags
                     for (let tag_name of movie.Tags){
                         // We add the tags existing for this movie as classes
                         addedHTMLMovies += ' ' + tag_name;

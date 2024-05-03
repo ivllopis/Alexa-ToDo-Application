@@ -1,6 +1,8 @@
 const {Datastore} = require('@google-cloud/datastore');
 const datastore = new Datastore();
 
+process.env.TZ = 'Europe/Madrid';
+
 const datetime = require('node-datetime');
 const apiCalls = require('./apiCalls');
 
@@ -8,7 +10,8 @@ const seriesfolderid = '2236986238';
 const moviesfolderid = '2236986256';
 const PS4folderid = '2236528201';
 const PCfolderid = '2236528198';
-const excludefromindexes = ['Storyline', 'Summary', 'Tags', 'Synopsis', 'Writers', 'Actors'];
+const booksfolderid = '2236528216';
+const excludefromindexes = ['Storyline', 'Summary', 'Synopsis', 'Writers', 'Actors']; //, 'Tags'
 
 const getEntityDatabaseById = (kind, id) => {
     const entityKey = datastore.key([kind, id]);
@@ -149,7 +152,7 @@ async function getVideogameData(namevideogame, platform) {
             dataVideogame.Summary = dataVideogameRaw.summary;
 
             // Get the url to the videogame's cover
-            const coverVideogame = await apiCalls.getCover(dataVideogameRaw.id);
+            const coverVideogame = await apiCalls.getVideogameCover(dataVideogameRaw.id);
             let coverVideogameUrl;
 
             // Get the first cover that has higher quality than 520px height
@@ -173,7 +176,7 @@ async function getVideogameData(namevideogame, platform) {
             let genres_videogame = [];
             if(typeof dataVideogameRaw.genres !== 'undefined'){
                 for(let idgenre of dataVideogameRaw.genres){
-                    var translatedGenre = await apiCalls.getGenre(idgenre);
+                    var translatedGenre = await apiCalls.getVideogameGenre(idgenre);
                     genres_videogame.push(translatedGenre.data[0].name);
                 }
             } else {
@@ -187,6 +190,56 @@ async function getVideogameData(namevideogame, platform) {
 
         } catch (error) {
             console.warn(error);
+            reject(error);
+        }
+    });
+}
+
+async function getBookData(book_title) {
+    return new Promise(async (resolve, reject) => {
+        // This function retrieves the information about a book and formats it to the database's format
+        try{
+            let book_author = book_title.match(/\((.*)\)/);
+            let book_entities, dataBook = {};
+            if(book_author !== null){
+                book_title = book_title.replace(` ${book_author[0]}`, "");
+                book_entities = await apiCalls.fetchBook(book_title, book_author[1]);
+            } else {
+                book_entities = await apiCalls.fetchBook(book_title);
+            }
+
+            book_entities = book_entities.data.docs;
+            
+            // Check if we found the book
+            if(book_entities.length === 0){
+                console.warn(book_title + " could not be found in the database.");
+                dataBook.Name = book_title;
+                dataBook.NotFound = true;
+                dataBook.Type = 'Book';
+                resolve(dataBook);
+                return;
+            } else {
+                // Get the data from the first book found
+                let entity = book_entities[0];
+                let book_description = await apiCalls.fetchBookDescription(entity.key);
+                dataBook.Name = entity.title;
+                dataBook.Authors = entity.author_name;
+                // Get the book description
+                if (typeof book_description.data.description === 'string'){
+                    dataBook.Synopsis = book_description.data.description;
+                } else typeof book_description.data.description === 'object' ? dataBook.Synopsis = book_description.data.description.value: dataBook.Synopsis = "Description could not be found";
+                dataBook.Publishing_year = entity.first_publish_year;
+                dataBook.Rating = entity.ratings_average;
+                dataBook.Number_of_pages = entity.number_of_pages_median;
+                dataBook.Cover = `https://covers.openlibrary.org/b/id/${entity.cover_i}-M.jpg`;
+                dataBook.Author_image = `https://covers.openlibrary.org/a/olid/${entity.author_key[0]}-M.jpg`;
+                dataBook.Completed = false;
+                dataBook.Slide_number = 'N/A';
+                dataBook.Tags = [];
+                resolve(dataBook);
+                
+            }
+        } catch (error) {
             reject(error);
         }
     });
@@ -364,6 +417,34 @@ async function calculateSlideNumbersEntireDatabase() {
                     });
                 }
             }
+
+            // For Books
+            [entities] = await getEntitiesDatabase('Book', false);
+
+            if(entities.length){
+                for(const [index, entity] of entities.entries()){
+                    entity.Slide_number = index;
+                    batchUpdateEntities.push({
+                        key: entity[datastore.KEY], // So it uses the same entity's key
+                        data: entity,
+                        excludeFromIndexes: excludefromindexes
+                    });
+                }
+            }
+
+            [entities] = await getEntitiesDatabase('Book', true);
+
+            if(entities.length){
+                for(const [index, entity] of entities.entries()){
+                    entity.Slide_number = index;
+                    batchUpdateEntities.push({
+                        key: entity[datastore.KEY], // So it uses the same entity's key
+                        data: entity,
+                        excludeFromIndexes: excludefromindexes
+                    });
+                }
+            }
+
             resolve(batchUpdateEntities);
 
         } catch (error){
@@ -377,11 +458,12 @@ async function updateDatabase() {
     try{
         let datafromTodoist;
         let batchStoreEntities = [], batchDeleteEntities = [];
-        
+
         // Check if there is an existing sync_token in the database to do a partial sync
         const [sync_tokens] = await getEntitiesDatabase('Sync_token');
         global.twitchcredentials = await apiCalls.getTwitchAccessToken();
 
+        // Create the transaction process
         const transaction = datastore.transaction();
 
         if(!sync_tokens.length){
@@ -397,8 +479,9 @@ async function updateDatabase() {
         for(let item of datafromTodoist.data.items) {
             let dataEntityformatted, entityKey;
 
-            // What to do if it has been deleted
+            // What to do if the entity has been deleted
             if(item.is_deleted){
+                // TODO: Use the item.project_id so we don't have to retrieve all this data
                 let [entity] = await getEntityDatabaseById('Videogame', parseInt(item.id));
                 if(entity){
                     console.log("Found a videogame to delete!");
@@ -411,11 +494,16 @@ async function updateDatabase() {
                         if(entity){
                             console.log("Found a movie to delete!");
                         } else {
-                            [entity] = await getEntityDatabaseById('Not_found', parseInt(item.id));
+                            [entity] = await getEntityDatabaseById('Book', parseInt(item.id));
                             if(entity){
-                                console.log("Found an item with no identified info to delete!");
+                                console.log("Found a book to delete!");
                             } else {
-                                console.log("The deleted item was either not important for the database or was already deleted.");
+                                [entity] = await getEntityDatabaseById('Not_found', parseInt(item.id));
+                                if(entity){
+                                    console.log("Found an item with no identified info to delete!");
+                                } else {
+                                    console.log("The deleted item was either not important for the database or was already deleted.");
+                                }
                             }
                         }
                     }
@@ -425,7 +513,7 @@ async function updateDatabase() {
                 if(entity) batchDeleteEntities.push(entity[datastore.KEY]);
                 continue;
             }
-            
+            // TODO: refactor this part so we have a map between item.project_id with Kind key & method to retrieve data
             if((item.project_id === seriesfolderid) || (item.project_id === moviesfolderid)){
 
                 // ===========  Series or Movies ===========
@@ -444,7 +532,7 @@ async function updateDatabase() {
                             });
                         }
                     } catch (error) {
-                        console.warn("Something went wrong during checking a game.");
+                        console.warn("Something went wrong while checking a show.");
                         console.warn(error);
                     }
                     continue;
@@ -471,7 +559,7 @@ async function updateDatabase() {
                             });
                         }
                     } catch (error) {
-                        console.warn("Something went wrong during checking a game.");
+                        console.warn("Something went wrong while checking a game.");
                         console.warn(error);
                     }
                     continue;
@@ -480,6 +568,31 @@ async function updateDatabase() {
                 // What to do if it is a new entry || What to do if it has changed name
                 dataEntityformatted = (item.project_id === PCfolderid) ? await getVideogameData(item.content, 'PC') : await getVideogameData(item.content, 'PS4');
 
+            } else if(item.project_id === booksfolderid){
+                // ===========  Books ===========
+                // Possible things can happen: the item has changed its name, it has been marked as completed, has been deleted, or it is a new entry
+                entityKey = datastore.key(['Book', parseInt(item.id)]);
+
+                // What to do if it has been marked as completed
+                if(item.checked){
+                    try{
+                        let updatedEntity = await completedElementfromtheDatabase(entityKey, item.completed_at);
+                        if(updatedEntity !== -1){
+                            batchStoreEntities.push({
+                                key: updatedEntity[datastore.KEY],
+                                data: updatedEntity,
+                                excludeFromIndexes: excludefromindexes
+                            });
+                        }
+                    } catch (error) {
+                        console.warn("Something went wrong while checking a book.");
+                        console.warn(error);
+                    }
+                    continue;
+                }
+
+                // What to do if it is a new entry || What to do if it has changed name
+                dataEntityformatted = await getBookData(item.content);
             }
 
             if(dataEntityformatted && entityKey){
@@ -490,9 +603,13 @@ async function updateDatabase() {
                         excludeFromIndexes: excludefromindexes
                     });
                 } else {
+                    // Inherit the tags from Todoist
+                    dataEntityformatted.Tags = item.labels;
+
                     // Check if the entity was previosuly not found
                     let deleteTokenKey = datastore.key(['Not_found', parseInt(item.id)]);
                     let [deleteEntity] = await datastore.get(deleteTokenKey);
+
                     // Delete the entity from Not Found before storing it in its intended category
                     if(deleteEntity) batchDeleteEntities.push(deleteTokenKey);
 
@@ -501,7 +618,8 @@ async function updateDatabase() {
                     // If the entity existed in DB, store its relevant specifically set fields in the updated entity
                     if(storedEntity){
                         // Relevant fields for now: Tags, Date_completion, Expected_time_to_beat_h, First_playthrough_h & Linked_video
-                        dataEntityformatted.Tags = storedEntity.Tags;
+                        if ((typeof storedEntity.Tags !== 'undefined') && (storedEntity.Tags.length > dataEntityformatted.Tags.length)) dataEntityformatted.Tags = storedEntity.Tags;
+                        // TODO: update the tags in Todoist and make this fetch from Todoist directly to update them
                         if (typeof storedEntity.Date_completion !== 'undefined') dataEntityformatted.Date_completion = storedEntity.Date_completion;
                         if (typeof storedEntity.Expected_time_to_beat_h !== 'undefined') dataEntityformatted.Expected_time_to_beat_h = storedEntity.Expected_time_to_beat_h;
                         if (typeof storedEntity.First_playthrough_h !== 'undefined') dataEntityformatted.First_playthrough_h = storedEntity.First_playthrough_h;

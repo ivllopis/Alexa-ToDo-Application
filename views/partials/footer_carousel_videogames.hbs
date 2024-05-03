@@ -34,7 +34,7 @@
         }
 
         
-        var additionalInfo = ''; //additional information about the Videogames
+        var additionalInfo = ''; //additional information about the videogame
         if(typeof parsedResponse.data.Summary !== 'undefined') additionalInfo += 'Summary: ' + parsedResponse.data.Summary + '</p><p>';
         if(typeof parsedResponse.data.Genres !== 'undefined' && parsedResponse.data.Genres.length > 0) {
             additionalInfo += 'Genres: ';
@@ -106,7 +106,7 @@
         }
     }
     
-    // Request Videogames from the database and showcase them in the carousel
+    // Request videogames from the database and showcase them in the carousel
     httpGetAsync(`${videogames_dir}/infoVideogames`, (res) =>{
     try{
         const parsedResponse = JSON.parse(res);

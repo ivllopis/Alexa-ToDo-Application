@@ -77,3 +77,22 @@ indexes:
   - name: Tags
   - name: Completed
   - name: Name
+- kind: Book
+  properties:
+  - name: Completed
+  - name: Slide_number
+    direction: asc  
+- kind: Book
+  properties:
+  - name: Completed
+  - name: Slide_number
+    direction: desc
+- kind: Book
+  properties:
+  - name: Completed
+  - name: Name
+- kind: Book
+  properties:
+  - name: Tags
+  - name: Completed
+  - name: Name

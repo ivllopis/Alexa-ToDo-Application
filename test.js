@@ -7,6 +7,7 @@ const seriesfolderid = '2236986238';
 const moviesfolderid = '2236986256';
 const PS4folderid = '2236528201';
 const PCfolderid = '2236528198';
+const booksfolderid = '2236528216';
 
 require('dotenv').config();
 
@@ -15,8 +16,8 @@ async function synchronizeData() {
     try{
         let datafromTodoist = await apiCalls.getDataTodoist('SAqOI94fqtfd2qNGUj33TsAMzl3h5jLsgyWH4NdFkPy7qheT3clRGvqIavg_yQECKRpJR_-EG6XLJdIyM_Pb-7eeMyoUgaFDNn9EbYEO2pxiNw');
         
-        console.log(datafromTodoist.data);
-        /*for(item of datafromTodoist.data.items){
+        //console.log(datafromTodoist.data);
+        for(item of datafromTodoist.data.items){
             console.log(item);
             
             if(item.completed_at !== null){
@@ -38,14 +39,20 @@ async function synchronizeData() {
                 console.log("===========  Videogames ===========");
                 console.log(item.content);
             }
-           //console.log(item);
-        }*/
+
+            if(item.project_id === booksfolderid){ //  
+                console.log("===========  Books ===========");
+                console.log(item.content);
+                console.log("Labels: ", item.labels);
+                console.log("Length: ", item.labels.length);
+            }
+        }
     } catch (error){
         console.log(error);
     }
 }
 
-async function fetchBookData(name, author) {
+async function fetchBook(name, author) {
     try {
             if(typeof author === 'undefined'){
                 return axios.get('https://openlibrary.org/search.json', {
@@ -84,21 +91,25 @@ async function trythis(){
         if(book_author !== null){
             book_title = book_title.replace(` ${book_author[0]}`, "");
             console.log(`Title: ${book_title}\t Author: ${book_author[1]}\n\n`);
-            book_entities = await fetchBookData(book_title, book_author[1]);
+            book_entities = await fetchBook(book_title, book_author[1]);
         } else {
-            book_entities = await fetchBookData(book_title);
+            book_entities = await fetchBook(book_title);
         }
 
-        console.log(book_entities.data.docs[0]);
+        //console.log(book_entities.data.docs[0]);
         if(book_entities.data.docs.length === 0){
             console.log("Not found!");
         } else {
             let entity = book_entities.data.docs[0];
             let book_description = await fetchBookDescription(entity.key);
+            
             console.log("Title of the book: ", entity.title);
             console.log("Author of the book: ", entity.author_name);
+            console.log("\n\nType of raw description: ", typeof book_description.data.description);
+
             // Get the book description
             console.log("Description Raw: ", book_description.data.description);
+            
             if (typeof book_description.data.description.value !== 'undefined'){
                 console.log("Description: ", book_description.data.description.value);
             } else console.log("Description: ", book_description.data.description);

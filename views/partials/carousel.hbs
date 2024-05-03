@@ -40,6 +40,8 @@
             <li><button type="button" data-filter="emotional-damage" id="emotional-damage-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
                     Emotional damage
                 </button></li>
+        {{else if books}}
+        {{else if books_completed}}
         {{else}}
             <!--// TO DO: Add style and colors to the buttons and the website -->
             <li></li><button type="button"  data-filter="souls-like" id="souls-like-button-id" class="btn btn-outline-info btn-sm tag-button js-filter-slides-button" data-toggle="button" aria-pressed="false" autocomplete="off">
@@ -97,6 +99,10 @@
             <a href="/series/completed" class="btn btn-warning btn-sm left-button-bottom-carousel" role="button">Not completed</a>
         {{else if series_completed}}
             <a href="/series" class="btn btn-success btn-sm left-button-bottom-carousel" role="button">Completed</a>
+        {{else if books}}
+            <a href="/books/completed" class="btn btn-warning btn-sm left-button-bottom-carousel" role="button">Not completed</a>
+        {{else if books_completed}}
+            <a href="/books" class="btn btn-success btn-sm left-button-bottom-carousel" role="button">Completed</a>
         {{else}}
             <div href="/videogames/ps4" class="btn btn-success btn-sm left-button-bottom-carousel" style="visibility: hidden;" role="button">Not Completed</div>
         {{/if}}

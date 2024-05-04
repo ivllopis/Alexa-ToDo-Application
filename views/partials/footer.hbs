@@ -40,6 +40,9 @@
             if(filter === 'anime'){
                 // Filter animes
                 $('.center').slick('slickFilter', '.anime');
+            } else if (filter === 'casa-pato') {
+                // Filter casa-pato items
+                $('.center').slick('slickFilter', '.casa-pato');
             } else if (filter === 'classic-rpg') {
                 // Filter classic-rpg games
                 $('.center').slick('slickFilter', '.classic-rpg');
@@ -96,6 +99,15 @@
                     centerMode: true,
                     centerPadding: '5px',
                     slidesToShow: 7
+                    }
+                },
+                {
+                    breakpoint: 2000,
+                    settings: {
+                    arrows: false,
+                    centerMode: true,
+                    centerPadding: '5px',
+                    slidesToShow: 5
                     }
                 },
                 {

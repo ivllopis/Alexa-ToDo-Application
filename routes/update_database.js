@@ -11,7 +11,7 @@ const moviesfolderid = '2236986256';
 const PS4folderid = '2236528201';
 const PCfolderid = '2236528198';
 const booksfolderid = '2236528216';
-const excludefromindexes = ['Storyline', 'Summary', 'Synopsis', 'Writers', 'Actors']; //, 'Tags'
+const excludefromindexes = ['Storyline', 'Summary', 'Synopsis', 'Writers', 'Actors'];
 
 const getEntityDatabaseById = (kind, id) => {
     const entityKey = datastore.key([kind, id]);
@@ -246,7 +246,7 @@ async function getBookData(book_title) {
                     dataBook.Synopsis = "Description could not be found";
                 }
                 dataBook.Publishing_year = entity.first_publish_year;
-                dataBook.Rating = typeof entity.ratings_average === 'number' ? entity.ratings_average.toFixed(2) : entity.ratings_average;
+                dataBook.Rating = typeof entity.ratings_average === 'number' ? Math.round( entity.ratings_average * 1e2 ) / 1e2 : entity.ratings_average;
                 dataBook.Number_of_pages = entity.number_of_pages_median;
                 dataBook.Cover = typeof entity.cover_i !== 'undefined' ? `https://covers.openlibrary.org/b/id/${entity.cover_i}-M.jpg` : undefined;
                 dataBook.Author_image = (typeof entity.author_key !== 'undefined') && (entity.author_key.length > 0) ? `https://covers.openlibrary.org/a/olid/${entity.author_key[0]}-M.jpg` : undefined;

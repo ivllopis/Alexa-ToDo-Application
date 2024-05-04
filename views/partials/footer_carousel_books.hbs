@@ -30,7 +30,7 @@
             additionalInfo += parsedResponse.data.Authors[n_authors-1] + '</p><p>';
         }
         if(typeof parsedResponse.data.Publishing_year !== 'undefined') additionalInfo += 'Publishing year: ' + parsedResponse.data.Publishing_year + '</p><p>';
-        if(typeof parsedResponse.data.Rating !== 'undefined') additionalInfo += 'Rating: ' + parsedResponse.data.Rating.toFixed(2) + '/5</p><p>';
+        if(typeof parsedResponse.data.Rating !== 'undefined') additionalInfo += 'Rating: ' + parsedResponse.data.Rating + '/5</p><p>';
         if(typeof parsedResponse.data.Number_of_pages !== 'undefined') additionalInfo += 'Number of pages: ' + parsedResponse.data.Number_of_pages + '</p><p>';
         if(typeof parsedResponse.data.Tags !== 'undefined' && parsedResponse.data.Tags.length > 0) {
             additionalInfo += 'Tags: ';
@@ -66,7 +66,7 @@
                 const parsedResponse = JSON.parse(res);
                 parseResponse(parsedResponse, 'info');
             } catch(error){
-                console.log(error); //throw error or flash it
+                console.error(error); //throw error or flash it
             }
         });
     }
@@ -80,7 +80,7 @@
                     parsedResponse = JSON.parse(res);
                     parseResponse(parsedResponse, 'recommendation');
                 } catch(error){
-                    console.log(error); //throw error or flash it
+                    console.error(error); //throw error or flash it
                 }
             });
         } else {
@@ -89,7 +89,7 @@
                     parsedResponse = JSON.parse(res);
                     parseResponse(parsedResponse, 'recommendation');
                 } catch(error){
-                    console.log(error); //throw error or flash it
+                    console.error(error); //throw error or flash it
                 }
             });
         }

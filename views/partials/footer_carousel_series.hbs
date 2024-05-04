@@ -55,7 +55,7 @@
                 const parsedResponse = JSON.parse(res);
                 parseResponse(parsedResponse, 'info');
             } catch(error){
-                console.log(error); //throw error or flash it
+                console.error(error); //throw error or flash it
             }
             
         });
@@ -70,7 +70,7 @@
                     parsedResponse = JSON.parse(res);
                     parseResponse(parsedResponse, 'recommendation');
                 } catch(error){
-                    console.log(error); //throw error or flash it
+                    console.error(error); //throw error or flash it
                 }
             });
         } else {
@@ -79,7 +79,7 @@
                     parsedResponse = JSON.parse(res);
                     parseResponse(parsedResponse, 'recommendation');
                 } catch(error){
-                    console.log(error); //throw error or flash it
+                    console.error(error); //throw error or flash it
                 }
             });
         }

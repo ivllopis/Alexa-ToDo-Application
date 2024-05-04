@@ -85,7 +85,7 @@ async function fetchBookDescription(book_key) {
 
 async function trythis(){
     try{
-        let book_title = 'Well of Ascension (Brandon Sanderson)'; //'The Way of Kings (Brandon Sanderson)'; //'El libro de los caídos'; // 'Never (Ken Follett)';
+        let book_title = 'Tormenta de espadas (George R. R. Martin)'; //'The Way of Kings (Brandon Sanderson)'; //'El libro de los caídos'; // 'Never (Ken Follett)';
         let book_author = book_title.match(/\((.*)\)/);
         let book_entities;
         if(book_author !== null){
@@ -96,7 +96,7 @@ async function trythis(){
             book_entities = await fetchBook(book_title);
         }
 
-        //console.log(book_entities.data.docs[0]);
+        console.log(book_entities.data.docs[0]);
         if(book_entities.data.docs.length === 0){
             console.log("Not found!");
         } else {
@@ -108,17 +108,25 @@ async function trythis(){
             console.log("\n\nType of raw description: ", typeof book_description.data.description);
 
             // Get the book description
-            console.log("Description Raw: ", book_description.data.description);
-            
-            if (typeof book_description.data.description.value !== 'undefined'){
-                console.log("Description: ", book_description.data.description.value);
-            } else console.log("Description: ", book_description.data.description);
+            try {
+                console.log("Description Raw: ", book_description.data.description);
+                
+                if (typeof book_description.data.description.value !== 'undefined'){
+                    console.log("Description: ", book_description.data.description.value);
+                } else console.log("Description: ", book_description.data.description);
+            } catch (error) {
+                console.log(error);
+            }
             console.log("Rating: ", entity.ratings_average);
             console.log("Publishing year: ", entity.first_publish_year);
             console.log("Number of pages: ", entity.number_of_pages_median);
-            console.log("Cover URL: ", `https://covers.openlibrary.org/b/id/${entity.cover_i}-L.jpg`);
-            console.log("Author URL: ", `https://covers.openlibrary.org/a/olid/${entity.author_key[0]}-L.jpg`);
+            console.log("Cover URL: ", `https://covers.openlibrary.org/b/id/${entity.cover_i}-M.jpg`);
+            console.log("Author URL: ", `https://covers.openlibrary.org/a/olid/${entity.author_key[0]}-M.jpg`);
             // TODO: Make the cover static (once stored in DB? So we have control of which one? Just like other parameters)
+            console.log("Let's print different covers: ");
+            for (isbn of entity.isbn) {
+                console.log(`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`);
+            }
         }
     } catch (error){
         console.log(error);

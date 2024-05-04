@@ -14,13 +14,13 @@
     {{/if}}
 
     function parseResponse(parsedResponse, mode){
-        if(typeof parsedResponse.data.Cover !== 'undefined'){
-            document.getElementById('info-picture').src=parsedResponse.data.Cover;
+        if((typeof parsedResponse.data.Cover !== 'undefined') || (typeof parsedResponse.data.Cover_selected !== 'undefined')) {
+            let url_cover = typeof parsedResponse.data.Cover_selected !== 'undefined' ? parsedResponse.data.Cover_selected : parsedResponse.data.Cover;
+            document.getElementById('info-picture').src=url_cover;
         } else {
             document.getElementById('info-picture').src='';
             document.getElementById('info-picture').alt=parsedResponse.data.Name;
         }
-
         if(typeof parsedResponse.data.Name !== 'undefined'){
             document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
         } else {

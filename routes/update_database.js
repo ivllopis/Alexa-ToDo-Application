@@ -221,18 +221,35 @@ async function getBookData(book_title) {
             } else {
                 // Get the data from the first book found
                 let entity = book_entities[0];
+
+                // Check if there is a cover ID
+                if(typeof entity.cover_i === 'undefined'){
+                    console.warn(book_title + " could not be found in the database.");
+                    dataBook.Name = book_title;
+                    dataBook.NotFound = true;
+                    dataBook.Type = 'Book';
+                    resolve(dataBook);
+                    return;
+                }
+
                 let book_description = await apiCalls.fetchBookDescription(entity.key);
                 dataBook.Name = entity.title;
                 dataBook.Authors = entity.author_name;
+
                 // Get the book description
-                if (typeof book_description.data.description === 'string'){
-                    dataBook.Synopsis = book_description.data.description;
-                } else typeof book_description.data.description === 'object' ? dataBook.Synopsis = book_description.data.description.value: dataBook.Synopsis = "Description could not be found";
+                try {
+                    if (typeof book_description.data.description === 'string'){
+                        dataBook.Synopsis = book_description.data.description;
+                    } else typeof book_description.data.description === 'object' ? dataBook.Synopsis = book_description.data.description.value: dataBook.Synopsis = "Description could not be found";
+                } catch (error) {
+                    console.warn(error);
+                    dataBook.Synopsis = "Description could not be found";
+                }
                 dataBook.Publishing_year = entity.first_publish_year;
-                dataBook.Rating = entity.ratings_average;
+                dataBook.Rating = typeof entity.ratings_average === 'number' ? entity.ratings_average.toFixed(2) : entity.ratings_average;
                 dataBook.Number_of_pages = entity.number_of_pages_median;
-                dataBook.Cover = `https://covers.openlibrary.org/b/id/${entity.cover_i}-M.jpg`;
-                dataBook.Author_image = `https://covers.openlibrary.org/a/olid/${entity.author_key[0]}-M.jpg`;
+                dataBook.Cover = typeof entity.cover_i !== 'undefined' ? `https://covers.openlibrary.org/b/id/${entity.cover_i}-M.jpg` : undefined;
+                dataBook.Author_image = (typeof entity.author_key !== 'undefined') && (entity.author_key.length > 0) ? `https://covers.openlibrary.org/a/olid/${entity.author_key[0]}-M.jpg` : undefined;
                 dataBook.Completed = false;
                 dataBook.Slide_number = 'N/A';
                 dataBook.Tags = [];

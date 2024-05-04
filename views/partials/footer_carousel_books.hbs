@@ -10,7 +10,13 @@
     {{/if}}
 
     function parseResponse(parsedResponse, mode){
-        if(typeof parsedResponse.data.Cover !== 'undefined') document.getElementById('info-picture').src=parsedResponse.data.Cover;
+        if((typeof parsedResponse.data.Cover !== 'undefined') || (typeof parsedResponse.data.Cover_selected !== 'undefined')) {
+            let url_cover = typeof parsedResponse.data.Cover_selected !== 'undefined' ? parsedResponse.data.Cover_selected : parsedResponse.data.Cover;
+            document.getElementById('info-picture').src=url_cover;
+        } else {
+            document.getElementById('info-picture').src='';
+            document.getElementById('info-picture').alt=parsedResponse.data.Name;
+        }
         if(typeof parsedResponse.data.Name !== 'undefined') document.getElementById('info-name').innerHTML = parsedResponse.data.Name;
         if(typeof parsedResponse.data.Synopsis !== 'undefined') document.getElementById('info-description').innerHTML= 'Synopsis: ' + parsedResponse.data.Synopsis;
         
@@ -95,7 +101,8 @@
             const parsedResponse = JSON.parse(res);
             var addedHTMLBooks = '<div class="center">\n\t';
             for(let book of parsedResponse) {
-                if(typeof book.Cover !== 'undefined'){
+                if((typeof book.Cover !== 'undefined') || (typeof book.Cover_selected !== 'undefined')){
+                    let url_cover = typeof book.Cover_selected !== 'undefined' ? book.Cover_selected : book.Cover;
                     let alt_img_name = book.Name;
                     alt_img_name = alt_img_name.replace(/\s/g, "");
                     
@@ -108,7 +115,7 @@
                         }    
                     }  
                     
-                    addedHTMLBooks += `" data-slide-number="${book.Slide_number}">\n\t<img class="content-sliders-image" src="${book.Cover}" alt="img_${alt_img_name}">\n</div>`;
+                    addedHTMLBooks += `" data-slide-number="${book.Slide_number}">\n\t<img class="content-sliders-image" src="${url_cover}" alt="img_${alt_img_name}">\n</div>`;
                 }
             }
             addedHTMLBooks += '\n</div>';

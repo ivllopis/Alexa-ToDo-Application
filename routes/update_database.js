@@ -634,9 +634,10 @@ async function updateDatabase() {
                     let [storedEntity] = await datastore.get(entityKey);
                     // If the entity existed in DB, store its relevant specifically set fields in the updated entity
                     if(storedEntity){
-                        // Relevant fields for now: Tags, Date_completion, Expected_time_to_beat_h, First_playthrough_h & Linked_video
+                        // Relevant fields for now: Tags, Cover_selected, Date_completion, Expected_time_to_beat_h, First_playthrough_h & Linked_video
                         if ((typeof storedEntity.Tags !== 'undefined') && (storedEntity.Tags.length > dataEntityformatted.Tags.length)) dataEntityformatted.Tags = storedEntity.Tags;
                         // TODO: update the tags in Todoist and make this fetch from Todoist directly to update them
+                        if (typeof storedEntity.Cover_selected !== 'undefined') dataEntityformatted.Cover_selected = storedEntity.Cover_selected;
                         if (typeof storedEntity.Date_completion !== 'undefined') dataEntityformatted.Date_completion = storedEntity.Date_completion;
                         if (typeof storedEntity.Expected_time_to_beat_h !== 'undefined') dataEntityformatted.Expected_time_to_beat_h = storedEntity.Expected_time_to_beat_h;
                         if (typeof storedEntity.First_playthrough_h !== 'undefined') dataEntityformatted.First_playthrough_h = storedEntity.First_playthrough_h;

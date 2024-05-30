@@ -112,7 +112,8 @@
         const parsedResponse = JSON.parse(res);
         var addedHTMLVideogames = '<div class="center">\n\t';
         for(let videogame of parsedResponse) {
-            if(typeof videogame.Cover !== 'undefined'){
+            if((typeof videogame.Cover !== 'undefined') || (typeof videogame.Cover_selected !== 'undefined')){
+                let url_cover = typeof videogame.Cover_selected !== 'undefined' ? videogame.Cover_selected : videogame.Cover;
                 let alt_img_name = videogame.Name;
                 alt_img_name = alt_img_name.replace(/\s/g, "");
                 
@@ -124,7 +125,7 @@
                         addedHTMLVideogames += ' ' + tag_name;
                     } 
                 }
-                addedHTMLVideogames += `" data-slide-number="${videogame.Slide_number}">\n\t<img class="content-sliders-image" src="${videogame.Cover}" alt="img_${alt_img_name}">\n</div>`;
+                addedHTMLVideogames += `" data-slide-number="${videogame.Slide_number}">\n\t<img class="content-sliders-image" src="${url_cover}" alt="img_${alt_img_name}">\n</div>`;
             }
         }
         addedHTMLVideogames += '\n</div>';

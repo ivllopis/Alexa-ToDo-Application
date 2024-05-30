@@ -89,7 +89,8 @@
         const parsedResponse = JSON.parse(res);
         var addedHTMLMovies = '<div class="center">\n\t';
         for(let movie of parsedResponse) {
-            if(typeof movie.Cover !== 'undefined'){
+            if((typeof movie.Cover !== 'undefined') || (typeof movie.Cover_selected !== 'undefined')){
+                let url_cover = typeof movie.Cover_selected !== 'undefined' ? movie.Cover_selected : movie.Cover;
                 let alt_img_name = movie.Name;
                 alt_img_name = alt_img_name.replace(/\s/g, "");
                 
@@ -102,7 +103,7 @@
                     }    
                 }  
                 
-                addedHTMLMovies += `" data-slide-number="${movie.Slide_number}">\n\t<img class="content-sliders-image" src="${movie.Cover}" alt="img_${alt_img_name}">\n</div>`;
+                addedHTMLMovies += `" data-slide-number="${movie.Slide_number}">\n\t<img class="content-sliders-image" src="${url_cover}" alt="img_${alt_img_name}">\n</div>`;
             }
         }
         addedHTMLMovies += '\n</div>';

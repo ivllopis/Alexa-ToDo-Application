@@ -85,7 +85,7 @@ async function fetchBookDescription(book_key) {
 
 async function trythis(){
     try{
-        let book_title = 'Tormenta de espadas (George R. R. Martin)'; //'The Way of Kings (Brandon Sanderson)'; //'El libro de los caídos'; // 'Never (Ken Follett)';
+        let book_title = 'The final empire'; //'The Way of Kings (Brandon Sanderson)'; //'El libro de los caídos'; // 'Never (Ken Follett)';
         let book_author = book_title.match(/\((.*)\)/);
         let book_entities;
         if(book_author !== null){

@@ -85,6 +85,17 @@ async function fetchBookDescription(book_key) {
 
 async function trythis(){
     try{
+        global.twitchcredentials = await apiCalls.getTwitchAccessToken();
+        let videogame = 'to the moon.';
+        console.log(videogame);
+        let videogamedata = await apiCalls.getVideogame(videogame, 'general');
+        console.log(videogamedata.data);
+        let videogamecover;
+        for (data of videogamedata.data){
+            videogamecover = await apiCalls.getVideogameCover(data.id);
+            console.log(videogamecover.data);
+        }
+        /*
         let book_title = 'The final empire'; //'The Way of Kings (Brandon Sanderson)'; //'El libro de los caídos'; // 'Never (Ken Follett)';
         let book_author = book_title.match(/\((.*)\)/);
         let book_entities;
@@ -128,6 +139,7 @@ async function trythis(){
                 console.log(`https://covers.openlibrary.org/b/isbn/${isbn}-M.jpg`);
             }
         }
+        */
     } catch (error){
         console.log(error);
     }

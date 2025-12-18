@@ -30,6 +30,9 @@
 
 .content-sliders{
     height: 620px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .content-sliders-loader{
@@ -40,23 +43,48 @@
     height: 50px;
 }
 
+.carousel-loader-container {
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media screen and (max-width: 768px) {
+    .carousel-loader-container {
+        height: 200px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .carousel-loader-container {
+        height: 150px;
+    }
+}
+
 .content-sliders-image{
     margin-left: auto;
     margin-right: auto;
     height: 100%;
-    max-width: 70%;
+    max-width: 100%;
+    width: auto;
+    object-fit: contain;
 }
 
 .button-list {
     list-style: none;
     margin: 0;
-    padding: 0;
-    text-align: right; /* align the list items to the right */
+    padding: 10px 15px;
+    text-align: right;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
 }
 
 .button-list li {
-    display: inline-block; /* display the list items inline */
-    margin-left: 10px; /* add some space between the buttons */
+    display: inline-block;
+    margin: 0;
 }
 
 .button-bottom-carousel-container {
@@ -64,23 +92,49 @@
     justify-content: space-between;
     align-items: center;
     margin: 0 auto;
-    /*max-width: 600px;*/
+    padding: 0 15px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 /* Style for the left button */
 .left-button-bottom-carousel {
-    margin-left: 15%;
-    margin-right: 15%;
+    flex: 0 0 auto;
 }
 
 /* Style for the right button */
 .right-button-bottom-carousel {
-    margin-right: 15%;
-    margin-left: 15%;
+    flex: 0 0 auto;
 }
 
 .tag-button{
     font-size: .775rem;
+    white-space: nowrap;
+}
+
+@media screen and (max-width: 768px) {
+    .button-list {
+        text-align: center;
+        justify-content: center;
+        padding: 10px;
+    }
+    
+    .tag-button {
+        font-size: .7rem;
+        padding: 4px 8px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .button-list {
+        padding: 8px 5px;
+        gap: 5px;
+    }
+    
+    .tag-button {
+        font-size: .65rem;
+        padding: 3px 6px;
+    }
 }
 
 a .card-title{
@@ -95,26 +149,155 @@ a:hover{
     color: #0062cc;
 }
 
-@media screen and (max-width: 2000px) {
+/* Responsive modal improvements */
+@media screen and (max-width: 768px) {
+    #exampleModal .modal-dialog {
+        margin: 10px;
+    }
+    
+    #exampleModal .media {
+        flex-direction: column;
+    }
+    
+    #exampleModal .media img {
+        width: 100% !important;
+        max-width: 200px;
+        margin: 0 auto 15px !important;
+    }
+    
+    #exampleModal iframe {
+        width: 100% !important;
+        max-width: 100%;
+        height: auto;
+        min-height: 200px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    #exampleModal .modal-dialog {
+        margin: 5px;
+    }
+    
+    #exampleModal .modal-body {
+        padding: 15px;
+    }
+    
+    #exampleModal .modal-header h5 {
+        font-size: 1rem;
+    }
+}
+
+/* Responsive navbar improvements */
+@media screen and (max-width: 992px) {
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+    
+    .navbar-nav .btn {
+        margin: 2px 0;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .form-inline {
+        width: 100%;
+        margin: 10px 0;
+    }
+    
+    .form-inline .form-control {
+        width: 70%;
+    }
+}
+
+/* Carousel container responsive padding */
+#media-content-carousel {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    #media-content-carousel {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+}
+
+/* Slick carousel arrow improvements for mobile */
+@media screen and (max-width: 768px) {
+    .slick-prev,
+    .slick-next {
+        z-index: 1;
+    }
+    
+    .slick-prev {
+        left: 5px;
+    }
+    
+    .slick-next {
+        right: 5px;
+    }
+}
+
+/* Responsive carousel heights */
+@media screen and (max-width: 2560px) {
+    .content-sliders{
+        height: 580px;
+    }
+}
+
+@media screen and (max-width: 1920px) {
+    .content-sliders{
+        height: 520px;
+    }
+}
+
+@media screen and (max-width: 1600px) {
+    .content-sliders{
+        height: 480px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
     .content-sliders{
         height: 420px;
     }
 }
 
-@media screen and (max-width: 1500px) {
+@media screen and (max-width: 992px) {
     .content-sliders{
         height: 380px;
     }
 }
 
-@media screen and (max-width: 1080px) {
+@media screen and (max-width: 768px) {
     .content-sliders{
-        height: 320px;
+        height: 350px;
+    }
+    
+    .button-bottom-carousel-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .left-button-bottom-carousel,
+    .right-button-bottom-carousel {
+        width: 100%;
+        margin: 5px 0;
     }
 }
 
-@media screen and (max-width: 760px) {
+@media screen and (max-width: 576px) {
     .content-sliders{
-        height: 415px;
+        height: 400px;
+    }
+    
+    .button-bottom-carousel-container {
+        padding: 0 10px;
+    }
+    
+    .button-bottom-carousel-container button,
+    .button-bottom-carousel-container a {
+        font-size: 0.875rem;
+        padding: 8px 12px;
     }
 }

@@ -90,7 +90,24 @@ Current hardcoded values can remain as defaults in documentation or as fallbacks
 
 ---
 
-## 6. Summary table
+## 6. Todoist item IDs (API v1 compatibility)
+
+**Current:** Entity keys in Datastore and all sync logic in `routes/update_database.js` use **`parseInt(item.id)`** for Todoist item IDs. The [Todoist API v1 migration](https://developer.todoist.com/api/v1/) states that IDs are now **opaque strings** (e.g. `"6X7rM8997g3RQmvh"`). If the Sync API returns string IDs, `parseInt()` yields `NaN` and entity keys become invalid, which can cause sync or lookup failures.
+
+**Desired (optional follow-up, for later):**
+
+- Use **Todoist item id as-is** (string or number) for Datastore entity keys so the app is compatible with API v1 string IDs. Google Cloud Datastore supports both integer and string key path segments.
+- In `routes/update_database.js`: replace `parseInt(item.id)` with the raw `item.id` (or a consistent string coercion) when building entity keys, and ensure any route or query that uses the id (e.g. `:id` in URLs, `getEntityDatabaseById`) accepts string keys.
+- Update `docs/README.md` §4.1 and §4.2 to describe keys as "Todoist item id (string or number)" once implemented.
+
+**Implementation notes (for when coding):**
+
+- Audit all uses of `item.id` in `update_database.js` (entity keys, batch delete/store, Not_found keys) and in routes that resolve entities by id (e.g. `routes/series.js`, `routes/movies.js`, etc.). Use the same type (string) for keys and for URL params so lookups match.
+- If existing data was stored with numeric keys, consider whether a one-time migration or backward compatibility (support both numeric and string lookups) is needed.
+
+---
+
+## 7. Summary table
 
 | Area                  | Current behavior                         | Desired behavior                                                                 |
 |-----------------------|------------------------------------------|-----------------------------------------------------------------------------------|
@@ -99,11 +116,13 @@ Current hardcoded values can remain as defaults in documentation or as fallbacks
 | **Tags in UI**        | Hardcoded tag buttons in carousel partial| Tag list driven by Datastore/Todoist (distinct tags per category/view)            |
 | **Auth (production)** | In-memory session; “not for production”  | In-memory session accepted for single-user; document as intentional              |
 | **APPLICATION_LOGIN_SECRET** | Undocumented format                 | Document: must be bcrypt hash; add generator command in `.env_sample` and PRD     |
+| **Todoist item IDs**        | `parseInt(item.id)` for entity keys | Use item id as-is (string) for API v1 compatibility; audit keys and routes      |
 
 ---
 
-## 7. Document history
+## 8. Document history
 
 | Version | Date     | Changes                    |
 |---------|----------|----------------------------|
 | 1.0     | Feb 2025 | Initial desired-changes PRD. |
+| 1.1     | Feb 2026 | Added §6 Todoist item IDs (API v1 compatibility) as optional follow-up. |

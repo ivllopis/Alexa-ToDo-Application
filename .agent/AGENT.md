@@ -16,7 +16,7 @@ This document configures how the agent should work on this codebase. Read it tog
 
 - **Consistency**: Any change to sync or storage must preserve the “sync token only after commit” guarantee. Do not update the token outside the transaction or before all entity writes/deletes.
 - **Data model**: Entity kinds (`Serie`, `Movie`, `Videogame`, `Book`, `Not_found`, `Sync_token`), keys (Todoist item id), and indexes are defined in PRD §4 and `index.yaml`. Long text fields are excluded from indexes.
-- **Integrations**: Todoist Sync API v9, OMDb, IGDB (Twitch OAuth), Open Library. Env vars and behavior are in PRD §5 and §8.1.
+- **Integrations**: Todoist API v1 (Sync endpoint; requests must be `application/x-www-form-urlencoded` — see `routes/apiCalls.js`), OMDb, IGDB (Twitch OAuth), Open Library. Env vars and behavior are in PRD §5 and §8.1.
 
 The agent must **know and use** this context when suggesting or implementing changes.
 
@@ -32,7 +32,7 @@ Before editing, the agent should locate and understand the relevant parts of the
 | Sync flow, Todoist → enrich → Datastore transaction, token update | `routes/update_database.js` |
 | Category routes, info endpoints, “any” (recommend) endpoints | `routes/series.js`, `routes/movies.js`, `routes/videogames.js`, `routes/books.js` |
 | Auth (login/logout, session) | `routes/auth.js` |
-| External API calls (OMDb, IGDB, Open Library) | `routes/apiCalls.js` |
+| External API calls (Todoist Sync, OMDb, IGDB, Open Library) | `routes/apiCalls.js` |
 | Datastore queries and helpers | `routes/queries.js` |
 | Views and layout | `views/` (`.hbs`), `views/partials/` (carousel, footer, category scripts) |
 | Indexes | `index.yaml` |
@@ -97,7 +97,7 @@ When modifying the frontend (Handlebars, CSS, Bootstrap, Slick, `public/`):
 - **No sensitive data in docs**: Do not store secrets, API keys, real project IDs, passwords, or deployment-specific URLs in any `.md` file or README. Use placeholders and refer to env/config.
 - **Main documentation**: `docs/README.md` — product requirements (PRD), data model, sync flow, routes, env.
 - **Future changes**: `docs/PRD-desired-changes.md` — agreed next steps (e.g. refresh button, configurable Todoist IDs).
-- **Sync**: One run at startup in `app.js`; full flow in `routes/update_database.js`; token in same transaction as entity writes.
+- **Sync**: One run at startup in `app.js`; full flow in `routes/update_database.js`; token in same transaction as entity writes. Todoist Sync uses API v1 (`/api/v1/sync`) with **form-urlencoded** body (see `routes/apiCalls.js`).
 - **Auth**: Session (express-session), 15 min cookie; `APPLICATION_LOGIN_USER` and bcrypt `APPLICATION_LOGIN_SECRET`.
 
 Use this file as the default agent behavior for this project.

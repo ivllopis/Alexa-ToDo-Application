@@ -2,7 +2,7 @@ const axios = require('axios');
 
 async function getDataTodoist(sync_token) {
     try {
-            return axios.post('https://api.todoist.com/sync/v9/sync', {
+            return axios.post('https://api.todoist.com/api/v1/sync', {
                 sync_token: sync_token !== 'undefined' ? sync_token : '*',
                 resource_types: '["items"]'
             },

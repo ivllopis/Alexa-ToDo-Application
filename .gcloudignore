@@ -15,3 +15,8 @@
 
 # Node.js dependencies:
 node_modules/
+
+# Local env (never deploy secrets; use app.yaml env_variables or Secret Manager in production)
+.env
+.env.*
+!.env_sample

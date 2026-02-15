@@ -88,53 +88,82 @@
     function startCarousel(){
         $('.center').slick({
             centerMode: true,
-            centerPadding: '5px', // dots: true, tengo que pensar más sobre esto
-            slidesToShow: 3,
-            swipeToSlide: true, // custom feat.
+            centerPadding: '10px',
+            slidesToShow: 1,
+            swipeToSlide: true,
+            infinite: true,
+            speed: 300,
             responsive: [
                 {
                     breakpoint: 4000,
                     settings: {
-                    arrows: false,
-                    centerMode: true,
-                    centerPadding: '5px',
-                    slidesToShow: 7
+                        arrows: false,
+                        centerMode: true,
+                        centerPadding: '60px',
+                        slidesToShow: 7
                     }
                 },
                 {
-                    breakpoint: 2000,
+                    breakpoint: 2560,
                     settings: {
-                    arrows: false,
-                    centerMode: true,
-                    centerPadding: '5px',
-                    slidesToShow: 3
+                        arrows: false,
+                        centerMode: true,
+                        centerPadding: '50px',
+                        slidesToShow: 6
                     }
                 },
                 {
-                    breakpoint: 1500,
+                    breakpoint: 1920,
                     settings: {
-                    arrows: false,
-                    centerMode: true,
-                    centerPadding: '5px',
-                    slidesToShow: 3
+                        arrows: false,
+                        centerMode: true,
+                        centerPadding: '40px',
+                        slidesToShow: 5
                     }
                 },
                 {
-                    breakpoint: 1080,
+                    breakpoint: 1600,
                     settings: {
-                    arrows: true,
-                    centerMode: true,
-                    centerPadding: '5px',
-                    slidesToShow: 3
+                        arrows: false,
+                        centerMode: true,
+                        centerPadding: '30px',
+                        slidesToShow: 4
                     }
                 },
                 {
-                    breakpoint: 760,
+                    breakpoint: 1200,
                     settings: {
-                    arrows: true,
-                    centerMode: true,
-                    centerPadding: '5px',
-                    slidesToShow: 1
+                        arrows: true,
+                        centerMode: true,
+                        centerPadding: '40px',
+                        slidesToShow: 3
+                    }
+                },
+                {
+                    breakpoint: 992,
+                    settings: {
+                        arrows: true,
+                        centerMode: true,
+                        centerPadding: '30px',
+                        slidesToShow: 3
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        arrows: true,
+                        centerMode: true,
+                        centerPadding: '20px',
+                        slidesToShow: 2
+                    }
+                },
+                {
+                    breakpoint: 576,
+                    settings: {
+                        arrows: true,
+                        centerMode: true,
+                        centerPadding: '10px',
+                        slidesToShow: 1
                     }
                 }
             ]

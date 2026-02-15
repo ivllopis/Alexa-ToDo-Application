@@ -98,6 +98,15 @@ app.get('/', (req, res) => {
   res.redirect('/series');
 });
 
+// Global error handler: prevents uncaught errors in routes from crashing the process (e.g. 503 on GAE)
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  if (res.headersSent) {
+    return next(err);
+  }
+  res.status(500).send('Something went wrong. Please try again.');
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

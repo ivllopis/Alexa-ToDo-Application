@@ -18,30 +18,38 @@ router.get('/login', (req, res) => {
     res.render('login', {success_msg: req.flash('success_msg'), error_msg: req.flash('error_msg')});
 });
 
-router.post('/login', async (req, res) => {
-	const username = req.body.username;
-	const password = req.body.password;
-	if (username && password) {
-        if(username === process.env.APPLICATION_LOGIN_USER){
-            try{
-                if(await bcrypt.compare(password, process.env.APPLICATION_LOGIN_SECRET)){
-                    req.session.user = username;
-                    req.session.loggedin = true;
-                    req.flash('success_msg', 'You are now logged in.');
-                    res.redirect('/');
-                } else {
-                    res.render('login', {error_msg: 'The username and password are not correct.'});
-                }
-                
-            } catch(error){
-                console.log(error);
-                res.sendStatus(500);
-            }
-        } else {
-            res.render('login', {error_msg: 'This username does not appear in our database.'});
-        }
-	} else {
-        res.render('login', {error_msg: 'Please, enter username and password.'});
+router.post('/login', async (req, res, next) => {
+	try {
+		const username = req.body.username;
+		const password = req.body.password;
+		if (!username || !password) {
+			return res.render('login', { error_msg: 'Please, enter username and password.' });
+		}
+		const envUser = process.env.APPLICATION_LOGIN_USER;
+		const envSecret = process.env.APPLICATION_LOGIN_SECRET;
+		if (!envUser || !envSecret) {
+			console.error('Auth config missing: APPLICATION_LOGIN_USER or APPLICATION_LOGIN_SECRET not set.');
+			return res.status(503).render('login', { error_msg: 'Login is not configured. Please try again later.' });
+		}
+		if (username !== envUser) {
+			return res.render('login', { error_msg: 'This username does not appear in our database.' });
+		}
+		try {
+			const match = await bcrypt.compare(password, envSecret);
+			if (match) {
+				req.session.user = username;
+				req.session.loggedin = true;
+				req.flash('success_msg', 'You are now logged in.');
+				return res.redirect('/');
+			}
+			return res.render('login', { error_msg: 'The username and password are not correct.' });
+		} catch (bcryptError) {
+			console.error('Login bcrypt error:', bcryptError);
+			return res.status(500).render('login', { error_msg: 'A temporary error occurred. Please try again.' });
+		}
+	} catch (err) {
+		console.error('Login handler error:', err);
+		next(err);
 	}
 });
 

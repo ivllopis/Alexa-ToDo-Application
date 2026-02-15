@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const hbs  = require('express-handlebars');
+const { create: createHandlebars } = require('express-handlebars');
 var session = require('express-session');
 const flash = require('connect-flash');
 
@@ -75,12 +75,13 @@ app.use((req, res, next) => {
 
 // View engine setup
 // Use `.hbs` for extensions and find partials in `views/partials`.
-app.engine('hbs', hbs.engine({
+const hbs = createHandlebars({
   extname: '.hbs',
   defaultLayout: 'layout',
-  partialsDir:  path.join(__dirname, 'views/partials'),
-  layoutsDir:  path.join(__dirname, 'views/layouts')
-}));
+  partialsDir: path.join(__dirname, 'views/partials'),
+  layoutsDir: path.join(__dirname, 'views/layouts')
+});
+app.engine('hbs', hbs.engine);
 
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));

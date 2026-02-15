@@ -1,10 +1,33 @@
 const axios = require('axios');
 
+/**
+ * Log Todoist API error in a structured way for Google Cloud Logging (readable, no huge object dumps).
+ */
+function logTodoistSyncError(error, context = 'getDataTodoist') {
+    const status = error.response?.status;
+    const statusText = error.response?.statusText;
+    const body = error.response?.data;
+    const message = error.message || 'Unknown error';
+    // Single-line JSON for GCP log searchability; body may contain Todoist error_tag, error_code, error_extra
+    const payload = {
+                todoist_sync_error: true,
+                context,
+                http_status: status,
+                http_status_text: statusText,
+                todoist_error: typeof body === 'object' ? body : body,
+                message
+            };
+    console.error(JSON.stringify(payload));
+}
+
 async function getDataTodoist(sync_token) {
     try {
             // Todoist Sync API requires application/x-www-form-urlencoded (see https://developer.todoist.com/api/v1/)
             const params = new URLSearchParams();
-            params.append('sync_token', (sync_token === undefined || sync_token === 'undefined') ? '*' : String(sync_token));
+            const tokenValue = (sync_token === undefined || sync_token === 'undefined' || sync_token === null || sync_token === '')
+                ? '*'
+                : String(sync_token).trim();
+            params.append('sync_token', tokenValue);
             params.append('resource_types', '["items"]');
 
             return axios.post('https://api.todoist.com/api/v1/sync', params.toString(), {
@@ -14,7 +37,7 @@ async function getDataTodoist(sync_token) {
                 }
             });
     } catch (error) {
-            console.error(`Error in apiCalls / getDataTodoist: \n${error}`);
+            logTodoistSyncError(error, 'getDataTodoist');
             throw error;
     }
 }

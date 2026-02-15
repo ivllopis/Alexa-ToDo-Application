@@ -471,6 +471,20 @@ async function calculateSlideNumbersEntireDatabase() {
     });
 }
 
+/**
+ * Structured log for Google Cloud Logging (readable, searchable). Avoids dumping full error objects.
+ */
+function logSyncError(stage, error) {
+    const payload = {
+        update_database_error: true,
+        stage,
+        message: error?.message || String(error),
+        http_status: error?.response?.status,
+        todoist_error: error?.response?.data
+    };
+    console.error(JSON.stringify(payload));
+}
+
 async function updateDatabase() {
     try{
         let datafromTodoist;
@@ -480,18 +494,23 @@ async function updateDatabase() {
         const [sync_tokens] = await getEntitiesDatabase('Sync_token');
         global.twitchcredentials = await apiCalls.getTwitchAccessToken();
 
+        // Fetch from Todoist: incremental if we have a token, else full. On 400 (e.g. invalid token), retry with full sync once.
+        const storedToken = sync_tokens.length ? String(sync_tokens[0].Token || '').trim() : null;
+        try {
+            datafromTodoist = storedToken
+                ? await apiCalls.getDataTodoist(storedToken)
+                : await apiCalls.getDataTodoist();
+        } catch (todoistErr) {
+            if (todoistErr.response?.status === 400 && storedToken) {
+                console.warn(JSON.stringify({ todoist_sync_fallback: true, reason: '400 on incremental sync, retrying with full sync (*)' }));
+                datafromTodoist = await apiCalls.getDataTodoist();
+            } else {
+                throw todoistErr;
+            }
+        }
+
         // Create the transaction process
         const transaction = datastore.transaction();
-
-        if(!sync_tokens.length){
-            // If it doesn't exist:
-            // Use the default sync_token to perform a full sync with Todoist
-            datafromTodoist = await apiCalls.getDataTodoist();
-        } else {
-            // If it exists:
-            // Use the stored sync_token to perform a partial sync with the updates from Todoist
-            datafromTodoist = await apiCalls.getDataTodoist(sync_tokens[0].Token);
-        }
 
         for(let item of datafromTodoist.data.items) {
             let dataEntityformatted, entityKey;
@@ -549,8 +568,7 @@ async function updateDatabase() {
                             });
                         }
                     } catch (error) {
-                        console.warn("Something went wrong while checking a show.");
-                        console.warn(error);
+                        console.warn(JSON.stringify({ sync_stage: 'completed_show', error: error?.message }));
                     }
                     continue;
                 }
@@ -576,8 +594,7 @@ async function updateDatabase() {
                             });
                         }
                     } catch (error) {
-                        console.warn("Something went wrong while checking a game.");
-                        console.warn(error);
+                        console.warn(JSON.stringify({ sync_stage: 'completed_game', error: error?.message }));
                     }
                     continue;
                 }
@@ -602,8 +619,7 @@ async function updateDatabase() {
                             });
                         }
                     } catch (error) {
-                        console.warn("Something went wrong while checking a book.");
-                        console.warn(error);
+                        console.warn(JSON.stringify({ sync_stage: 'completed_book', error: error?.message }));
                     }
                     continue;
                 }
@@ -685,13 +701,13 @@ async function updateDatabase() {
             // TODO: Inform the user that the database has been updated and free the semaphor
 
         } catch (error) {
-            console.warn("An ERROR has been found.\nRolling back to previous state...");
-            console.warn(error);
+            logSyncError('transaction_commit', error);
+            console.warn('Rolling back transaction to previous state.');
             await transaction.rollback();
         }
 
     } catch (error) {
-        console.log(error);
+        logSyncError('update_database', error);
         throw error;
     }
 }

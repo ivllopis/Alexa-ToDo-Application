@@ -23,7 +23,7 @@ This document describes the product requirements for a **media backlog and recom
 | Aspect | Description |
 |--------|-------------|
 | **Deployment** | Google App Engine (Node.js 22, standard environment) |
-| **Data source** | Todoist (Sync API v9), via project folders per category |
+| **Data source** | Todoist (API v1 Sync endpoint), via project folders per category |
 | **Storage** | Google Cloud Datastore |
 | **Enrichment** | OMDb (movies/series), IGDB + Twitch OAuth (videogames), Open Library (books) |
 | **Frontend** | Express + Handlebars, Bootstrap, Slick carousels, session-based auth |
@@ -149,12 +149,13 @@ Entity keys in Datastore use the **Todoist item id** (`parseInt(item.id)`) so th
 
 ### 5.1 Todoist
 
-- **API:** Sync API v9 (`https://api.todoist.com/sync/v9/sync`).
+- **API:** Todoist API v1 — Sync endpoint (`https://api.todoist.com/api/v1/sync`). Reference: [developer.todoist.com/api/v1](https://developer.todoist.com/api/v1/).
+- **Request format:** Sync requests must be sent as **`application/x-www-form-urlencoded`** (not JSON). Implemented in `routes/apiCalls.js` via `URLSearchParams` and `Content-Type: application/x-www-form-urlencoded`.
 - **Auth:** Bearer token (`TODOIST_API_KEY`).
 - **Behavior:**  
   - First run: `sync_token: '*'` for full sync.  
   - Subsequent runs: stored `Sync_token` for incremental sync.  
-- **Resource:** `resource_types: '["items"]'`.
+- **Resource:** `resource_types: '["items"]'` (JSON-encoded array in the form body).
 - **Data used:** `item.id`, `item.project_id`, `item.content`, `item.checked`, `item.completed_at`, `item.labels` (tags), `item.is_deleted`.
 
 ### 5.2 OMDb (Movies & Series)
@@ -285,3 +286,4 @@ Sample provided in `.env_sample` (key placeholders only; no real secrets).
 | Version | Date       | Changes |
 |---------|------------|---------|
 | 1.0     | Feb 2025   | Initial PRD from repository review. |
+| 1.1     | Feb 2026   | Todoist: document API v1 Sync endpoint, correct URL, and form-urlencoded request format (fix for 400 Bad Request). |

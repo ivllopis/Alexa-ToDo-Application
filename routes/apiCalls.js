@@ -153,18 +153,31 @@ async function fetchBookDescription(book_key) {
 }
 
 async function getTwitchAccessToken() {
+    const clientId = process.env.IGDB_API_CLIENT_ID;
+    const clientSecret = process.env.IGDB_API_SECRET;
+    if (!clientId || !clientSecret) {
+        const msg = 'Missing Twitch/IGDB credentials: IGDB_API_CLIENT_ID and IGDB_API_SECRET must be set (e.g. in .env locally or env_variables in app.yaml on App Engine).';
+        console.error(msg);
+        throw new Error(msg);
+    }
     try {
-            return axios.post('https://id.twitch.tv/oauth2/token',
-                null,
-                {
-                    params: {
-                        'client_id': process.env.IGDB_API_CLIENT_ID,
-                        'client_secret': process.env.IGDB_API_SECRET,
-                        'grant_type': 'client_credentials'
-                    }
-                });
+        return axios.post('https://id.twitch.tv/oauth2/token',
+            null,
+            {
+                params: {
+                    client_id: clientId,
+                    client_secret: clientSecret,
+                    grant_type: 'client_credentials'
+                }
+            });
     } catch (error) {
-            console.error(error);
+        console.error(JSON.stringify({
+            twitch_token_error: true,
+            message: error?.message,
+            http_status: error?.response?.status,
+            twitch_error: error?.response?.data
+        }));
+        throw error;
     }
 }
 

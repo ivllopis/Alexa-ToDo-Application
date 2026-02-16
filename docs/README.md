@@ -3,7 +3,7 @@
 
 **Version:** 1.0  
 **Last updated:** February 2025  
-**Scope:** This PRD describes the **current configuration and behavior** of the application as implemented in the repository. For agreed future changes (Refresh button, configurable Todoist IDs, dynamic tags, etc.), see **[PRD — Desired changes](PRD-desired-changes.md)**.
+**Scope:** This PRD describes the **current configuration and behavior** of the application as implemented in the repository. For agreed future changes (Refresh button, configurable Todoist IDs, dynamic tags, etc.), see **[PRD — Desired changes](prd/desired-changes-prd.md)**.
 
 ---
 
@@ -80,7 +80,7 @@ Category-to-project mapping is configured per deployment (e.g. via environment v
 - **Videogames (PS4)** → one Todoist project id
 - **Books** → one Todoist project id
 
-**Do not store real project IDs in documentation or version control.** Use `.env` or deployment config; see §8.1 and `docs/PRD-desired-changes.md` for configurable IDs.
+**Do not store real project IDs in documentation or version control.** Use `.env` or deployment config; see §8.1 and `docs/prd/desired-changes-prd.md` for configurable IDs.
 
 Entity keys in Datastore use the **Todoist item id** (`parseInt(item.id)`) so that one-to-one mapping is preserved across syncs.
 
@@ -277,7 +277,7 @@ Sample provided in `.env_sample` (key placeholders only; no real secrets).
 ## 10. Open Questions for Product / Dev (current)
 
 - **CORS:** Origin is set per environment (e.g. local dev vs production). Do not hardcode production URLs in docs or code.
-- Other previously open items (sync trigger, Todoist IDs, tags, auth, APPLICATION_LOGIN_SECRET) are addressed in **[PRD — Desired changes](PRD-desired-changes.md)**.
+- Other previously open items (sync trigger, Todoist IDs, tags, auth, APPLICATION_LOGIN_SECRET) are addressed in **[PRD — Desired changes](prd/desired-changes-prd.md)**.
 
 ---
 

@@ -1,7 +1,7 @@
 # PRD — Responsiveness improvements
 
 **Status:** Agreed product/UX changes (not yet implemented)  
-**Related:** [PRD (current configuration)](README.md) · [PRD — Desired changes](PRD-desired-changes.md)
+**Related:** [PRD (current configuration)](../README.md) · [PRD — Desired changes](desired-changes-prd.md)
 
 This document describes the **agreed responsiveness improvements** for the Media Backlog & Recommender web frontend. The goal is to make the app feel faster and work correctly in both local and production environments.
 
@@ -41,17 +41,17 @@ This document describes the **agreed responsiveness improvements** for the Media
 
 **Desired:**
 
-- **Pagination:** Serve and display carousel data in **pages of 12 slides** per view. The user can move to the next (and optionally previous) page of results within the same category/view (e.g. “Series backlog”, “Movies completed”).
+- **Pagination:** Serve and display carousel data in **pages of 12 slides** per view. The user can move to the next (and optionally previous) page of results within the same category/view (e.g. "Series backlog", "Movies completed").
 - **Lazy-loading of images:** Load cover images only when needed (e.g. when the slide is visible or near the viewport). Do not set `src` for every slide on initial load; set it when the slide is in view (or use a small buffer, e.g. current ±2 slides). Optionally use the `loading="lazy"` attribute where it fits.
 
 **Implementation notes (for when coding):**
 
 - **Backend:** Add support for paginated carousel data:
-  - Extend or add an endpoint that accepts a page index (and optionally page size; default 12). Use `getCovers()` (or equivalent) with `.limit(12)` and `.offset((page - 1) * 12)` (or cursor-based pagination if preferred). Return also total count or “has next page” so the frontend can show next/previous controls.
+  - Extend or add an endpoint that accepts a page index (and optionally page size; default 12). Use `getCovers()` (or equivalent) with `.limit(12)` and `.offset((page - 1) * 12)` (or cursor-based pagination if preferred). Return also total count or "has next page" so the frontend can show next/previous controls.
   - Ensure ordering is consistent (e.g. by `Slide_number` or `Name` as today).
 - **Frontend:** 
-  - Request only the first page (12 items) on initial load. When the user clicks “Next page” (and optionally “Previous page”), request the corresponding page and replace or append slides and re-init Slick if needed.
-  - For images: render slide placeholders without `src` (or with a data attribute holding the URL). When a slide becomes the current (or adjacent) slide, set `img.src` to the real cover URL. Consider `loading="lazy"` for off-screen images if the browser supports it and it doesn’t conflict with Slick’s DOM reuse.
+  - Request only the first page (12 items) on initial load. When the user clicks "Next page" (and optionally "Previous page"), request the corresponding page and replace or append slides and re-init Slick if needed.
+  - For images: render slide placeholders without `src` (or with a data attribute holding the URL). When a slide becomes the current (or adjacent) slide, set `img.src` to the real cover URL. Consider `loading="lazy"` for off-screen images if the browser supports it and it doesn't conflict with Slick's DOM reuse.
 
 ---
 
@@ -72,7 +72,7 @@ This document describes the **agreed responsiveness improvements** for the Media
   - Popper.js
   - Bootstrap JS
   - Slick (`slick.min.js`)
-- Ensure inline scripts that use `$(document).ready` or call Slick still run after jQuery and Slick are loaded; `defer` preserves order, so this should hold. Test that the carousel, tag filters, “Recommend me”, and “Info” modal all work after the change.
+- Ensure inline scripts that use `$(document).ready` or call Slick still run after jQuery and Slick are loaded; `defer` preserves order, so this should hold. Test that the carousel, tag filters, "Recommend me", and "Info" modal all work after the change.
 
 ---
 

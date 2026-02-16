@@ -96,7 +96,7 @@ When modifying the frontend (Handlebars, CSS, Bootstrap, Slick, `public/`):
 
 - **No sensitive data in docs**: Do not store secrets, API keys, real project IDs, passwords, or deployment-specific URLs in any `.md` file or README. Use placeholders and refer to env/config.
 - **Main documentation**: `docs/README.md` — product requirements (PRD), data model, sync flow, routes, env.
-- **Future changes**: `docs/PRD-desired-changes.md` — agreed next steps (e.g. refresh button, configurable Todoist IDs).
+- **Future changes**: `docs/prd/desired-changes-prd.md` — agreed next steps (e.g. refresh button, configurable Todoist IDs).
 - **Sync**: One run at startup in `app.js`; full flow in `routes/update_database.js`; token in same transaction as entity writes. Todoist Sync uses API v1 (`/api/v1/sync`) with **form-urlencoded** body (see `routes/apiCalls.js`).
 - **Auth**: Session (express-session), 15 min cookie; `APPLICATION_LOGIN_USER` and bcrypt `APPLICATION_LOGIN_SECRET`.
 

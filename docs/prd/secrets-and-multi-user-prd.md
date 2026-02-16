@@ -1,7 +1,7 @@
 # PRD — Secrets Manager migration & multi-user
 
 **Status:** Future work (not yet implemented)  
-**Related:** [PRD (current configuration)](README.md), [Desired changes](PRD-desired-changes.md)
+**Related:** [PRD (current configuration)](../README.md), [Desired changes](desired-changes-prd.md)
 
 This document describes two planned areas: migrating production secrets to Google Cloud Secret Manager, and optionally supporting more than one user.
 
@@ -40,25 +40,25 @@ This document describes two planned areas: migrating production secrets to Googl
 
 ### 2.1 Current state
 
-- The app has **single-user auth**: one username and one password hash in environment variables (`APPLICATION_LOGIN_USER`, `APPLICATION_LOGIN_SECRET`). Login is implemented in `routes/auth.js` using `bcrypt.compare()` against that single hash. Session is in-memory (see main PRD and PRD-desired-changes §4).
+- The app has **single-user auth**: one username and one password hash in environment variables (`APPLICATION_LOGIN_USER`, `APPLICATION_LOGIN_SECRET`). Login is implemented in `routes/auth.js` using `bcrypt.compare()` against that single hash. Session is in-memory (see main PRD and desired-changes-prd.md §4).
 
 ### 2.2 Desired state (optional future work)
 
-- Support **more than one user**: multiple named users, each with their own credentials, able to log in and use the app (view backlogs, use “Recommend me”, trigger sync if that feature is added, etc.). No requirement yet for per-user data isolation (e.g. separate backlogs per user); the backlog can remain global. The goal is only to allow multiple distinct logins.
+- Support **more than one user**: multiple named users, each with their own credentials, able to log in and use the app (view backlogs, use "Recommend me", trigger sync if that feature is added, etc.). No requirement yet for per-user data isolation (e.g. separate backlogs per user); the backlog can remain global. The goal is only to allow multiple distinct logins.
 
 ### 2.3 Implementation notes (for when coding)
 
 - **User store:** Replace the single `APPLICATION_LOGIN_USER` / `APPLICATION_LOGIN_SECRET` pair with a stored set of users. Options:
   - **Datastore:** New kind (e.g. `User` or `App_user`) with properties such as `username`, `password_hash` (bcrypt), and optionally `created_at`. On login, look up the user by username and compare password to the stored hash.
   - **Environment / config:** If the number of users is small and static, a list of `USERNAME:bcrypt_hash` entries in a single env var or in a config file (or in Secret Manager as one secret containing the list) could be parsed at startup; this is simpler but less flexible than Datastore.
-- **Auth flow:** Keep session-based auth; after a successful login, store the username (or user id) in the session. Middleware that currently checks “is there a session user?” can remain; only the source of valid credentials changes (lookup in Datastore or parsed list instead of a single env var).
-- **Secrets:** If credentials are in Datastore, the only “auth” secret might be a global secret used to sign or encrypt session data (if needed). User passwords would be stored as bcrypt hashes in Datastore, not in env vars. Alternatively, if the multi-user list is stored in Secret Manager, the app would fetch that secret at startup and parse it to build the in-memory user map.
+- **Auth flow:** Keep session-based auth; after a successful login, store the username (or user id) in the session. Middleware that currently checks "is there a session user?" can remain; only the source of valid credentials changes (lookup in Datastore or parsed list instead of a single env var).
+- **Secrets:** If credentials are in Datastore, the only "auth" secret might be a global secret used to sign or encrypt session data (if needed). User passwords would be stored as bcrypt hashes in Datastore, not in env vars. Alternatively, if the multi-user list is stored in Secret Manager, the app would fetch that secret at startup and parse it to build the in-memory user map.
 - **Backward compatibility:** If desired, support a transition period where both the single env-based user and the new user store are checked (e.g. if no user found in Datastore, fall back to `APPLICATION_LOGIN_USER` / `APPLICATION_LOGIN_SECRET`). Once migrated, remove the env-based single user.
 
 ### 2.4 Out of scope (for this PRD)
 
 - Per-user backlogs or per-user Todoist linkage (every user seeing only their own items).
-- OAuth or third-party identity (e.g. “Login with Google”).
+- OAuth or third-party identity (e.g. "Login with Google").
 - User self-registration or password reset flows (unless explicitly added later).
 
 ---

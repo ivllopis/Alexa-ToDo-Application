@@ -1,7 +1,7 @@
 # PRD — Desired changes
 
 **Status:** Agreed product/configuration changes (not yet implemented)  
-**Related:** [PRD (current configuration)](README.md)
+**Related:** [PRD (current configuration)](../README.md)
 
 This document captures the **desired changes** agreed for the Media Backlog & Recommender application. It supplements the main PRD, which describes the current state.
 
@@ -14,14 +14,14 @@ This document captures the **desired changes** agreed for the Media Backlog & Re
 **Desired:**
 
 - Keep sync **on app startup** as today.
-- Add a **“Refresh” button in the frontend** that triggers a sync on demand.
+- Add a **"Refresh" button in the frontend** that triggers a sync on demand.
   - When the user clicks it, the app should run the same sync flow (Todoist → enrich → Datastore transaction → update sync token).
   - The UI should reflect the result (e.g. loading state during sync, then reload or success message).
 
 **Implementation notes (for when coding):**
 
 - Expose an endpoint (e.g. `POST /api/sync`) that runs the sync logic and is protected by the existing auth.
-- Add a “Refresh” control in the navbar (or similar) visible when the user is logged in, which calls this endpoint and then updates the view (e.g. reload page or show “Sync complete”).
+- Add a "Refresh" control in the navbar (or similar) visible when the user is logged in, which calls this endpoint and then updates the view (e.g. reload page or show "Sync complete").
 
 ---
 
@@ -47,7 +47,7 @@ Current hardcoded values can remain as defaults in documentation or as fallbacks
 
 ## 3. Tags in the UI
 
-**Current:** Tag filter buttons above the carousel (e.g. “Animes”, “Souls-like”, “Documentaries”) are **hardcoded** in the Handlebars carousel partial, with different blocks per category/view.
+**Current:** Tag filter buttons above the carousel (e.g. "Animes", "Souls-like", "Documentaries") are **hardcoded** in the Handlebars carousel partial, with different blocks per category/view.
 
 **Desired:**
 
@@ -57,9 +57,9 @@ Current hardcoded values can remain as defaults in documentation or as fallbacks
 
 **Implementation notes (for when coding):**
 
-- Add a way to get distinct tags for a kind (and, for Videogames, platform) and completion state—e.g. a query that returns entities’ `Tags` and derive unique values, or an endpoint that returns `{ tags: [...] }`.
+- Add a way to get distinct tags for a kind (and, for Videogames, platform) and completion state—e.g. a query that returns entities' `Tags` and derive unique values, or an endpoint that returns `{ tags: [...] }`.
 - For each category page (series, movies, books, videogames by platform), pass the relevant tag list into the template and render the tag buttons via a loop (e.g. `{{#each tags}}`) instead of hardcoded markup.
-- Keep “Clear filters” as a fixed button.
+- Keep "Clear filters" as a fixed button.
 
 ---
 
@@ -111,10 +111,10 @@ Current hardcoded values can remain as defaults in documentation or as fallbacks
 
 | Area                  | Current behavior                         | Desired behavior                                                                 |
 |-----------------------|------------------------------------------|-----------------------------------------------------------------------------------|
-| **Sync trigger**      | Sync only on app startup                 | Sync on startup **and** via a “Refresh” button in the frontend                    |
+| **Sync trigger**      | Sync only on app startup                 | Sync on startup **and** via a "Refresh" button in the frontend                    |
 | **Todoist project IDs** | Hardcoded in `update_database.js`     | Configurable via env vars (e.g. `TODOIST_PROJECT_*`)                              |
 | **Tags in UI**        | Hardcoded tag buttons in carousel partial| Tag list driven by Datastore/Todoist (distinct tags per category/view)            |
-| **Auth (production)** | In-memory session; “not for production”  | In-memory session accepted for single-user; document as intentional              |
+| **Auth (production)** | In-memory session; "not for production"  | In-memory session accepted for single-user; document as intentional              |
 | **APPLICATION_LOGIN_SECRET** | Undocumented format                 | Document: must be bcrypt hash; add generator command in `.env_sample` and PRD     |
 | **Todoist item IDs**        | `parseInt(item.id)` for entity keys | Use item id as-is (string) for API v1 compatibility; audit keys and routes      |
 

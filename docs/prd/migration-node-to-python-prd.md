@@ -1,7 +1,7 @@
 # PRD — Migration from Node.js/Express to Python
 
 **Status:** Strategy document (not yet implemented)  
-**Related:** [PRD (current configuration)](README.md) · [PRD — Desired changes](PRD-desired-changes.md)
+**Related:** [PRD (current configuration)](../README.md) · [PRD — Desired changes](desired-changes-prd.md)
 
 This document describes a **strategy to migrate the Media Backlog & Recommender application** from **Node.js with Express** to **Python** (Flask or an alternative framework as recommended below), with a **pure migration** objective: **no intentional changes to application logic or frontend behavior**. The frontend should remain as similar as possible in look, URLs, and interaction. Any question or doubt is **asked or flagged** in this PRD and must not be inferred during implementation.
 
@@ -92,7 +92,7 @@ TODOIST_API_KEY, OMDb_API_KEY, IGDB_API_KEY, IGDB_API_CLIENT_ID, IGDB_API_SECRET
    Flask app entry point, mount static files, CORS middleware if kept (see §7). Serve existing static assets unchanged so that any existing frontend that points at the same paths still works.
 
 3. **Datastore and external APIs**  
-   Port `queries.js` and `apiCalls.js` to Python (same queries, same API calls). No schema or logic changes. Use a single module or package for “data” and “api” layers.
+   Port `queries.js` and `apiCalls.js` to Python (same queries, same API calls). No schema or logic changes. Use a single module or package for "data" and "api" layers.
 
 4. **Sync (update_database)**  
    Port `update_database.js` to Python. Same flow: read Sync_token from Datastore, call Todoist, Twitch OAuth for IGDB, OMDb, Open Library; same entity kinds and field names; same transaction and slide-number update. **When** it runs (startup vs. first request) is a decision; see §7.
@@ -120,7 +120,7 @@ TODOIST_API_KEY, OMDb_API_KEY, IGDB_API_KEY, IGDB_API_CLIENT_ID, IGDB_API_SECRET
   Same env vars for user and hashed secret; same bcrypt comparison; same session keys (`user`, `loggedin`); same redirect to `/auth/login` when not authenticated; same flash keys. **Question:** Keep same env var names (APPLICATION_LOGIN_USER, APPLICATION_LOGIN_SECRET) for compatibility with existing deployment and docs? See §7.
 
 - **Session and flash:**  
-  Match 15-minute expiry and in-memory semantics if that is the agreed production choice (see PRD-desired-changes). **Question:** Use Flask’s default client-side session or a server-side store? See §7.
+  Match 15-minute expiry and in-memory semantics if that is the agreed production choice (see desired-changes-prd.md). **Question:** Use Flask's default client-side session or a server-side store? See §7.
 
 - **CORS:**  
   Current code allows only `http://localhost:5000`. **Question:** Keep as-is, make configurable, or remove for production? See §7.
@@ -151,17 +151,17 @@ The following must be **answered or explicitly accepted** before or during imple
 
 4. **APPLICATION_LOGIN_SECRET format:** Current value is a bcrypt hash (e.g. `$2b$10$...`). Should the Python app use the **exact same** env value and `bcrypt.checkpw(plain_password, stored_hash)` so that no re-hashing or re-deployment of secrets is required?
 
-5. **Session store:** Keep **in-memory** session (Flask default or a simple in-memory store) to match current behavior and PRD-desired-changes, or is a different store (e.g. Datastore, Redis) required for the migration? If in-memory, confirm that client-side signed cookie vs. server-side session is acceptable.
+5. **Session store:** Keep **in-memory** session (Flask default or a simple in-memory store) to match current behavior and desired-changes-prd.md, or is a different store (e.g. Datastore, Redis) required for the migration? If in-memory, confirm that client-side signed cookie vs. server-side session is acceptable.
 
 6. **SYNC_TOKEN in .env:** Current code reads the Todoist sync token from **Datastore** (kind `Sync_token`), not from `.env`. Is **SYNC_TOKEN** in `.env` used elsewhere (e.g. manual override, docs, or legacy)? Should the Python app read it as fallback or ignore it?
 
 7. **CORS headers:** Keep the current CORS middleware (allowing only `http://localhost:5000`) as-is, make origin configurable via env, or remove for production? Same behavior for preflight and credentials?
 
-8. **Sync timing:** Should the Todoist/Datastore sync run **exactly once at process startup** (before the app serves requests), or is “on first request” acceptable? Any requirement for not blocking the first HTTP response?
+8. **Sync timing:** Should the Todoist/Datastore sync run **exactly once at process startup** (before the app serves requests), or is "on first request" acceptable? Any requirement for not blocking the first HTTP response?
 
 9. **app.yaml and GAE:** Confirm the exact **runtime** value (e.g. `python312`) and that env_variables / secrets for Python runtime are documented; confirm whether the same GAE application ID and service name are used or a separate service for the Python version.
 
-10. **Static folder location:** Keep files under **`public/`** and configure Flask to serve from that path, or move to Flask’s default **`static/`** and update any references (if any) in templates or docs?
+10. **Static folder location:** Keep files under **`public/`** and configure Flask to serve from that path, or move to Flask's default **`static/`** and update any references (if any) in templates or docs?
 
 11. **Future recommendation methods:** This migration does **not** include new recommendation logic that uses Datastore entity features. Confirm that such features will be added in a **later** phase and that the Python codebase should be structured so that new recommendation methods can be added without changing the migration scope.
 
@@ -172,7 +172,7 @@ The following must be **answered or explicitly accepted** before or during imple
 - New recommendation methods or features that use Datastore entity fields (planned for a future phase).
 - Changes to business logic, entity schema, or external API contracts.
 - Frontend redesign or new UI features.
-- Performance or responsiveness improvements that are not strictly necessary to achieve parity with the Node app (those are covered in PRD-responsiveness-improvements.md and PRD-image-normalization.md).
+- Performance or responsiveness improvements that are not strictly necessary to achieve parity with the Node app (those are covered in responsiveness-improvements-prd.md and image-normalization-prd.md).
 
 ---
 

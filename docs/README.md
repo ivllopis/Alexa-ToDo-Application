@@ -80,9 +80,9 @@ Category-to-project mapping is configured per deployment (e.g. via environment v
 - **Videogames (PS4)** → one Todoist project id
 - **Books** → one Todoist project id
 
-**Do not store real project IDs in documentation or version control.** Use `.env` or deployment config; see §8.1 and `docs/prd/desired-changes-prd.md` for configurable IDs.
+**Do not store real project IDs in documentation or version control.** Use `.env` or deployment config; see §8.1 for the required environment variables.
 
-Entity keys in Datastore use the **Todoist item id** (`parseInt(item.id)`) so that one-to-one mapping is preserved across syncs.
+Entity keys in Datastore use the **Todoist item id as a string** so that one-to-one mapping is preserved across syncs. Project IDs are configured via environment variables (see §8.1).
 
 ### 4.2 Datastore kinds and properties
 
@@ -247,6 +247,11 @@ Entity keys in Datastore use the **Todoist item id** (`parseInt(item.id)`) so th
 | Variable | Purpose |
 |----------|---------|
 | `TODOIST_API_KEY` | Todoist Sync API |
+| `TODOIST_PROJECT_SERIES` | Todoist project ID for Series (required for sync) |
+| `TODOIST_PROJECT_MOVIES` | Todoist project ID for Movies (required for sync) |
+| `TODOIST_PROJECT_VIDEOGAMES_PC` | Todoist project ID for Videogames PC (required for sync) |
+| `TODOIST_PROJECT_VIDEOGAMES_PS4` | Todoist project ID for Videogames PS4 (required for sync) |
+| `TODOIST_PROJECT_BOOKS` | Todoist project ID for Books (required for sync) |
 | `OMDb_API_KEY` | OMDb |
 | `IGDB_API_CLIENT_ID` | IGDB / Twitch |
 | `IGDB_API_SECRET` | Twitch OAuth for IGDB |
@@ -260,6 +265,19 @@ Sample provided in `.env_sample` (key placeholders only; no real secrets).
 ### 8.2 Deployment
 
 - **App Engine:** `app.yaml` specifies `runtime: nodejs22`, `env: standard`. No cron or task queue is configured; sync runs only on process start.
+
+### 8.3 Migration (Todoist entity ID and project config)
+
+If you are moving from integer entity keys to string keys (Todoist item id as string) and env-based project IDs:
+
+1. Set the five Todoist project ID environment variables (see §8.1) in your target environment (e.g. in `.env` or deployment config).
+2. Run the one-time migration script from the project root:  
+   `node scripts/migrate-datastore-ids-to-string.js`  
+   Optionally run with `--dry-run` first to log planned changes without writing. The script matches existing (integer-keyed) entities to current Todoist items: first by **API-derived Name** (the Name returned by getShowData / getVideogameData / getBookData for each Todoist item, i.e. the same as stored in Datastore), then by raw Todoist `item.content`. It prompts for confirmation per match, creates new string-keyed entities, and sets `IsClone=true` on the originals. Unmatched Todoist items are added as new entries.
+3. Verify in Datastore: new string-keyed entities exist and originals have `IsClone=true` where a match was applied.
+4. Deploy the app with the same env vars set. Sync will use string ids and env-based project IDs.
+
+Do not store real project IDs or secrets in documentation or version control.
 
 ---
 

@@ -27,13 +27,15 @@ This document captures the **desired changes** agreed for the Media Backlog & Re
 
 ## 2. Todoist project IDs
 
-**Current:** Todoist project/folder IDs for each category (Series, Movies, Videogames PC/PS4, Books) are **hardcoded** in `routes/update_database.js`.
+**Status: Implemented** as of the [Todoist ID and project config migration](todoist-id-and-config-migration-prd.md) (see [work plan](../work_plans/todoist-id-and-config-migration-work-plan.md)).
 
-**Desired:**
+**Previous state:** Todoist project/folder IDs for each category were hardcoded in `routes/update_database.js`.
 
-- Make these IDs **configurable via environment variables** so different deployments can point to different Todoist projects without code changes.
+**Implemented:**
 
-**Suggested env vars (for when coding):**
+- Project IDs are **configurable via environment variables**; different deployments can point to different Todoist projects without code changes.
+
+**Env vars in use:**
 
 - `TODOIST_PROJECT_SERIES`
 - `TODOIST_PROJECT_MOVIES`
@@ -41,7 +43,7 @@ This document captures the **desired changes** agreed for the Media Backlog & Re
 - `TODOIST_PROJECT_VIDEOGAMES_PS4`
 - `TODOIST_PROJECT_BOOKS`
 
-Current hardcoded values can remain as defaults in documentation or as fallbacks only if desired.
+See `docs/README.md` §8.1 and §8.3 for configuration and migration procedure.
 
 ---
 

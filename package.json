@@ -24,7 +24,7 @@
     "simple-oauth2": "^5.1.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.14"
   },
   "engines": {
     "node": ">=18"
